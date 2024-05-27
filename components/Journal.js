@@ -1,69 +1,70 @@
 import React from 'react';
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
 // import Food from "@/components/Food.js"
 
 export default function Journal() {
   return (
-      <View>
-        <View style={styles.border}>
-          <Text style={styles.today}>Today</Text>
-        </View>
-        
-        <View style={styles.border}>
-          <Text style={styles.barGraph}>Bar Graph</Text>
+    <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <View style={{flex: 1}}>
+        <View style={styles.todayContainer}>
+          <Text style={{fontSize: 20}}>Today</Text>
         </View>
 
-        <View >
-          <View style={styles.border}>
-            <Text style={styles.text}>Breakfast</Text>
-          </View>
-
-          <View style={styles.border}>
-            <Text style={styles.text}>Lunch</Text>
-          </View>
-
-          <View style={styles.border}>
-            <Text style={styles.text}>Dinner</Text>
-          </View>
-
-          <View style={styles.border}>
-            <Text style={styles.text}>Snacks</Text>
-          </View>
-        </View> 
-
-        <View style={styles.button}>
-          <Button title="Add Food"/>
+        <View style={styles.barGraphContainer}>
+          <Text style={{fontSize: 20}}>Bar Graph</Text>
         </View>
-  
+
+        <View style={styles.BodyContainer}>
+          <Text>Body</Text>
+        </View>
+
+        <View style={styles.ButtonContainer}>
+          <TouchableOpacity style={styles.AddFoodButton}>
+            <Text>Add Food</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    );
+    </ScrollView>
+    
+    
+
+  )  
 }
 
-//onPress={() => navigation.navigate("Food")}
-
 const styles = StyleSheet.create({
-  today: {
-    textAlign: 'center',
-    fontSize: 20,
-    padding: 8
-  },
-  barGraph: {
-    fontSize: 100,
-    textAlign: 'center',
-    padding: 8
-  },
-  text: {
-    padding: (8, 8, 20),
-    fontSize: 20
-  },
-  border: {
+  todayContainer: {
+    flex: 0.05,
     borderBottomWidth: 1,
-    borderColor: 'black'
+    borderTopWidth: 1,
+    //backgroundColor: 'blue',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  button: {
-    height: '22%',
+  barGraphContainer: {
+    flex: 0.30,
+    borderBottomWidth: 1,
+    //backgroundColor: 'green',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  BodyContainer: {
+    flex: 0.55,
+    borderBottomWidth: 1,
+    //backgroundColor: 'yellow',
+  },
+  ButtonContainer: {
+    flex: 0.10,
+    borderBottomWidth: 1,
+    //backgroundColor: 'orange',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  AddFoodButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 50
-  }
+    width: 100,
+    height: 35,
+    borderRadius: 8,
+    backgroundColor: '#48d1cc',
+  },
 });
