@@ -43,8 +43,8 @@ export default function Map() {
             initialRegion={{
               latitude: 1.294774591108752,
               longitude: 103.77405978567056,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
+              latitudeDelta: 0.0222,
+              longitudeDelta: 0.0222,
           }}
           >
           {MARKERS.map((item, index) => (
