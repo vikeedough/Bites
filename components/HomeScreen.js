@@ -66,20 +66,22 @@ const Post = ({ user, time, image, caption, comments }) => {
     </View>
     <Image
       style={{
-        width: 330,
-        height: 330,
+        width: 320,
+        height: 320,
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 20,
+        marginLeft: 20,
+        marginRight: 20,
       }}
       source={image}
     />
-    <Text style={{fontSize: 18}}>
+    <Text style={{fontSize: 18, marginLeft: 20,}}>
       <Text style={{fontWeight: "bold"}}>{user}</Text>
       <Text> {caption}</Text>
     </Text>
-    <View>
+    <View style={{marginLeft: 20}}>
       {comments.map((comment) => {
         return (
           <Text>
@@ -135,15 +137,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '#ecf0f1',
-    padding: 5,
   },
   post: {
     flex: 1,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     justifyContent: 'center',
+    alignContent: 'center',
     backgroundColor: '#ecf0f1',
-    padding: 8,
   },
   header: {
     flex: 1,
@@ -162,23 +163,23 @@ const styles = StyleSheet.create({
   postHeader: {
     flex: 2,
   },
-  imageContainer: {
-    flex: 8,
-  },
   postText: {
     marginLeft: 10,
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
+    marginLeft: 20,
   },
   postTime: {
     marginLeft: 10,
     fontSize: 15,
     fontStyle: 'italic',
     textAlign: 'left',
+    marginLeft: 20,
   },
   postBottom: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginLeft: 20,
   },
 });
