@@ -108,9 +108,9 @@ const Post = ({ user, time, image, caption, comments }) => {
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.headerText}>Bites</Text>
-      </View>
+      </View> */}
       <View style={styles.feed}>
         <FlatList
           data={feed}

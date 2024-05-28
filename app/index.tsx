@@ -16,8 +16,13 @@ const Tab = createBottomTabNavigator()
 function MyTabs() {
   return (
     <Tab.Navigator initialRouteName="Home">
-      <Tab.Screen name = "Home" component = {HomeScreen} options={
-        {headerShown: false,
+      <Tab.Screen name = "Bites" component = {HomeScreen} options={
+        {headerShown: true,
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontSize: 30,
+            textAlign: 'center'
+          },
         tabBarIcon: () => (
           <Ionicons name="home" color={"black"} size={24} />
         )
