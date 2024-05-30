@@ -1,8 +1,10 @@
 import React from 'react';
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
 
 export default function Food() {
     return (
-        <View>Food!</View>
+        <View>
+            <Text>Food goes here</Text>
+        </View>
     )
 }

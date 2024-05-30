@@ -9,15 +9,20 @@ import Journal from '@/components/Journal.js';
 import Settings from '@/components/Settings.js';
 import Food from '@/components/Food.js'
 import { Ionicons } from '@expo/vector-icons';
+import FoodNavigator from "@/components/navigation/FoodNavigator.js";
 
 const Tab = createBottomTabNavigator()
-// const Stack = createNativeStackNavigator();
 
 function MyTabs() {
   return (
     <Tab.Navigator initialRouteName="Home">
-      <Tab.Screen name = "Home" component = {HomeScreen} options={
-        {headerShown: false,
+      <Tab.Screen name = "Bites" component = {HomeScreen} options={
+        {headerShown: true,
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontSize: 30,
+            textAlign: 'center'
+          },
         tabBarIcon: () => (
           <Ionicons name="home" color={"black"} size={24} />
         )
@@ -30,15 +35,15 @@ function MyTabs() {
           )
       }}/>
 
-      <Tab.Screen name = "Journal" component = {Journal} options={
-        {
+      <Tab.Screen name = "FoodNavigator" component = {FoodNavigator} options={{
           tabBarIcon: () => (
             <Ionicons name="book" color={"black"} size={24} />
-          )
+          ),
+          tabBarLabel: 'Journal',
+          headerShown: false
       }}/>
 
-      <Tab.Screen name = "Settings" component = {Settings} options={
-        {
+      <Tab.Screen name = "Settings" component = {Settings} options={{
           tabBarIcon: () => (
             <Ionicons name="settings" color={"black"} size={24} />
           )
@@ -46,15 +51,6 @@ function MyTabs() {
     </Tab.Navigator>
   )
 }
-
-// function JournalToFood() {
-//   return (
-//     <Stack.Navigator initialRouteName="Journal">
-//       <Stack.Screen name="Journal" component={Journal}/>
-//       <Stack.Screen name="Food" component={Food}/>
-//     </Stack.Navigator>
-//   )
-// }
 
 export default function Index() {
   return (
