@@ -6,26 +6,11 @@ const app = firebaseApp
 const auth = firebaseAuth
 
 export default function Settings() {
-  const [email, onChangeEmail] = React.useState('');
-  const [password, onChangePassword] = React.useState('');
 
     return (
         <View style = {styles.container}>
-          <Text style = {styles.loginText}>Login</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={onChangeEmail}
-            value={email}
-            placeholder='email'
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={onChangePassword}
-            value={password}
-            placeholder='password'
-          />
           <TouchableOpacity>
-            <Text style = {{color: 'blue', margin: 10}}>I don't have an account</Text>
+            <Text style = {{color: 'blue', margin: 10}} onPress = {() => auth.signOut()}>Sign out</Text>
           </TouchableOpacity>
         </View>
       );

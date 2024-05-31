@@ -1,7 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Text, View, StyleSheet, FlatList, Image } from "react-native";
 import { Header } from 'react-native/Libraries/NewAppScreen';
-import AntDesign from '@expo/vector-icons/AntDesign'
+import AntDesign from '@expo/vector-icons/AntDesign';
+import {firebaseApp, firebaseAuth} from '../firebaseConfig'
+import { onAuthStateChanged } from 'firebase/auth';
 
 const post1 = {
   user: 'vikeedough',
@@ -55,6 +57,7 @@ const feed = [
 ];
 
 const Post = ({ user, time, image, caption, comments }) => {
+  
   const [like, setLike] = useState(false)
   const toggleLike = () => setLike(previousState => !previousState);
 
@@ -92,13 +95,13 @@ const Post = ({ user, time, image, caption, comments }) => {
       })}
     </View>
     <View style={styles.postBottom}>
-      <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#ecf0f1" 
+      <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#ffffff" 
       color= '#000000' size = {30} onPress = {toggleLike} activeOpacity = {1}>
       </AntDesign.Button>
-      <AntDesign.Button name="message1" backgroundColor="#ecf0f1" 
+      <AntDesign.Button name="message1" backgroundColor="#ffffff" 
       color= '#000000' size = {30}>
       </AntDesign.Button>
-      <AntDesign.Button name="retweet" backgroundColor="#ecf0f1" 
+      <AntDesign.Button name="retweet" backgroundColor="#ffffff" 
       color= '#000000' size = {30}>
       </AntDesign.Button>
     </View>
@@ -108,9 +111,7 @@ const Post = ({ user, time, image, caption, comments }) => {
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-        <Text style={styles.headerText}>Bites</Text>
-      </View> */}
+      
       <View style={styles.feed}>
         <FlatList
           data={feed}
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#fff0db',
   },
   post: {
     flex: 1,
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#ffffff',
   },
   header: {
     flex: 1,

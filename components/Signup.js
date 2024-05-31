@@ -1,25 +1,25 @@
 import React from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button } from "react-native";
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 const app = firebaseApp
 const auth = firebaseAuth
 
-export default function Login({navigation}) {
+export default function Signup() {
   const [email, onChangeEmail] = React.useState('');
   const [password, onChangePassword] = React.useState('');
   const [loading, setLoading] = React.useState(false)
 
-  const signIn = async () => {
+  const signUp = async () => {
     setLoading(true)
     try {
-        const response = await signInWithEmailAndPassword(auth, email, password)
+        const response = await createUserWithEmailAndPassword(auth, email, password)
         console.log(response)
-        alert('Log in successful!')
+        alert('Sign up successful!')
     } catch (error) {
         console.log(error)
-        alert('Log in failed: ' + error.message)
+        alert('Sign up failed: ' + error.message)
     } finally {
         setLoading(false)
     }
@@ -27,7 +27,7 @@ export default function Login({navigation}) {
 
     return (
         <View style = {styles.container}>
-          <Text style = {styles.loginText}>Bites</Text>
+          <Text style = {styles.loginText}>Signup</Text>
           <TextInput
             style={styles.input}
             onChangeText={onChangeEmail}
@@ -42,11 +42,8 @@ export default function Login({navigation}) {
             secureTextEntry = {true}
           />
           <View style = {{padding: 10}}>
-            <Button title = "Log in!" onPress = {signIn} />
+            <Button title = "Sign up!" onPress = {signUp} />
           </View>
-          <TouchableOpacity>
-            <Text style = {{color: 'blue', margin: 10}} onPress = {() => navigation.navigate('Signup')}>I don't have an account</Text>
-          </TouchableOpacity>
         </View>
       );
 }
@@ -59,7 +56,7 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontWeight: 'bold',
-    fontSize: 40,
+    fontSize: 30,
     margin: 10,
   },
   input: {

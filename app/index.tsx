@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Text, View, StyleSheet } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,9 +8,15 @@ import Map from '@/components/Map.js';
 import Journal from '@/components/Journal.js';
 import Settings from '@/components/Settings.js';
 import Food from '@/components/Food.js'
+import Login from '@/components/Login.js';
+import Signup from '@/components/Signup.js'
 import { Ionicons } from '@expo/vector-icons';
 import FoodNavigator from "@/components/navigation/FoodNavigator.js";
+import {firebaseApp, firebaseAuth} from '../firebaseConfig'
+import { onAuthStateChanged, User } from 'firebase/auth';
 
+const app = firebaseApp
+const auth = firebaseAuth
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
 
@@ -54,9 +60,24 @@ function MyTabs() {
 }
 
 export default function Index() {
+  const [user, setUser] = useState<User | null>(null)
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log('user', user)
+      setUser(user)
+    })
+  }, [])
   return (
     <NavigationContainer independent = {true}>
-      <MyTabs />
+      {user ? (
+         <MyTabs />
+      ) : (
+        <Stack.Navigator>
+          <Stack.Screen name = "Login" component = {Login} options = {{headerShown : false}}/>
+          <Stack.Screen name = "Signup" component = {Signup} options = {{headerTitle: ''}}/>
+        </Stack.Navigator>
+      )}
+      
     </NavigationContainer>
   );
 }
