@@ -19,14 +19,14 @@ const post2 = {
   user: 'StJ0nas',
   time: '27m',
   image: require('@/assets/images/eHbSCbN.jpeg'),
-  caption: 'hahahaha i\'m gay',
+  caption: 'Im hungry already',
   comments: [{
     user: 'neeeegel',
-    text: 'hahahaha me too',
+    text: 'where is this place!',
     id: 1,
   }, {
     user: 'deseansoh',
-    text: 'wtf man',
+    text: 'invite me too!',
     id: 2,
   }],
 };
@@ -84,7 +84,7 @@ const Post = ({ user, time, image, caption, comments }) => {
     <View style={{marginLeft: 20}}>
       {comments.map((comment) => {
         return (
-          <Text key={comment.id}> 
+          <Text>
             <Text style={{fontWeight: "bold"}}>{comment.user}</Text>
             <Text> {comment.text}</Text>
           </Text>
