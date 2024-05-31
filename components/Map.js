@@ -38,8 +38,8 @@ export default function Map() {
   const [text, onChangeText] = React.useState('');
 
     return (
-        <View style={styles.container} provider={PROVIDER_GOOGLE}>
-          <MapView style={styles.map} 
+        <View style={styles.container}>
+          <MapView style={styles.map} provider={PROVIDER_GOOGLE} 
             initialRegion={{
               latitude: 1.294774591108752,
               longitude: 103.77405978567056,
