@@ -20,7 +20,12 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.vikeedough.Bites"
+      "package": "com.vikeedough.Bites",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDeQpf6DPCRefCisiSpSuZ5yZdwnaJ_96I"
+        }
+      }
     },
     "web": {
       "bundler": "metro",

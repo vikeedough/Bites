@@ -1,5 +1,5 @@
 import React from 'react';
-import MapView, {Marker} from 'react-native-maps'
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps'
 import { Text, View, StyleSheet, TextInput } from "react-native";
 
 const MARKERS = [{
@@ -38,7 +38,7 @@ export default function Map() {
   const [text, onChangeText] = React.useState('');
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container} provider={PROVIDER_GOOGLE}>
           <MapView style={styles.map} 
             initialRegion={{
               latitude: 1.294774591108752,
