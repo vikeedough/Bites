@@ -44,7 +44,7 @@ const DropdownComponent = () => {
       maxHeight={300}
       labelField="label"
       valueField="value"
-      placeholder="Select..."
+      placeholder="Meal Type"
       searchPlaceholder="Search..."
       value={value}
       onChange={item => {
@@ -84,19 +84,19 @@ export default function Food() {
         <Text style={styles.foodTitleText}>Food Name</Text>
       </View>
       <View style={styles.mealTypeContainer}>
-        <View style={{flex: 1}}>
+        <View>
           <Text style={styles.mealTypeText}>Meal Type</Text>
         </View>
-        <View style={{flex: 1}}>
+        <View>
           <DropdownComponent/ >
         </View>
       </View>
       <View style={styles.numServingsContainer}>
-        <View style={{flex: 1}}>
+        <View>
           <Text style={styles.mealTypeText}>Number of Servings</Text>
         </View>
-        <View style={{flex: 1, alignItems: 'center'}}>
-            <NumberInput />
+        <View>
+          <NumberInput />
         </View>
       </View>
       <View style={styles.totalMacrosContainer}>
@@ -144,7 +144,7 @@ export default function Food() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e5cbaa',
+    backgroundColor: '#ecf0f1',
   },
   foodTitleContainer: {
     flex: 0.2,
@@ -160,28 +160,27 @@ const styles = StyleSheet.create({
   mealTypeContainer: {
     flexDirection: 'row',
     flex: 0.15,
-    //backgroundColor: 'blue',
+    backgroundColor: 'blue',
     alignItems: 'center',
-    borderBottomWidth: 0.5
   },
   numServingsContainer: {
     flexDirection: 'row',
     flex: 0.15,
-    //backgroundColor: 'green',
+    backgroundColor: 'green',
     alignItems: 'center',
-    borderBottomWidth: 0.5
   },
   mealTypeText: {
     fontSize: 20,
-    paddingLeft: 15,
-    //backgroundColor: 'red',
+    width: 100,
+    backgroundColor: 'red',
   },
   dropdown: {
-    paddingLeft: 25,
+    margin: 16,
     height: 40,
     width: 150,
     backgroundColor: 'white',
     borderRadius: 12,
+    padding: 12,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -221,17 +220,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   numberStyle: {
-    width: 75,
-    height: 30,
+    width: 100,
+    height: 20,
     borderWidth: 1,
     borderRadius: 6,
-    alignItems: 'center'
   },
   totalMacrosContainer: {
     flex: 0.15,
     flexDirection: 'row',
-    //backgroundColor: 'yellow'
-    borderBottomWidth: 0.5
+    backgroundColor: 'yellow'
   },
   macrosContainer: {
     flex: 0.25,
