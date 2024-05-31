@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, StyleSheet } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { createStackNavigator } from '@react-navigation/stack'
 import HomeScreen from '@/components/HomeScreen.js';
 import Map from '@/components/Map.js';
 import Journal from '@/components/Journal.js';
@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import FoodNavigator from "@/components/navigation/FoodNavigator.js";
 
 const Tab = createBottomTabNavigator()
+const Stack = createStackNavigator()
 
 function MyTabs() {
   return (
