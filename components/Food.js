@@ -160,19 +160,19 @@ const styles = StyleSheet.create({
   mealTypeContainer: {
     flexDirection: 'row',
     flex: 0.15,
-    backgroundColor: 'blue',
+    //backgroundColor: 'blue',
     alignItems: 'center',
   },
   numServingsContainer: {
     flexDirection: 'row',
     flex: 0.15,
-    backgroundColor: 'green',
+    //backgroundColor: 'green',
     alignItems: 'center',
   },
   mealTypeText: {
     fontSize: 20,
     width: 100,
-    backgroundColor: 'red',
+    //backgroundColor: 'red',
   },
   dropdown: {
     margin: 16,
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   totalMacrosContainer: {
     flex: 0.15,
     flexDirection: 'row',
-    backgroundColor: 'yellow'
+    //backgroundColor: 'yellow'
   },
   macrosContainer: {
     flex: 0.25,
