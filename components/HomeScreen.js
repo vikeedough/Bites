@@ -84,7 +84,7 @@ const Post = ({ user, time, image, caption, comments }) => {
     <View style={{marginLeft: 20}}>
       {comments.map((comment) => {
         return (
-          <Text>
+          <Text key={comment.id}> 
             <Text style={{fontWeight: "bold"}}>{comment.user}</Text>
             <Text> {comment.text}</Text>
           </Text>
