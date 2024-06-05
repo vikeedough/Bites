@@ -1,13 +1,32 @@
 import React from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import AntDesign from '@expo/vector-icons/AntDesign';
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'
 
 const app = firebaseApp
 const auth = firebaseAuth
 
 export default function Settings() {
+  const user = auth.currentUser
+  const [image, setImage] = React.useState(null)
+  const addImage = () => {}
   return (
+
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
+
+        <View style={styles.imageContainer}>
+            {
+                image  && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+            }
+                <View style={styles.uploadBtnContainer}>
+                    <TouchableOpacity onPress={addImage} style={styles.uploadBtn} >
+                        <Text>{image ? 'Edit' : 'Upload'} Image</Text>
+                        <AntDesign name="camera" size={20} color="black" />
+                    </TouchableOpacity>
+                </View>
+        </View>
+
+        <Text style={{fontWeight: 'bold', fontSize: 30, textAlign: 'center'}}> Welcome, {user.displayName}! </Text>
 
         <View style={styles.ButtonContainer}>
             <TouchableOpacity>
@@ -65,5 +84,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     textAlign: 'center',
   },
-
+  imageContainer:{
+    flex: 0.005,
+    margin: 10,
+    elevation:2,
+    height:125,
+    width:125,
+    backgroundColor:'#efefef',
+    alignSelf: 'center',
+    borderRadius:999,
+    overflow:'hidden',
+  },
+  uploadBtnContainer:{
+    opacity:0.7,
+    position:'absolute',
+    right:0,
+    bottom:0,
+    backgroundColor:'lightgrey',
+    width:'100%',
+    height:'25%',
+  },
+uploadBtn:{
+    display:'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 })

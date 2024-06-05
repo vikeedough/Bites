@@ -1,21 +1,25 @@
 import React from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button } from "react-native";
-import {firebaseApp, firebaseAuth} from '../firebaseConfig'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { firebaseApp, firebaseAuth, firebaseDb } from '../firebaseConfig'
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { collection, addDoc } from 'firebase/firestore';
 
 const app = firebaseApp
 const auth = firebaseAuth
+const db = firebaseDb
 
 export default function Signup() {
+  const [username, onChangeUsername] = React.useState('');
   const [email, onChangeEmail] = React.useState('');
   const [password, onChangePassword] = React.useState('');
-  const [loading, setLoading] = React.useState(false)
+  const [confirmation, onChangeConfirmation] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const signUp = async () => {
     setLoading(true)
     try {
         const response = await createUserWithEmailAndPassword(auth, email, password)
-        console.log(response)
+        updateProfile(auth.currentUser, { displayName: username })
         alert('Sign up successful!')
     } catch (error) {
         console.log(error)
@@ -25,9 +29,23 @@ export default function Signup() {
     }
   }
 
+  const checkSamePassword = () => {
+    if(password === confirmation) {
+      signUp();
+    } else {
+      alert('Ensure that both passwords are the same!')
+    }
+  }
+
     return (
         <View style = {styles.container}>
           <Text style = {styles.loginText}>Signup</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeUsername}
+            value={username}
+            placeholder='username'
+          />
           <TextInput
             style={styles.input}
             onChangeText={onChangeEmail}
@@ -41,8 +59,15 @@ export default function Signup() {
             placeholder='password'
             secureTextEntry = {true}
           />
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeConfirmation}
+            value={confirmation}
+            placeholder='re-enter your password'
+            secureTextEntry = {true}
+          />
           <View style = {{padding: 10}}>
-            <Button title = "Sign up!" onPress = {signUp} />
+            <Button title = "Sign up!" onPress = {checkSamePassword} />
           </View>
         </View>
       );
