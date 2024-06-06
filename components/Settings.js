@@ -2,9 +2,22 @@ import React from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'
+import * as ImagePicker from 'expo-image-picker'
 
 const app = firebaseApp
 const auth = firebaseAuth
+
+const addImage = async () => {
+  let profilePic = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [4,3],
+    quality: 1,
+  });
+  if (!_image.cancelled) {
+    setImage(_image.uri);
+  }
+}
 
 export default function Settings() {
   const user = auth.currentUser
