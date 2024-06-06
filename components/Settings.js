@@ -1,35 +1,57 @@
 import React from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import {firebaseApp, firebaseAuth} from '../firebaseConfig'
+import { firebaseApp, firebaseAuth, firebaseDb } from '../firebaseConfig'
+import { getStorage, ref, uploadBytes, getBytes, getDownloadURL, uploadString } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
+import { updateProfile } from 'firebase/auth'
 import * as ImagePicker from 'expo-image-picker'
 
 const app = firebaseApp
 const auth = firebaseAuth
+const db = firebaseDb
 
-const addImage = async () => {
-  let profilePic = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: true,
-    aspect: [4,3],
-    quality: 1,
-  });
-  if (!_image.cancelled) {
-    setImage(_image.uri);
-  }
-}
+const storage = getStorage()
 
 export default function Settings() {
   const user = auth.currentUser
-  const [image, setImage] = React.useState(null)
-  const addImage = () => {}
+  const [image, setImage] = React.useState(user.photoURL === null ? null : user.photoURL)
+
+  const uriToBlob = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    return blob;
+  };
+
+  const addImage = async () => {
+    let profilePic = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1,1],
+      quality: 1,
+    });
+    const blob = await uriToBlob(profilePic.assets[0].uri)
+    let imageRef = ref(storage, user.uid + '/profilePic/profile.jpeg')
+    await uploadBytes(imageRef, blob).then((snapshot) => {
+      console.log('Uploaded a blob or file!');
+    });
+    let url = await getDownloadURL(imageRef)
+    updateProfile(user, { photoURL: url })
+    await setDoc(doc(db, "users", auth.currentUser.uid), 
+        { profilePic: url }, { merge: true}
+    )
+    if (!profilePic.canceled) {
+      setImage(url);
+    }
+  }
+
   return (
 
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
 
         <View style={styles.imageContainer}>
             {
-                image  && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+                image  && <Image source={{ uri: image }} style={{ width: 125, height: 125 }} />
             }
                 <View style={styles.uploadBtnContainer}>
                     <TouchableOpacity onPress={addImage} style={styles.uploadBtn} >
@@ -98,12 +120,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   imageContainer:{
-    flex: 0.005,
     margin: 10,
     elevation:2,
     height:125,
     width:125,
     backgroundColor:'#efefef',
+    position: 'relative',
     alignSelf: 'center',
     borderRadius:999,
     overflow:'hidden',

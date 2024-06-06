@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button } from "react-native";
 import { firebaseApp, firebaseAuth, firebaseDb } from '../firebaseConfig'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { collection, addDoc } from 'firebase/firestore';
+import { doc, setDoc } from "firebase/firestore";
 
 const app = firebaseApp
 const auth = firebaseAuth
@@ -20,6 +20,9 @@ export default function Signup() {
     try {
         const response = await createUserWithEmailAndPassword(auth, email, password)
         updateProfile(auth.currentUser, { displayName: username })
+        await setDoc(doc(db, "users", auth.currentUser.uid), 
+        { username: username }, { merge: true}
+        )
         alert('Sign up successful!')
     } catch (error) {
         console.log(error)
