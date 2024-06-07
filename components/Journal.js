@@ -85,15 +85,6 @@ export default function Journal({navigation}) {
   )  
 }
 
-{/* <View style ={styles.MealContainer}>
-            <Text style={styles.MealTitle}>Lunch</Text>
-            <Text></Text>
-          </View>
-          <View style ={{flex: 0.34}}> 
-            <Text style={styles.MealTitle}>Dinner</Text>
-            <Text></Text>
-          </View> */}
-
 const styles = StyleSheet.create({
   todayContainer: {
     flex: 0.05,

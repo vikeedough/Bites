@@ -1,11 +1,15 @@
 import React from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { firebaseApp, firebaseAuth, firebaseDb } from '../firebaseConfig'
+import { firebaseApp, firebaseAuth, firebaseDb } from '../firebaseConfig';
 import { getStorage, ref, uploadBytes, getBytes, getDownloadURL, uploadString } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
-import { updateProfile } from 'firebase/auth'
-import * as ImagePicker from 'expo-image-picker'
+import { updateProfile } from 'firebase/auth';
+import * as ImagePicker from 'expo-image-picker';
+import Profile from '@/components/Profile.js';
+import Goals from '@/components/Goals.js';
+import Progress from '@/components/Progress.js';
+
 
 const app = firebaseApp
 const auth = firebaseAuth
@@ -13,7 +17,7 @@ const db = firebaseDb
 
 const storage = getStorage()
 
-export default function Settings() {
+export default function Settings({navigation}) {
   const user = auth.currentUser
   const [image, setImage] = React.useState(user.photoURL === null ? null : user.photoURL)
 
@@ -64,19 +68,19 @@ export default function Settings() {
         <Text style={{fontWeight: 'bold', fontSize: 30, textAlign: 'center'}}> Welcome, {user.displayName}! </Text>
 
         <View style={styles.ButtonContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=> navigation.navigate(Profile)}>
                 <Text style={styles.ButtonText}>Profile</Text>
             </TouchableOpacity>
         </View>
 
         <View style={styles.ButtonContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=> navigation.navigate(Goals)}>
                 <Text style={styles.ButtonText}>Goals</Text>
             </TouchableOpacity>
         </View>
 
         <View style={styles.ButtonContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=> navigation.navigate(Progress)}>
                 <Text style={styles.ButtonText}>Progress</Text>
             </TouchableOpacity>
         </View>

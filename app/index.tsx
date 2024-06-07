@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import FoodNavigator from "@/components/navigation/FoodNavigator.js";
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'
 import { onAuthStateChanged, User } from 'firebase/auth';
+import SettingsNavigator from '@/components/navigation/SettingsNavigator.js'
 
 const app = firebaseApp
 const auth = firebaseAuth
@@ -50,10 +51,12 @@ function MyTabs() {
           headerShown: false
       }}/>
 
-      <Tab.Screen name = "Settings" component = {Settings} options={{
+      <Tab.Screen name = "SettingsNavigator" component = {SettingsNavigator} options={{
           tabBarIcon: () => (
             <Ionicons name="settings" color={"black"} size={24} />
-          )
+          ),
+          tabBarLabel: 'Settings',
+          headerShown: false
       }}/>
     </Tab.Navigator>
   )
