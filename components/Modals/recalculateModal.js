@@ -1,13 +1,17 @@
 import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import SetGoalsModal from '@/components/Modals/setGoalsModal.js';
+import { unloadAllAsync } from 'expo-font';
 
-const RecalculateModal = ({ recalVisible, setRecalVisible, goalsVisible, setGoalsVisible}) => {
+const RecalculateModal = ({ recalVisible, setRecalVisible, goalsVisible, setGoalsVisible, updateDetail, detailType}) => {
+    //console.log({detailType})
     return (
         <View>
             <SetGoalsModal 
-            goalsVisible={goalsVisible}
-            setGoalsVisible={setGoalsVisible}/>
+                goalsVisible={goalsVisible}
+                setGoalsVisible={setGoalsVisible}
+                updateDetail={updateDetail}
+                detailType={detailType}/>
             <Modal
                 style={{margin: 0}}
                 animationType='fade'
@@ -94,7 +98,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 6,
-    borderWidth: 0.5,
     backgroundColor: '#807F7F'
     },
     modalYesButton: {
@@ -103,8 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 6,
-    borderWidth: 0.5,
-    backgroundColor: '#48d1cc'
+    backgroundColor: '#ff924a'
     }
 })
 

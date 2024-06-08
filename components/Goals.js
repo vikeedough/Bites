@@ -6,12 +6,30 @@ import SetGoalsModal from '@/components/Modals/setGoalsModal.js';
 
 export default function Goals() {
 
-  const [age, onChangeAge] = React.useState(0);
-  const [weight, onChangeWeight] = React.useState('');
-  const [height, onChangeHeight] = React.useState('');
+  const [age, setAge] = React.useState(0);
+  const [height, setHeight] = React.useState('');
+  const [weight, setWeight] = React.useState('');
+  
 
   const [warningModalVisibile, setWarningModalVisible] = useState(false);
   const [ageModalVisibile, setAgeModalVisible] = useState(false);
+  const [currentDetail, setCurrentDetail] = useState('');
+
+  function updateDetail(newDetail) {
+    if (currentDetail === 'age') {
+      setAge(newDetail);
+    } else if (currentDetail === 'height') {
+      setHeight(newDetail);
+    } else if (currentDetail === 'weight') {
+      setWeight(newDetail);
+    } 
+  };
+
+  const openDetailModal = (detail) => {
+    setCurrentDetail(detail);
+    setWarningModalVisible(true);
+  };
+
 
   return (
     <View style={styles.container}>
@@ -19,30 +37,29 @@ export default function Goals() {
           recalVisible={warningModalVisibile}
           setRecalVisible={setWarningModalVisible}
           goalsVisible={ageModalVisibile}
-          setGoalsVisible={setAgeModalVisible}/>
+          setGoalsVisible={setAgeModalVisible}
+          updateDetail={updateDetail}
+          detailType={currentDetail}/>
+
         <View style={styles.detailContainer}>
           <View style={styles.textContainer}>
             <Text style={styles.textLayout}>Age</Text>
           </View>
           <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => setWarningModalVisible(true)}>
-            <Text style={styles.buttonText}>{age}g</Text>
+          <TouchableOpacity onPress={() => openDetailModal('age')}>
+            <Text style={styles.buttonText}>{age} years old</Text>
           </TouchableOpacity>
           </View>
         </View>
         
-
-        {/* <View style={styles.detailContainer}>
+        <View style={styles.detailContainer}>
           <View style={styles.textContainer}>
             <Text style={styles.textLayout}>Height</Text>
           </View>
           <View style={styles.buttonContainer}>
-          <TextInput
-            style={styles.ageInput}
-            keyboardType='numeric'
-            onChangeText={onChangeHeight}
-            value={height}        
-          /> 
+          <TouchableOpacity onPress={() => openDetailModal('height')}>
+            <Text style={styles.buttonText}>{height} cm</Text>
+          </TouchableOpacity>
           </View>
         </View>
 
@@ -51,15 +68,11 @@ export default function Goals() {
             <Text style={styles.textLayout}>Weight</Text>
           </View>
           <View style={styles.buttonContainer}>
-          <TextInput
-            style={styles.ageInput}
-            keyboardType='numeric'
-            onChangeText={onChangeWeight}
-            value={age}        
-          /> 
+          <TouchableOpacity onPress={() => openDetailModal('weight')}>
+            <Text style={styles.buttonText}>{weight} kg</Text>
+          </TouchableOpacity>
           </View>
-        </View> */}
-
+        </View>
     </View>
   );
 }
@@ -74,7 +87,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 25,
     justifyContent: 'center',
-    backgroundColor: 'red'
+    borderBottomWidth: 0.5
+    //backgroundColor: 'red'
   },
   textContainer: {
     flex: 1,
@@ -84,7 +98,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     alignItems: 'flex-end',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   textInput: {
     padding: 10,
@@ -95,7 +109,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   buttonText: {
-    fontSize: 18
+    fontSize: 18,
+    color: '#ff924a'
   },
   modalContainer: {
     flex: 1,
