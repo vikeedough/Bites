@@ -8,7 +8,11 @@ const Stack = createNativeStackNavigator();
 export default function JournalToFoodNavigator() {
     return(
         <Stack.Navigator>
-            <Stack.Screen name="Journal" component={Journal}/>
+            <Stack.Screen name="Journal" component={Journal} options={{
+                headerStyle: {
+                    backgroundColor: '#ff924a'
+                  },
+            }}/>
             <Stack.Screen name="Food" component={Food}/>
         </Stack.Navigator>
     )

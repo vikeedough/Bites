@@ -21,7 +21,7 @@ export default function Signup() {
         const response = await createUserWithEmailAndPassword(auth, email, password)
         updateProfile(auth.currentUser, { displayName: username })
         await setDoc(doc(db, "users", auth.currentUser.uid), 
-        { username: username }, { merge: true}
+        { username: username, vegetarian: false }, { merge: true}
         )
         alert('Sign up successful!')
     } catch (error) {

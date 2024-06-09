@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { firebaseApp, firebaseAuth, firebaseDb } from '../firebaseConfig';
 import { getStorage, ref, uploadBytes, getBytes, getDownloadURL, uploadString } from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore";
-import { updateProfile } from 'firebase/auth';
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
+import { updateProfile, onAuthStateChanged } from 'firebase/auth';
 import * as ImagePicker from 'expo-image-picker';
 import Profile from '@/components/Profile.js';
 import Goals from '@/components/Goals.js';
 import Progress from '@/components/Progress.js';
+import ProfileNavigator from '@/components/navigation/ProfileNavigator.js'
+import { useIsFocused } from '@react-navigation/native';
 
 
 const app = firebaseApp
@@ -18,7 +20,16 @@ const db = firebaseDb
 const storage = getStorage()
 
 export default function Settings({navigation}) {
-  const user = auth.currentUser
+
+  const isFocused = useIsFocused();
+  let user = auth.currentUser;
+
+  useEffect(() => {
+    if (isFocused) {
+      user = auth.currentUser;
+    }
+  }, [isFocused]);
+
   const [image, setImage] = React.useState(user.photoURL === null ? null : user.photoURL)
 
   const uriToBlob = async (uri) => {
@@ -66,9 +77,11 @@ export default function Settings({navigation}) {
         </View>
 
         <Text style={{fontWeight: 'bold', fontSize: 30, textAlign: 'center'}}> Welcome, {user.displayName}! </Text>
+        
+        <View style={{justifyContent: 'space-evenly', flex: 1}}>
 
         <View style={styles.ButtonContainer}>
-            <TouchableOpacity onPress={()=> navigation.navigate(Profile)}>
+            <TouchableOpacity onPress={()=> navigation.navigate("ProfileNavigator")}>
                 <Text style={styles.ButtonText}>Profile</Text>
             </TouchableOpacity>
         </View>
@@ -89,6 +102,8 @@ export default function Settings({navigation}) {
             <TouchableOpacity onPress = {() => auth.signOut()}>
                 <Text style={styles.ButtonText}>Logout</Text>
             </TouchableOpacity>
+        </View>
+
         </View>
       </ScrollView>
     );
@@ -132,6 +147,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignSelf: 'center',
     borderRadius:999,
+    borderColor: '#ff924a',
+    borderWidth: 3,
     overflow:'hidden',
   },
   uploadBtnContainer:{

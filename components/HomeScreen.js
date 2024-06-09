@@ -96,13 +96,13 @@ const Post = ({ user, time, image, caption, comments }) => {
     </View>
     <View style={styles.postBottom}>
       <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#ffffff" 
-      color= '#000000' size = {30} onPress = {toggleLike} activeOpacity = {1}>
+      color= '#ff924a' size = {30} onPress = {toggleLike} activeOpacity = {1}>
       </AntDesign.Button>
       <AntDesign.Button name="message1" backgroundColor="#ffffff" 
-      color= '#000000' size = {30}>
+      color= '#ff924a' size = {30}>
       </AntDesign.Button>
       <AntDesign.Button name="retweet" backgroundColor="#ffffff" 
-      color= '#000000' size = {30}>
+      color= '#ff924a' size = {30}>
       </AntDesign.Button>
     </View>
   </View>

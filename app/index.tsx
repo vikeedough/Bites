@@ -23,21 +23,33 @@ const Stack = createStackNavigator()
 
 function MyTabs() {
   return (
-    <Tab.Navigator initialRouteName="Home">
+    <Tab.Navigator initialRouteName="Home" screenOptions={{
+      tabBarStyle: {
+        backgroundColor: '#ff924a'
+      },
+      tabBarActiveTintColor: 'white',  
+      tabBarInactiveTintColor: 'black', 
+    }}>
       <Tab.Screen name = "Bites" component = {HomeScreen} options={
         {headerShown: true,
           headerTitleAlign: 'center',
           headerTitleStyle: {
             fontSize: 30,
-            textAlign: 'center'
+            textAlign: 'center',
+            color: 'white',
           },
-        tabBarIcon: () => (
-          <Ionicons name="home" color={"black"} size={24} />
+          headerStyle: {
+            backgroundColor: '#ff924a'
+          },
+          tabBarIcon: () => (
+            <Ionicons name="home" color={"black"} size={24} />
         )
       }}/>
 
       <Tab.Screen name = "Map" component = {Map} options={
-        {
+        { headerStyle: {
+          backgroundColor: '#ff924a'
+          },
           tabBarIcon: () => (
             <Ionicons name="map" color={"black"} size={24} />
           )

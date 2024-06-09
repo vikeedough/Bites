@@ -42,10 +42,10 @@ export default function Login({navigation}) {
             secureTextEntry = {true}
           />
           <View style = {{padding: 10}}>
-            <Button title = "Log in!" onPress = {signIn} />
+            <Button title = "Log in!" onPress = {signIn} color = '#ff924a' />
           </View>
           <TouchableOpacity>
-            <Text style = {{color: 'blue', margin: 10}} onPress = {() => navigation.navigate('Signup')}>I don't have an account</Text>
+            <Text style = {{color: '#ff924a', margin: 10}} onPress = {() => navigation.navigate('Signup')}>I don't have an account</Text>
           </TouchableOpacity>
         </View>
       );
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 40,
     margin: 10,
+    color: '#ff924a'
   },
   input: {
     borderWidth: 0,
