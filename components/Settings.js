@@ -87,6 +87,12 @@ export default function Settings({navigation}) {
         </View>
 
         <View style={styles.ButtonContainer}>
+            <TouchableOpacity onPress={()=> navigation.navigate("FriendsNavigator")}>
+                <Text style={styles.ButtonText}>Friends</Text>
+            </TouchableOpacity>
+        </View>
+
+        <View style={styles.ButtonContainer}>
             <TouchableOpacity onPress={()=> navigation.navigate(Goals)}>
                 <Text style={styles.ButtonText}>Goals</Text>
             </TouchableOpacity>

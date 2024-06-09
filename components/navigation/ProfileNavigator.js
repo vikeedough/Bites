@@ -1,9 +1,9 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Profile from '@/components/Profile.js';
-import Username from '@/components/Username.js';
-import Email from '@/components/Email.js';
-import ResetPassword from '@/components/ResetPassword.js';
+import Username from '@/components/ProfileScreens/Username.js';
+import Email from '@/components/ProfileScreens/Email.js';
+import ResetPassword from '@/components/ProfileScreens/ResetPassword.js';
 
 const Stack = createNativeStackNavigator();
 

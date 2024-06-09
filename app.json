@@ -21,6 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.vikeedough.Bites",
+      "softwareKeyboardLayoutMode": "pan",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyDeQpf6DPCRefCisiSpSuZ5yZdwnaJ_96I"

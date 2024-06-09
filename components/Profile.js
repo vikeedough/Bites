@@ -41,6 +41,7 @@ export default function Profile({navigation}) {
       user = auth.currentUser;
       fetchUserSnap();
     }
+    
   }, [isFocused]);
 
   useEffect(() => {
