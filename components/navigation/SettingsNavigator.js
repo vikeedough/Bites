@@ -15,7 +15,7 @@ export default function SettingsNavigator() {
         <Stack.Navigator initialRouteName="Settings">
             <Stack.Screen name="Settings" component={Settings} options={{
                 headerStyle: {
-                    backgroundColor: '#ff924a'
+                    backgroundColor: '#EC6337'
                   },
             }}/>
             <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} options={{ headerShown: false }}/>
@@ -24,12 +24,12 @@ export default function SettingsNavigator() {
             }}/>
             <Stack.Screen name="Goals" component={Goals} options={{
                 headerStyle: {
-                    backgroundColor: '#ff924a'
+                    backgroundColor: '#EC6337'
                   },
             }}/>
             <Stack.Screen name="Progress" component={Progress} options={{
                 headerStyle: {
-                    backgroundColor: '#ff924a'
+                    backgroundColor: '#EC6337'
                   },
             }}/>
         </Stack.Navigator>

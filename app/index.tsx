@@ -25,7 +25,7 @@ function MyTabs() {
   return (
     <Tab.Navigator initialRouteName="Home" screenOptions={{
       tabBarStyle: {
-        backgroundColor: '#ff924a'
+        backgroundColor: '#EC6337'
       },
       tabBarActiveTintColor: 'white',  
       tabBarInactiveTintColor: 'black', 
@@ -39,7 +39,7 @@ function MyTabs() {
             color: 'white',
           },
           headerStyle: {
-            backgroundColor: '#ff924a'
+            backgroundColor: '#EC6337'
           },
           tabBarIcon: () => (
             <Ionicons name="home" color={"black"} size={24} />
@@ -48,7 +48,7 @@ function MyTabs() {
 
       <Tab.Screen name = "Map" component = {Map} options={
         { headerStyle: {
-          backgroundColor: '#ff924a'
+          backgroundColor: '#EC6337'
           },
           tabBarIcon: () => (
             <Ionicons name="map" color={"black"} size={24} />
