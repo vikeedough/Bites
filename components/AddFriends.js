@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Button, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Button, FlatList, Image, RefreshControl } from 'react-native';
 import { useEffect, useState } from 'react';
 import { firebaseAuth, firebaseApp, firebaseDb } from '@/firebaseConfig';
-import { collection, query, where, getDocs, setDoc, doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, setDoc, doc, updateDoc, arrayUnion, getDoc, arrayRemove } from "firebase/firestore";
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -14,16 +14,33 @@ export default function AddFriends(){
 
     const [search, setSearch] = useState('');
     const [filtered, setFiltered] = useState([])
+    const [refreshing, setRefreshing] = useState(true);
 
     const fetchUsers = async () => {
         const querySnapshot = await getDocs(userRef);
+        const currFriends = await getDoc(doc(db, 'users', auth.currentUser.uid)).then(
+            (item) => {return (item.data().friends)}
+        )
         const usernames = [];
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(async (doc) => {
         const data = doc.data();
         if (data.username) {
             usernames.push({id: doc.id, name: data.username, uri: data.profilePic});
         }
         DATA = usernames;
+        if (search === "") {
+            setFiltered(DATA);
+        } else {
+            const cleaned = DATA.filter((item) => 
+                item.name.toLowerCase().includes(search.toLowerCase()));
+            const cleanedOwner = cleaned.filter((item) => 
+                item.id != auth.currentUser.uid)
+            const cleanedFollowed = cleanedOwner.filter((item) =>
+                !currFriends.includes(item.id))
+            setFiltered(cleanedFollowed);
+            console.log(cleanedFollowed);
+        }
+        setRefreshing(false);
     });
     }
 
@@ -62,6 +79,14 @@ export default function AddFriends(){
             console.log("Followed");
         }
 
+        const Unfollow = async () => {
+            await updateDoc(doc(db, "users", auth.currentUser.uid),
+            { friends: arrayRemove(id)}
+            );
+            setFollowing(false);
+            console.log("Unfollowed");
+        }
+
         return (
         <TouchableOpacity>
             <View style={styles.cardContainer}>
@@ -71,7 +96,7 @@ export default function AddFriends(){
                         {username}
                     </Text>
                 </View>
-                <TouchableOpacity style={styles.buttonContainer} onPress={Follow}>
+                <TouchableOpacity style={styles.buttonContainer} onPress={following ? Unfollow : Follow}>
                     <Text style={styles.buttonText}>{following ? 'Following' : "Follow"}</Text>
                 </TouchableOpacity>
             </View>
@@ -96,6 +121,9 @@ export default function AddFriends(){
                         data={filtered}
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
+                        refreshControl={
+                            <RefreshControl refreshing = {refreshing} onRefresh={fetchUsers} />
+                        }
                     />
                 </View>
         </View>
@@ -120,6 +148,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'stretch',
         paddingHorizontal: 15,
+        minHeight: 1000,
     },
     cardContainer: {
         borderRadius: 40,
