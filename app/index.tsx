@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -20,6 +20,7 @@ const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
 
 function MyTabs() {
+
   return (
     <Tab.Navigator initialRouteName="Home" screenOptions={{
       tabBarStyle: {
@@ -82,6 +83,7 @@ function MyTabs() {
 }
 
 export default function Index() {
+
   const [user, setUser] = useState<User | null>(null)
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -89,6 +91,7 @@ export default function Index() {
       setUser(user)
     })
   }, [])
+
   return (
     <NavigationContainer independent = {true}>
       {user ? (

@@ -35,7 +35,11 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font",
+      ["expo-font",
+        {
+          "fonts": ["node_modules/@expo-google-fonts/inter/Inter_500Medium.ttf"]
+        }
+      ],
       "expo-image-picker"
     ],
     "experiments": {
