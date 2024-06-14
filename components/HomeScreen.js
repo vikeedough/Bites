@@ -197,12 +197,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     backgroundColor: '#fff0db',
-    padding: 20,
-  },
-  header: {
-    display: 'flex',
-    marginTop: 20,
-    marginLeft: 20,
+    paddingHorizontal: 20,
+    paddingTop: 10,
   },
   headerText: {
     marginTop: 5,
@@ -222,6 +218,7 @@ const styles = StyleSheet.create({
     width: 40,
     margin: 'auto 0',
     aspectRatio: 1,
+    borderRadius: 999,
   },
   postHeader: {
     display: 'flex',
@@ -241,7 +238,6 @@ const styles = StyleSheet.create({
   postBottom: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 20,
   },
 });
 

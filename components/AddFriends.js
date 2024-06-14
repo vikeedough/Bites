@@ -29,7 +29,13 @@ export default function AddFriends(){
         }
         DATA = usernames;
         if (search === "") {
-            setFiltered(DATA);
+            const cleanedNewOwner = DATA.filter((item) => 
+                item.id != auth.currentUser.uid  
+            );
+            const cleanedNewFollowed = cleanedNewOwner.filter((item) => 
+                !currFriends.includes(item.id)
+            );
+            setFiltered(cleanedNewFollowed);
         } else {
             const cleaned = DATA.filter((item) => 
                 item.name.toLowerCase().includes(search.toLowerCase()));

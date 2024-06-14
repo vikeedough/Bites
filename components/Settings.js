@@ -16,6 +16,7 @@ import { useIsFocused } from '@react-navigation/native';
 const app = firebaseApp
 const auth = firebaseAuth
 const db = firebaseDb
+const placeholder = require('@/assets/images/placeholder.png');
 
 const storage = getStorage()
 
@@ -66,7 +67,7 @@ export default function Settings({navigation}) {
 
         <View style={styles.imageContainer}>
             {
-                image  && <Image source={{ uri: image }} style={{ width: 125, height: 125 }} />
+                image  && <Image source={ image === null ? placeholder : { uri: image }} style={{ width: 125, height: 125 }} />
             }
                 <View style={styles.uploadBtnContainer}>
                     <TouchableOpacity onPress={addImage} style={styles.uploadBtn} >
