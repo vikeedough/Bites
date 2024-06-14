@@ -10,7 +10,6 @@ import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
 const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
-const placeholder = require('@/assets/images/placeholder.png');
 const storage = getStorage();
 
 export default function Post() {
@@ -51,7 +50,8 @@ export default function Post() {
         const postObject = {
             pictureURL: url,
             caption: caption,
-            time: timeNow
+            time: timeNow,
+            comments: []
         }
         const postsRef = doc(db, "users", user.uid);
         await updateDoc(postsRef, {

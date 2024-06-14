@@ -5,6 +5,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
 
+const placeholder = require('@/assets/images/placeholder.png');
+
 const post1 = {
   user: 'vikeedough',
   time: '1m',
@@ -56,6 +58,53 @@ const feed = [
   },
 ];
 
+const Newpost = ({ user, time, image, caption, comments }) => {
+
+  const [like, setLike] = useState(false)
+  const toggleLike = () => setLike(previousState => !previousState);
+
+  return (
+  <View style={newStyles.postContainer}>
+
+    <View style={newStyles.headerContainer}>
+      <Image resizeMode='auto' source={placeholder} style={newStyles.profileImage}/>
+      <View style={newStyles.headerTextContainer}>
+        <Text style={newStyles.username}>{user}</Text>
+        <Text style={newStyles.postTime}>{time}</Text>
+      </View>
+    </View>
+
+    <Image  source={image} style={newStyles.postImage} />
+
+    <View style={newStyles.detailsContainer}>
+      <Text style={newStyles.username}>{user}</Text>
+      <Text style={newStyles.captionText}>{caption}</Text>
+    </View>
+
+    {comments.map((comment) => {
+        return (
+          <Text style={newStyles.commentUsername}>
+            {comment.user} <Text style={newStyles.commentContent}>{comment.text}</Text>
+          </Text>
+        )}
+      )
+    }
+
+    <View style={newStyles.iconsContainer}>
+      <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#ffffff" 
+      color= '#EC6337' size = {30} onPress = {toggleLike} activeOpacity = {1}>
+      </AntDesign.Button>
+      <AntDesign.Button name="message1" backgroundColor="#ffffff" 
+      color= '#EC6337' size = {30}>
+      </AntDesign.Button>
+      <AntDesign.Button name="retweet" backgroundColor="#ffffff" 
+      color= '#EC6337' size = {30}>
+      </AntDesign.Button>
+    </View>
+
+  </View>
+)};
+
 const Post = ({ user, time, image, caption, comments }) => {
   
   const [like, setLike] = useState(false)
@@ -63,9 +112,12 @@ const Post = ({ user, time, image, caption, comments }) => {
 
   return (
   <View style={styles.post}>
-    <View style={styles.postHeader}>
-      <Text style={styles.postText}>{user}</Text>
-      <Text style={styles.postTime}>{time}</Text>
+    <View style={styles.postHeaderContainer}>
+      <Image resizeMode='auto' source={placeholder} style={styles.profileImage}/>
+      <View style={styles.postHeader}>
+        <Text style={styles.postText}>{user}</Text>
+        <Text style={styles.postTime}>{time}</Text>
+      </View>
     </View>
     <Image
       style={{
@@ -75,16 +127,15 @@ const Post = ({ user, time, image, caption, comments }) => {
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 20,
-        marginLeft: 20,
-        marginRight: 20,
+        marginVertical: 10,
       }}
       source={image}
     />
-    <Text style={{fontSize: 18, marginLeft: 20,}}>
+    <Text style={{fontSize: 18}}>
       <Text style={{fontWeight: "bold"}}>{user}</Text>
       <Text> {caption}</Text>
     </Text>
-    <View style={{marginLeft: 20}}>
+    <View style={{marginLeft: 10}}>
       {comments.map((comment) => {
         return (
           <Text>
@@ -95,13 +146,13 @@ const Post = ({ user, time, image, caption, comments }) => {
       })}
     </View>
     <View style={styles.postBottom}>
-      <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#ffffff" 
+      <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#fff0db" 
       color= '#EC6337' size = {30} onPress = {toggleLike} activeOpacity = {1}>
       </AntDesign.Button>
-      <AntDesign.Button name="message1" backgroundColor="#ffffff" 
+      <AntDesign.Button name="message1" backgroundColor="#fff0db" 
       color= '#EC6337' size = {30}>
       </AntDesign.Button>
-      <AntDesign.Button name="retweet" backgroundColor="#ffffff" 
+      <AntDesign.Button name="retweet" backgroundColor="#fff0db" 
       color= '#EC6337' size = {30}>
       </AntDesign.Button>
     </View>
@@ -135,20 +186,21 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: 'flex',
     justifyContent: 'center',
     backgroundColor: '#fff0db',
   },
   post: {
-    flex: 1,
+    display: 'flex',
     borderTopWidth: 1,
     borderBottomWidth: 1,
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff0db',
+    padding: 20,
   },
   header: {
-    flex: 1,
+    display: 'flex',
     marginTop: 20,
     marginLeft: 20,
   },
@@ -159,24 +211,32 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   feed: {
-    flex: 10,
+    display: 'flex',
+  },
+  postHeaderContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  profileImage: {
+    width: 40,
+    margin: 'auto 0',
+    aspectRatio: 1,
   },
   postHeader: {
-    flex: 2,
+    display: 'flex',
   },
   postText: {
-    marginLeft: 10,
+    marginLeft: 5,
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
-    marginLeft: 20,
   },
   postTime: {
-    marginLeft: 10,
+    marginLeft: 5,
     fontSize: 15,
     fontStyle: 'italic',
     textAlign: 'left',
-    marginLeft: 20,
   },
   postBottom: {
     flexDirection: 'row',
@@ -184,3 +244,59 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
 });
+
+const newStyles = StyleSheet.create({
+  postContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  headerContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  headerTextContainer: {
+    paddingRight: 5,
+  },
+  username: {
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  postTime: {
+    color: '#828282',
+    fontSize: 12,
+  },
+  postImage: {
+    width: '70%',
+    height: '70%',
+    aspectRatio: 1,
+    marginTop: 12,
+  },
+  detailsContainer: {
+    display: 'flex',
+    marginTop: 12,
+    alignItems: 'stretch',
+    gap: 7,
+  },
+  captionText: {
+    fontSize: 13
+  },
+  commentText: {
+    color: '#828282',
+    marginTop: 9,
+    fontSize: 10,
+    fontWeight: '600',
+    width: '90%',
+  },
+  commentContent: {
+    fontWeight: '400',
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    justifyContent: "space-around",
+  }
+})
