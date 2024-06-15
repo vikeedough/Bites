@@ -1,122 +1,46 @@
 import React, {useState, useEffect} from 'react';
-import { Text, View, StyleSheet, FlatList, Image } from "react-native";
+import { Text, View, StyleSheet, FlatList, Image, Button, RefreshControl } from "react-native";
 import { Header } from 'react-native/Libraries/NewAppScreen';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import {firebaseApp, firebaseAuth} from '../firebaseConfig'
+import {firebaseApp, firebaseAuth, firebaseDb} from '../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
+import { collection, getDoc, onSnapshot, doc } from 'firebase/firestore';
+import { ref } from 'firebase/storage';
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
 
+TimeAgo.addDefaultLocale(en);
+
+const auth = firebaseAuth;
+const db = firebaseDb;
+const postsRef = collection(db, "posts");
 const placeholder = require('@/assets/images/placeholder.png');
-
-const post1 = {
-  user: 'vikeedough',
-  time: '1m',
-  image: require('@/assets/images/8URRTRj.jpeg'),
-  caption: 'Had a fantastic dinner!',
-  comments: [{
-    user: 'deseansoh',
-    text: 'looks good!',
-    id: 1,
-  }],
-};
-
-const post2 = {
-  user: 'StJ0nas',
-  time: '27m',
-  image: require('@/assets/images/eHbSCbN.jpeg'),
-  caption: 'Im hungry already',
-  comments: [{
-    user: 'neeeegel',
-    text: 'where is this place!',
-    id: 1,
-  }, {
-    user: 'deseansoh',
-    text: 'invite me too!',
-    id: 2,
-  }],
-};
-
-const post3 = {
-  user: 'vikeedough',
-  time: '49m',
-  image: require('@/assets/images/2UpCLk2.jpeg'),
-  caption: 'My first post!',
-  comments: [],
-};
-
-const feed = [
-  {
-    post: post1,
-    id: 1,
-  },
-  {
-    post: post2,
-    id: 2,
-  },
-  {
-    post: post3,
-    id: 3,
-  },
-];
-
-const Newpost = ({ user, time, image, caption, comments }) => {
-
-  const [like, setLike] = useState(false)
-  const toggleLike = () => setLike(previousState => !previousState);
-
-  return (
-  <View style={newStyles.postContainer}>
-
-    <View style={newStyles.headerContainer}>
-      <Image resizeMode='auto' source={placeholder} style={newStyles.profileImage}/>
-      <View style={newStyles.headerTextContainer}>
-        <Text style={newStyles.username}>{user}</Text>
-        <Text style={newStyles.postTime}>{time}</Text>
-      </View>
-    </View>
-
-    <Image  source={image} style={newStyles.postImage} />
-
-    <View style={newStyles.detailsContainer}>
-      <Text style={newStyles.username}>{user}</Text>
-      <Text style={newStyles.captionText}>{caption}</Text>
-    </View>
-
-    {comments.map((comment) => {
-        return (
-          <Text style={newStyles.commentUsername}>
-            {comment.user} <Text style={newStyles.commentContent}>{comment.text}</Text>
-          </Text>
-        )}
-      )
-    }
-
-    <View style={newStyles.iconsContainer}>
-      <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#ffffff" 
-      color= '#EC6337' size = {30} onPress = {toggleLike} activeOpacity = {1}>
-      </AntDesign.Button>
-      <AntDesign.Button name="message1" backgroundColor="#ffffff" 
-      color= '#EC6337' size = {30}>
-      </AntDesign.Button>
-      <AntDesign.Button name="retweet" backgroundColor="#ffffff" 
-      color= '#EC6337' size = {30}>
-      </AntDesign.Button>
-    </View>
-
-  </View>
-)};
+const timeAgo = new TimeAgo('en-US');
 
 const Post = ({ user, time, image, caption, comments }) => {
   
-  const [like, setLike] = useState(false)
+  const [like, setLike] = useState(false);
+  const [username, setUsername] = useState('');
+  const [userPic, setUserPic] = useState(null);
   const toggleLike = () => setLike(previousState => !previousState);
+
+  const findUsername = async () => {
+    const findUsername = (await getDoc(doc(db, 'users', user))).data();
+    setUsername(findUsername.username);
+    setUserPic(findUsername.profilePic);
+  }
+
+  useEffect(() => {
+    findUsername();
+  }, [username]);
 
   return (
   <View style={styles.post}>
     <View style={styles.postHeaderContainer}>
-      <Image resizeMode='auto' source={placeholder} style={styles.profileImage}/>
+      <Image resizeMode='auto' source={userPic === null ? placeholder : {uri: userPic}} style={styles.profileImage}/>
       <View style={styles.postHeader}>
-        <Text style={styles.postText}>{user}</Text>
-        <Text style={styles.postTime}>{time}</Text>
+        <Text style={styles.postText}>{username}</Text>
+        <Text style={styles.postTime}>{timeAgo.format(Date.now() - (Date.now() - time))}</Text>
       </View>
     </View>
     <Image
@@ -129,10 +53,10 @@ const Post = ({ user, time, image, caption, comments }) => {
         borderRadius: 20,
         marginVertical: 10,
       }}
-      source={image}
+      source={{ uri: image }}
     />
     <Text style={{fontSize: 18}}>
-      <Text style={{fontWeight: "bold"}}>{user}</Text>
+      <Text style={{fontWeight: "bold"}}>{username}</Text>
       <Text> {caption}</Text>
     </Text>
     <View style={{marginLeft: 10}}>
@@ -160,25 +84,102 @@ const Post = ({ user, time, image, caption, comments }) => {
 )};
 
 export default function HomeScreen() {
+
+  const user = auth.currentUser.uid;
+  const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [refresh, setRefresh] = useState(true);
+  const [friends, setFriends] = useState([]);
+
+  const checkPost = () => {
+    console.log(posts);
+    console.log(friends);
+    console.log(filteredPosts);
+  };
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(postsRef, (snapshot) => {
+      const updatePosts = snapshot.docs.map((doc) => {
+        return {
+          postId: doc.id,
+          userId: doc.data().userId,
+          timestamp: doc.data().timestamp,
+          imageURL: doc.data().pictureURL,
+          caption: doc.data().caption,
+          comments: doc.data().comments,
+        }
+      });
+      setPosts(updatePosts);
+
+      fetchFriends().then(console.log('done finding friends'));
+      filterPosts().then(console.log('done filtering posts'));
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    fetchFriends();
+  }, [user]);
+
+  useEffect(() => {
+     filterPosts();
+  }, [friends, posts, user]);
+
+  const fetchFriends = async () => {
+    const friendsList = await getDoc(doc(db, "users", user)).then(
+      (item) => {return (item.data().friends)}
+    )
+    setFriends(friendsList);
+  }
+
+  const filterPosts = async () => {
+
+    DATA = posts;
+    console.log(DATA);
+    const cleanUnfollowing = DATA.filter((item) => 
+      (!friends.includes(item.userId) || (item.userId === user))
+    );
+    const sortedPosts = cleanUnfollowing.sort(
+      function(p1, p2) {
+        return (p2.timestamp - p1.timestamp)
+      }
+    );
+
+    setFilteredPosts(sortedPosts);
+    setRefresh(false);
+  }
+
+
+
   return (
     <View style={styles.container}>
-      
       <View style={styles.feed}>
-        <FlatList
-          data={feed}
-          renderItem={({ item }) => {
-            return (
-            <Post
-              user={item.post.user}
-              time={item.post.time}
-              image={item.post.image}
-              caption={item.post.caption}
-              comments={item.post.comments}
+        {
+          
+          filteredPosts.length === 0 ? 
+            <Text>No posts to shOw!</Text>
+          :<View style={styles.feed}>
+              <FlatList
+              style={styles.flatList}
+              data={filteredPosts}
+              renderItem={({ item }) => {
+                return (
+                <Post
+                  user={item.userId}
+                  time={item.timestamp}
+                  image={item.imageURL}
+                  caption={item.caption}
+                  comments={item.comments}
+                />
+              )}
+              }
+              keyExtractor={(item) => item.postId}
+              refreshControl={
+                <RefreshControl refreshing={refresh} onRefresh={filterPosts} />
+              }
             />
-          )}
-          }
-          keyExtractor={(item) => item.id}
-        />
+            </View>
+        }
       </View>
     </View>
   );
@@ -208,6 +209,7 @@ const styles = StyleSheet.create({
   },
   feed: {
     display: 'flex',
+    minHeight: '100%',
   },
   postHeaderContainer: {
     display: 'flex',
@@ -239,60 +241,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-});
-
-const newStyles = StyleSheet.create({
-  postContainer: {
+  flatList: {
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  headerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  headerTextContainer: {
-    paddingRight: 5,
-  },
-  username: {
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  postTime: {
-    color: '#828282',
-    fontSize: 12,
-  },
-  postImage: {
-    width: '70%',
-    height: '70%',
-    aspectRatio: 1,
-    marginTop: 12,
-  },
-  detailsContainer: {
-    display: 'flex',
-    marginTop: 12,
-    alignItems: 'stretch',
-    gap: 7,
-  },
-  captionText: {
-    fontSize: 13
-  },
-  commentText: {
-    color: '#828282',
-    marginTop: 9,
-    fontSize: 10,
-    fontWeight: '600',
-    width: '90%',
-  },
-  commentContent: {
-    fontWeight: '400',
-  },
-  iconsContainer: {
-    flexDirection: 'row',
-    justifyContent: "space-around",
   }
-})
+});

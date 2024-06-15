@@ -70,7 +70,7 @@ export default function Signup() {
             secureTextEntry = {true}
           />
           <View style = {{padding: 10}}>
-            <Button title = "Sign up!" onPress = {checkSamePassword} />
+            <Button title = "Sign up!" onPress = {checkSamePassword} color="#EC6337"/>
           </View>
         </View>
       );
@@ -86,11 +86,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 30,
     margin: 10,
+    color: "#EC6337",
   },
   input: {
     borderWidth: 0,
     margin: 5,
-    width: 200,
+    width: "80%",
     borderRadius: 20,
     backgroundColor: '#FFFFFF',
     textAlign: 'center',

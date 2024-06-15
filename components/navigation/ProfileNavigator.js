@@ -12,22 +12,22 @@ export default function ProfileNavigator() {
         <Stack.Navigator>
             <Stack.Screen name="Profile" component={Profile} options={{
                 headerStyle: {
-                    backgroundColor: '#ff924a'
+                    backgroundColor: '#EC6337'
                   },
             }}/>
             <Stack.Screen name="Change Username" component={Username} options={{
                 headerStyle: {
-                    backgroundColor: '#ff924a'
+                    backgroundColor: '#EC6337'
                   },
             }}/>
             <Stack.Screen name="Change Email" component={Email} options={{
                 headerStyle: {
-                    backgroundColor: '#ff924a'
+                    backgroundColor: '#EC6337'
                   },
             }}/>
             <Stack.Screen name="Reset Password" component={ResetPassword} options={{
                 headerStyle: {
-                    backgroundColor: '#ff924a'
+                    backgroundColor: '#EC6337'
                   },
             }}/>
         </Stack.Navigator>

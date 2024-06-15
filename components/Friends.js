@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: '#ff924a',
+        borderColor: '#EC6337',
         height: 35,
     },
     buttonContainer: {
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 35,
         borderRadius: 8,
-        backgroundColor: '#ff924a',
+        backgroundColor: '#EC6337',
     },
     bottomContainer: 
     {
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
         fontWeight: '400',
     },
     buttonContainerr: {
-        backgroundColor: 'rgba(237, 174, 80, 1)',
+        backgroundColor: '#EC6337',
         borderRadius: 40,
         paddingVertical: 15,
         paddingHorizontal: 30,

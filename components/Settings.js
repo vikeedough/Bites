@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignSelf: 'center',
     borderRadius:999,
-    borderColor: '#ff924a',
+    borderColor: '#EC6337',
     borderWidth: 3,
     overflow:'hidden',
   },

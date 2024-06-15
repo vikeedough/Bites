@@ -53,9 +53,13 @@ export default function Post() {
             time: timeNow,
             comments: []
         }
-        const postsRef = doc(db, "users", user.uid);
-        await updateDoc(postsRef, {
-            posts: arrayUnion(postObject)
+        const postsRef = doc(db, "posts", user.uid + '_' + timeNow.toString());
+        await setDoc(postsRef, {
+            userId: user.uid, 
+            pictureURL: url,
+            caption: caption,
+            timestamp: timeNow,
+            comments: [],
         }).then(() => {
             setImage(null);
             setCaption('');
