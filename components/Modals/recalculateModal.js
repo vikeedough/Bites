@@ -1,15 +1,35 @@
 import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
-import SetGoalsModal from '@/components/Modals/setGoalsModal.js';
+import SetGoalsNumberModal from '@/components/Modals/setGoalsNumberModal.js';
+import SetGoalsDropdownModal from '@/components/Modals/setGoalsDropdownModal.js';
 import { unloadAllAsync } from 'expo-font';
 
-const RecalculateModal = ({ recalVisible, setRecalVisible, goalsVisible, setGoalsVisible, updateDetail, detailType}) => {
-    //console.log({detailType})
+const RecalculateModal = ( { recalVisible, setRecalVisible, goalsNumberModalVisible, setGoalsNumberModalVisible, goalsDropdownModalVisible, setGoalsDropdownModalVisible, 
+    updateDetail, detailType, modalType } ) => {
+
+    const modalSelector = () => {
+        switch (modalType) {
+            case 'number':
+                setGoalsNumberModalVisible(true);
+                break;
+            case 'dropdown':
+                setGoalsDropdownModalVisible(true);
+                break;
+            default:
+                return '';
+        }
+    };
+
     return (
         <View>
-            <SetGoalsModal 
-                goalsVisible={goalsVisible}
-                setGoalsVisible={setGoalsVisible}
+            <SetGoalsNumberModal 
+                goalsNumberModalVisible={goalsNumberModalVisible}
+                setGoalsNumberModalVisible={setGoalsNumberModalVisible}
+                updateDetail={updateDetail}
+                detailType={detailType}/>
+            <SetGoalsDropdownModal
+                goalsDropdownModalVisible={goalsDropdownModalVisible}
+                setGoalsDropdownModalVisible={setGoalsDropdownModalVisible}
                 updateDetail={updateDetail}
                 detailType={detailType}/>
             <Modal
@@ -32,7 +52,7 @@ const RecalculateModal = ({ recalVisible, setRecalVisible, goalsVisible, setGoal
                                     </TouchableOpacity>
                                 </View >
                                 <View style={styles.modalYesButtonContainer}>
-                                    <TouchableOpacity style={styles.modalYesButton} onPress={() => {setRecalVisible(false), setGoalsVisible(true)}}>
+                                    <TouchableOpacity style={styles.modalYesButton} onPress={() => {setRecalVisible(false), modalSelector()}}>
                                         <Text>Yes</Text>
                                     </TouchableOpacity>
                                 </View>

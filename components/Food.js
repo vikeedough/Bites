@@ -88,7 +88,7 @@ export default function Food() {
           <Text style={styles.mealTypeText}>Meal Type</Text>
         </View>
         <View>
-          <DropdownComponent/ >
+          <DropdownComponent />
         </View>
       </View>
       <View style={styles.numServingsContainer}>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   item: {
-    padding: 17,
+    padding: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

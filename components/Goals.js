@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity, TextInput, Modal, TouchableWithoutFeedback } from 'react-native';
 import RecalculateModal from '@/components/Modals/recalculateModal.js';
-import SetGoalsModal from '@/components/Modals/setGoalsModal.js';
 
 
 export default function Goals() {
 
-  const [age, setAge] = React.useState(0);
+  const [gender, setGender] = React.useState('');
+  const [age, setAge] = React.useState('');
   const [height, setHeight] = React.useState('');
   const [weight, setWeight] = React.useState('');
-  
+  const [activeness, setActiveness] = React.useState('');
+  const [weightGoal, setWeightGoal] = React.useState('');
 
   const [warningModalVisibile, setWarningModalVisible] = useState(false);
-  const [ageModalVisibile, setAgeModalVisible] = useState(false);
+  const [goalsNumberModalVisibile, setGoalsNumberModalVisible] = useState(false);
+  const [goalsDropdownModalVisibile, setGoalsDropdownModalVisible] = useState(false);
   const [currentDetail, setCurrentDetail] = useState('');
+  const [modalType, setModalType] = useState('');
+  
 
   function updateDetail(newDetail) {
     if (currentDetail === 'age') {
@@ -22,33 +26,53 @@ export default function Goals() {
       setHeight(newDetail);
     } else if (currentDetail === 'weight') {
       setWeight(newDetail);
-    } 
+    } else if (currentDetail === 'gender') {
+      setGender(newDetail);
+    } else if (currentDetail === 'activeness') {
+      setActiveness(newDetail);
+    } else if (currentDetail === 'weight goal') {
+      setWeightGoal(newDetail);
+    }
   };
 
-  const openDetailModal = (detail) => {
-    setCurrentDetail(detail);
+  const openDetailModal = (detail, type) => {
+    setCurrentDetail(detail)
+    setModalType(type)
     setWarningModalVisible(true);
   };
-
 
   return (
     <View style={styles.container}>
         <RecalculateModal 
           recalVisible={warningModalVisibile}
-          setRecalVisible={setWarningModalVisible}
-          goalsVisible={ageModalVisibile}
-          setGoalsVisible={setAgeModalVisible}
+          setRecalVisible={setWarningModalVisible} 
+          goalsNumberModalVisible={goalsNumberModalVisibile}
+          setGoalsNumberModalVisible={setGoalsNumberModalVisible}
+          goalsDropdownModalVisible={goalsDropdownModalVisibile}
+          setGoalsDropdownModalVisible={setGoalsDropdownModalVisible}
           updateDetail={updateDetail}
-          detailType={currentDetail}/>
+          detailType={currentDetail}
+          modalType={modalType}/>
+
+        <View style={styles.detailContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.textLayout}>Gender</Text>
+          </View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={() => openDetailModal('gender', 'dropdown')}>
+              <Text style={styles.buttonText}>{gender || 'Select Gender'}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
 
         <View style={styles.detailContainer}>
           <View style={styles.textContainer}>
             <Text style={styles.textLayout}>Age</Text>
           </View>
           <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => openDetailModal('age')}>
-            <Text style={styles.buttonText}>{age} years old</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => openDetailModal('age', 'number')}>
+              <Text style={styles.buttonText}>{age ? `${age} years old` : 'Enter Age'}</Text>
+            </TouchableOpacity>
           </View>
         </View>
         
@@ -57,9 +81,9 @@ export default function Goals() {
             <Text style={styles.textLayout}>Height</Text>
           </View>
           <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => openDetailModal('height')}>
-            <Text style={styles.buttonText}>{height} cm</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => openDetailModal('height', 'number')}>
+              <Text style={styles.buttonText}>{height ? `${height} cm` : 'Enter Height'}</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -68,11 +92,33 @@ export default function Goals() {
             <Text style={styles.textLayout}>Weight</Text>
           </View>
           <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => openDetailModal('weight')}>
-            <Text style={styles.buttonText}>{weight} kg</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => openDetailModal('weight', 'number')}>
+              <Text style={styles.buttonText}>{weight ? `${weight} kg` : 'Enter Weight'}</Text>
+            </TouchableOpacity>
           </View>
         </View>
+
+        <View style={styles.detailContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.textLayout}>Activeness</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity onPress={() => openDetailModal('activeness', 'dropdown')}>
+                <Text style={styles.buttonText}>{activeness || 'Select Activeness'}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.detailContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.textLayout}>Weight Goal</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity onPress={() => openDetailModal('weight goal', 'dropdown')}>
+                <Text style={styles.buttonText}>{weightGoal || 'Select Weight Goal'}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
     </View>
   );
 }
@@ -83,9 +129,9 @@ const styles = StyleSheet.create({
     //backgroundColor: 'red'
   },
   detailContainer: {
-    flex: 0.05,
+    flex: 0.1,
     flexDirection: 'row',
-    padding: 25,
+    padding: 20,
     justifyContent: 'center',
     borderBottomWidth: 0.5
     //backgroundColor: 'red'

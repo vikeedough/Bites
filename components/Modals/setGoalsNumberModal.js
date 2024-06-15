@@ -1,20 +1,20 @@
 import React, { useState }from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
 
-const SetGoalsModal = ({ goalsVisible, setGoalsVisible, updateDetail, detailType }) => {
+const SetGoalsNumberModal = ({ goalsNumberModalVisible, setGoalsNumberModalVisible, updateDetail, detailType }) => {
 
-    const[number, setNumber] = useState(0)
+    const[number, setNumber] = useState('')
     
     const handleNumberChange = (text) => {
         setNumber(text)
     }
 
     const handleConfirm = () => {
-        const parsedNumber = parseInt(number, 10); // Convert the string to a number
+        const parsedNumber = parseInt(number, 10); 
         if (!isNaN(parsedNumber)) {
-            updateDetail(parsedNumber); // Pass the number back to Goals component
+            updateDetail(parsedNumber); 
         }
-        setGoalsVisible(false);
+        setGoalsNumberModalVisible(false);
     };
 
     function getDetailLabel() {
@@ -30,15 +30,14 @@ const SetGoalsModal = ({ goalsVisible, setGoalsVisible, updateDetail, detailType
         }
     };
 
-    
     return (
         <Modal
             style={{margin: 0}}
             animationType='fade'
-            visible={goalsVisible}
+            visible={goalsNumberModalVisible}
             transparent={true}
-            onRequestClose={() => {setGoalsVisible(false)}}>
-            <TouchableWithoutFeedback onPress={() => {setGoalsVisible(false)}}>
+            onRequestClose={() => {setGoalsNumberModalVisible(false)}}>
+            <TouchableWithoutFeedback onPress={() => {setGoalsNumberModalVisible(false)}}>
                 <View style={styles.modalContainer}>
                     <TouchableWithoutFeedback>
                         <View style={styles.modalContent}>
@@ -122,4 +121,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SetGoalsModal;
+export default SetGoalsNumberModal;  
