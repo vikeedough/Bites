@@ -5,6 +5,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 
 const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModalVisible, updateDetail, detailType}) => {
 
+    //test test
+
     const [value, setValue] = useState(null);
 
     const genderData = [
