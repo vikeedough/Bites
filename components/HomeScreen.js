@@ -32,7 +32,7 @@ const Post = ({ user, time, image, caption, comments }) => {
 
   useEffect(() => {
     findUsername();
-  }, [username]);
+  }, [user]);
 
   return (
   <View style={styles.post}>
@@ -123,7 +123,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
      filterPosts();
-  }, [friends, posts, user]);
+  }, [posts, user]);
 
   const fetchFriends = async () => {
     const friendsList = await getDoc(doc(db, "users", user)).then(
@@ -134,10 +134,12 @@ export default function HomeScreen() {
 
   const filterPosts = async () => {
 
+    fetchFriends().then(console.log('done filtering friends'));
+
     DATA = posts;
     console.log(DATA);
     const cleanUnfollowing = DATA.filter((item) => 
-      (!friends.includes(item.userId) || (item.userId === user))
+      ((friends.includes(item.userId)) || (item.userId === user))
     );
     const sortedPosts = cleanUnfollowing.sort(
       function(p1, p2) {
@@ -146,6 +148,9 @@ export default function HomeScreen() {
     );
 
     setFilteredPosts(sortedPosts);
+    
+    console.log("my friends: " + friends);
+    console.log(sortedPosts);
     setRefresh(false);
   }
 
@@ -157,7 +162,9 @@ export default function HomeScreen() {
         {
           
           filteredPosts.length === 0 ? 
-            <Text>No posts to shOw!</Text>
+            <View style={styles.noPostContainer}>
+              <Text style={styles.noPostText}>No posts to show!</Text>
+            </View>
           :<View style={styles.feed}>
               <FlatList
               style={styles.flatList}
@@ -243,5 +250,14 @@ const styles = StyleSheet.create({
   },
   flatList: {
     display: 'flex',
+  },
+  noPostContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noPostText: {
+    fontSize: 30,
+    fontWeight: 'bold',
   }
 });

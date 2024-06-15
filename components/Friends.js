@@ -119,15 +119,25 @@ export default function Friends({navigation}){
                     </TouchableOpacity>
                 </View>
             </View>
+
             <View style={styles.bottomContainer}>
+                {
+                    filtered.length === 0 ?
+                    <View style={styles.noResultContainer}>
+                        <Text style={styles.noResultText}>No results to show!</Text>
+                    </View>
+                    :
                     <FlatList 
                         data={filtered}
+                        style={styles.flatList}
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
                         refreshControl={
                             <RefreshControl refreshing = {refreshing} onRefresh={fetchFriends} />
                         }
                     />
+                }
+                    
             </View>
         </View>
     );
@@ -135,7 +145,7 @@ export default function Friends({navigation}){
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        display: 'flex',
     },
     topContainer: {
         display: 'flex',
@@ -169,7 +179,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'stretch',
         paddingHorizontal: 15,
-        minHeight: 1000
+        minHeight: '100%',
+        paddingBottom: 25,
     },
     cardContainer: {
         borderRadius: 40,
@@ -205,6 +216,20 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: '400',
         textAlign: 'center',
+    },
+    noResultContainer: {
+        display: 'flex',
+        minHeight: '50%',
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+    },
+    noResultText: {
+        fontSize: 30,
+        fontWeight: 'bold',
+    },
+    flatList: {
+        display: 'flex',
     }
 
 });

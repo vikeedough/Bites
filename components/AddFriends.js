@@ -120,17 +120,25 @@ export default function AddFriends(){
                         onChangeText={setSearch}
                         value={search}
                     />
-                    
                 </View>
                 <View style={styles.bottomContainer}>
-                    <FlatList 
-                        data={filtered}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id}
-                        refreshControl={
-                            <RefreshControl refreshing = {refreshing} onRefresh={fetchUsers} />
-                        }
-                    />
+                    {
+                        filtered.length === 0 ?
+                            <View style={styles.noResultContainer}>
+                                <Text style={styles.noResultText}>No results to show!</Text>
+                            </View>
+                            :
+                            <FlatList 
+                            data={filtered}
+                            style={styles.flatList}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id}
+                            refreshControl={
+                                <RefreshControl refreshing = {refreshing} onRefresh={fetchUsers} />
+                            }
+                            />
+                    }
+                    
                 </View>
         </View>
     );
@@ -138,7 +146,7 @@ export default function AddFriends(){
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        display: 'flex',
     },
     inputContainer: {
         padding: 15,
@@ -154,7 +162,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'stretch',
         paddingHorizontal: 15,
-        minHeight: 1000,
+        minHeight: '100%',
+        paddingBottom: 25,
     },
     cardContainer: {
         borderRadius: 40,
@@ -180,7 +189,7 @@ const styles = StyleSheet.create({
         fontWeight: '400',
     },
     buttonContainer: {
-        backgroundColor: 'rgba(237, 174, 80, 1)',
+        backgroundColor: '#EC6337',
         borderRadius: 40,
         paddingVertical: 15,
         paddingHorizontal: 30,
@@ -190,5 +199,20 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: '400',
         textAlign: 'center',
+        textAlignVertical: 'center',
+    },
+    noResultContainer: {
+        display: 'flex',
+        minHeight: '50%',
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+    },
+    noResultText: {
+        fontSize: 30,
+        fontWeight: 'bold',
+    },
+    flatList: {
+        display: 'flex',
     }
 });
