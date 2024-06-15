@@ -17,6 +17,20 @@ export default function Goals() {
   const [goalsDropdownModalVisibile, setGoalsDropdownModalVisible] = useState(false);
   const [currentDetail, setCurrentDetail] = useState('');
   const [modalType, setModalType] = useState('');
+
+  const updateValues = async ({goal}) => {
+    try {
+      
+    }
+
+    catch {
+
+    }
+
+    finally{
+
+    }
+  }
   
 
   function updateDetail(newDetail) {
