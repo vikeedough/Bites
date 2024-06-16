@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedba
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModalVisible, updateDetail, detailType}) => {
+const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModalVisible, updateDetail, detailType, updateGoalsFunction}) => {
 
     const [value, setValue] = useState(null);
 
@@ -36,7 +36,7 @@ const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModa
         } else if (detailType === 'weight goal') {
             return weightGoalData;
         } else {
-            console.log('Dropdown selector error')
+            //console.log('Dropdown selector error')
         }
     }
 
@@ -48,7 +48,7 @@ const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModa
         } else if (detailType === 'weight goal') {
             return styles.weightGoalModalContainer;
         } else {
-            console.log('modal container selector error')
+            //console.log('modal container selector error')
         }
     }
 
@@ -60,7 +60,7 @@ const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModa
         } else if (detailType === 'weight goal') {
             return styles.weightGoalDropdown;
         } else {
-            console.log('modal dropdown width selector error')
+            //console.log('modal dropdown width selector error')
         }
     }
         
@@ -98,10 +98,11 @@ const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModa
     };
 
     const handleConfirm = () => {
-        updateDetail(value)
+        updateDetail(value);
+        console.log('Confirm button for Dropdown is reached');
+        updateGoalsFunction(detailType, value);
         setGoalsDropdownModalVisible(false);
     };
-
     
     return (
         <Modal

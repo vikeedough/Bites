@@ -1,7 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity, TextInput, Modal, TouchableWithoutFeedback } from 'react-native';
 import RecalculateModal from '@/components/Modals/recalculateModal.js';
+import {firebaseApp, firebaseAuth, firebaseDb} from '../firebaseConfig'
+import { onAuthStateChanged } from 'firebase/auth';
+import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { ref } from 'firebase/storage';
 
+const app = firebaseApp;
+const auth = firebaseAuth;
+const db = firebaseDb;
+
+/*read doc
+retrieve all the data
+let currentGender = data
+react.useState(if(currentGender ))
+check if 
+map the data
+*/
 
 export default function Goals() {
 
@@ -18,20 +33,107 @@ export default function Goals() {
   const [currentDetail, setCurrentDetail] = useState('');
   const [modalType, setModalType] = useState('');
 
-  const updateValues = async ({goal}) => {
-    try {
+  const [loading, setLoading] = useState(true)
+
+  useEffect(()=> {
+
+    const fetchGoalsData = async () => {
       
+      try {
+        
+        const docRef = doc(db, 'users', auth.currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const goalsArray = docSnap.data().goals;
+          console.log('Successfully found goalsArray (fetchGoalsData): ' + goalsArray);
+
+          setGender(goalsArray[0]);
+          setAge(goalsArray[1]);
+          setHeight(goalsArray[2]);
+          setWeight(goalsArray[3]);
+          setActiveness(goalsArray[4]);
+          setWeightGoal(goalsArray[5]);
+        }
+
+      }
+
+      catch (error) {
+        console.error("Error occured when fetching data " + error)
+      }
     }
 
-    catch {
+    fetchGoalsData();
 
+  }, []);
+
+
+  const updateGoalsFunction = async (goalDetail, newValue) => {
+
+    console.log('in update goals function');
+
+    const genderAccessor = 0;
+    const ageAccessor = 1;
+    const heightAccessor = 2;
+    const weightAccessor = 3;
+    const activenessAccessor = 4;
+    const weightGoalAccessor = 5;
+
+    const detailAccessorSelector = () => {
+      switch (goalDetail) {
+        case 'gender':
+          console.log('Gender Accessor: ' + gender);
+          return genderAccessor;
+        case 'age':
+          console.log('Age Accessor: ' + age);
+          return ageAccessor;
+        case 'height':
+          console.log('Height Accessor: ' + height);
+          return heightAccessor;
+        case 'weight':
+          console.log('Weight Accessor: ' + weight);
+          return weightAccessor;
+        case 'activeness':
+            console.log('Activeness Accessor: ' + activeness);
+            return activenessAccessor;
+        case 'weight goal':
+            console.log('Weight Goal Accessor: ' + weightGoal);
+            return weightGoalAccessor;
+        default:
+            console.log('No Such Detail Type!');
+      }
     }
 
-    finally{
+    try {     
 
+      const docRef = doc(db, 'users', auth.currentUser.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const goalsArray = docSnap.data().goals;
+        console.log('Successfully found goalsArray (updatGoalsFunction): ' + goalsArray);
+
+        const accessorIndex = detailAccessorSelector();
+
+        const updatedGoals = [...goalsArray];
+        updatedGoals[accessorIndex] = String(newValue)
+
+        await updateDoc(docRef, {
+          goals : updatedGoals
+        });
+
+      } else {
+        console.log("No such document!");
+        return null;
+      }
+    
     }
+    catch (error) {
+      console.error("Error: " + error);
+      throw error;
+    }
+
   }
-  
 
   function updateDetail(newDetail) {
     if (currentDetail === 'age') {
@@ -66,7 +168,8 @@ export default function Goals() {
           setGoalsDropdownModalVisible={setGoalsDropdownModalVisible}
           updateDetail={updateDetail}
           detailType={currentDetail}
-          modalType={modalType}/>
+          modalType={modalType}
+          updateGoalsFunction={updateGoalsFunction}/>
 
         <View style={styles.detailContainer}>
           <View style={styles.textContainer}>

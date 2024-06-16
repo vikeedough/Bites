@@ -5,7 +5,7 @@ import SetGoalsDropdownModal from '@/components/Modals/setGoalsDropdownModal.js'
 import { unloadAllAsync } from 'expo-font';
 
 const RecalculateModal = ( { recalVisible, setRecalVisible, goalsNumberModalVisible, setGoalsNumberModalVisible, goalsDropdownModalVisible, setGoalsDropdownModalVisible, 
-    updateDetail, detailType, modalType } ) => {
+    updateDetail, detailType, modalType, updateGoalsFunction } ) => {
 
     const modalSelector = () => {
         switch (modalType) {
@@ -26,12 +26,14 @@ const RecalculateModal = ( { recalVisible, setRecalVisible, goalsNumberModalVisi
                 goalsNumberModalVisible={goalsNumberModalVisible}
                 setGoalsNumberModalVisible={setGoalsNumberModalVisible}
                 updateDetail={updateDetail}
-                detailType={detailType}/>
+                detailType={detailType}
+                updateGoalsFunction={updateGoalsFunction}/>
             <SetGoalsDropdownModal
                 goalsDropdownModalVisible={goalsDropdownModalVisible}
                 setGoalsDropdownModalVisible={setGoalsDropdownModalVisible}
                 updateDetail={updateDetail}
-                detailType={detailType}/>
+                detailType={detailType}
+                updateGoalsFunction={updateGoalsFunction}/>
             <Modal
                 style={{margin: 0}}
                 animationType='fade'

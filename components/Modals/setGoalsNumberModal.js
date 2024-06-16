@@ -1,7 +1,7 @@
 import React, { useState }from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
 
-const SetGoalsNumberModal = ({ goalsNumberModalVisible, setGoalsNumberModalVisible, updateDetail, detailType }) => {
+const SetGoalsNumberModal = ({ goalsNumberModalVisible, setGoalsNumberModalVisible, updateDetail, detailType, updateGoalsFunction }) => {
 
     const[number, setNumber] = useState('')
     
@@ -14,6 +14,8 @@ const SetGoalsNumberModal = ({ goalsNumberModalVisible, setGoalsNumberModalVisib
         if (!isNaN(parsedNumber)) {
             updateDetail(parsedNumber); 
         }
+        console.log('Confirm Button for Number Input reached');
+        updateGoalsFunction(detailType, number);
         setGoalsNumberModalVisible(false);
     };
 
