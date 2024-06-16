@@ -10,14 +10,6 @@ const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
 
-/*read doc
-retrieve all the data
-let currentGender = data
-react.useState(if(currentGender ))
-check if 
-map the data
-*/
-
 export default function Goals() {
 
   const [gender, setGender] = React.useState('');
