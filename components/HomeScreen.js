@@ -4,30 +4,93 @@ import { Header } from 'react-native/Libraries/NewAppScreen';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import {firebaseApp, firebaseAuth, firebaseDb} from '../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDoc, onSnapshot, doc } from 'firebase/firestore';
-import { ref } from 'firebase/storage';
-import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en'
+import { collection, getDoc, onSnapshot, doc, updateDoc, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
+import Comments from '@/components/Modals/Comments.js';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 
 TimeAgo.addDefaultLocale(en);
 
 const auth = firebaseAuth;
 const db = firebaseDb;
-const postsRef = collection(db, "posts");
 const placeholder = require('@/assets/images/placeholder.png');
 const timeAgo = new TimeAgo('en-US');
 
-const Post = ({ user, time, image, caption, comments }) => {
+const EmptyList = () => {
+  return (
+    <View style={styles.emptyList}>
+            <Text style={styles.emptyText}>No posts to show. Post a picture or add some friends to see their posts on your feed!</Text>
+        </View>
+  )
+}
+
+const Result = ({ userId, commentText }) => {
+
+  const [username, setUsername] = useState('');
+
+  const findUsername = async () => {
+      const findUsername = (await getDoc(doc(db, 'users', userId))).data();
+      setUsername(findUsername.username);
+  }
   
-  const [like, setLike] = useState(false);
+  useEffect(() => {
+      findUsername();
+    }, [userId]);
+  
+  return (
+      <Text>
+          <Text style={styles.commentUsername}>{username}</Text>
+          <Text style={styles.commentText}> {commentText}</Text>
+      </Text>
+  )
+}
+
+const Post = ({ id, user, time, image, caption, comments, likes, usersLiked }) => {
+  
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const openComments = () => {
+    setModalVisible(true);
+  }
+
+  const closeComments = () => {
+    setModalVisible(false);
+  }
+
+  const postRef = doc(db, 'posts', id);
+  let initialLikes = likes;
+  const currentUsers = usersLiked;
+  const [like, setLike] = useState(usersLiked.includes(auth.currentUser.uid));
   const [username, setUsername] = useState('');
   const [userPic, setUserPic] = useState(null);
-  const toggleLike = () => setLike(previousState => !previousState);
+  const [currentLikes, setCurrentLikes] = useState(initialLikes);
+  console.log('initial likes is: ' + initialLikes);
+  console.log(currentUsers);
+  const toggleLike = async () => {
+
+    setLike(previousState => !previousState)
+    if (!usersLiked.includes(auth.currentUser.uid)) {
+      await updateDoc(postRef, {
+        likes: increment(1),
+        usersLiked: arrayUnion(auth.currentUser.uid)
+      }).then(console.log('added one like!'));
+      
+      setCurrentLikes(currentLikes + 1);
+    } else {
+      await updateDoc(postRef, {
+        likes: increment(-1),
+        usersLiked: arrayRemove(auth.currentUser.uid),
+      }).then(console.log('removed one like!'));
+      setCurrentLikes(currentLikes - 1);
+    }
+  };
 
   const findUsername = async () => {
     const findUsername = (await getDoc(doc(db, 'users', user))).data();
     setUsername(findUsername.username);
-    setUserPic(findUsername.profilePic);
+    if (findUsername.profilePic) {
+      setUserPic(findUsername.profilePic);
+    }
   }
 
   useEffect(() => {
@@ -55,17 +118,20 @@ const Post = ({ user, time, image, caption, comments }) => {
       }}
       source={{ uri: image }}
     />
+
+    <Text style={styles.likes}>
+      <Text>{usersLiked.length}</Text>
+      <Text>{usersLiked.length === 1 ? ' like' : ' likes'}</Text>
+    </Text>
+
     <Text style={{fontSize: 18}}>
       <Text style={{fontWeight: "bold"}}>{username}</Text>
       <Text> {caption}</Text>
     </Text>
     <View style={{marginLeft: 10}}>
-      {comments.map((comment) => {
+      {comments.slice(0, 2).map( (item, id) => {
         return (
-          <Text>
-            <Text style={{fontWeight: "bold"}}>{comment.user}</Text>
-            <Text> {comment.text}</Text>
-          </Text>
+          <Result userId={item.userId} commentText={item.commentText} />
         )
       })}
     </View>
@@ -74,12 +140,13 @@ const Post = ({ user, time, image, caption, comments }) => {
       color= '#EC6337' size = {30} onPress = {toggleLike} activeOpacity = {1}>
       </AntDesign.Button>
       <AntDesign.Button name="message1" backgroundColor="#fff0db" 
-      color= '#EC6337' size = {30}>
+      color= '#EC6337' size = {30} onPress={openComments}>
       </AntDesign.Button>
       <AntDesign.Button name="retweet" backgroundColor="#fff0db" 
       color= '#EC6337' size = {30}>
       </AntDesign.Button>
     </View>
+    <Comments isVisible={modalVisible} onClose={closeComments} commentsContent={comments} postRef={postRef} />
   </View>
 )};
 
@@ -98,6 +165,9 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
+    const postsRef = collection(db, "posts");
+    const friendsRef = doc(db, "users", user);
+
     const unsubscribe = onSnapshot(postsRef, (snapshot) => {
       const updatePosts = snapshot.docs.map((doc) => {
         return {
@@ -107,34 +177,30 @@ export default function HomeScreen() {
           imageURL: doc.data().pictureURL,
           caption: doc.data().caption,
           comments: doc.data().comments,
+          likes: doc.data().likes,
+          usersLiked: doc.data().usersLiked,
         }
       });
       setPosts(updatePosts);
-
-      fetchFriends().then(console.log('done finding friends'));
-      filterPosts().then(console.log('done filtering posts'));
     });
-    return () => unsubscribe();
+
+    const unsubscribe2 = onSnapshot(friendsRef, (doc) => {
+      const updateFriends = doc.data().friends;
+      setFriends(updateFriends);
+    });
+
+    return () => {
+      unsubscribe();
+      unsubscribe2();
+    };
   }, []);
 
   useEffect(() => {
-    fetchFriends();
-  }, [user]);
-
-  useEffect(() => {
      filterPosts();
-  }, [posts, user]);
-
-  const fetchFriends = async () => {
-    const friendsList = await getDoc(doc(db, "users", user)).then(
-      (item) => {return (item.data().friends)}
-    )
-    setFriends(friendsList);
-  }
+  }, [posts, friends]);
 
   const filterPosts = async () => {
 
-    fetchFriends().then(console.log('done filtering friends'));
 
     DATA = posts;
     console.log(DATA);
@@ -158,25 +224,23 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.feed}>
-        {
-          
-          filteredPosts.length === 0 ? 
-            <View style={styles.noPostContainer}>
-              <Text style={styles.noPostText}>No posts to show!</Text>
-            </View>
-          :<View style={styles.feed}>
+          <View style={styles.feed}>
               <FlatList
               style={styles.flatList}
               data={filteredPosts}
+              ListEmptyComponent={EmptyList}
+              contentContainerStyle={styles.flatListContainer}
               renderItem={({ item }) => {
                 return (
                 <Post
+                  id={item.postId}
                   user={item.userId}
                   time={item.timestamp}
                   image={item.imageURL}
                   caption={item.caption}
                   comments={item.comments}
+                  likes={item.likes}
+                  usersLiked={item.usersLiked}
                 />
               )}
               }
@@ -185,9 +249,7 @@ export default function HomeScreen() {
                 <RefreshControl refreshing={refresh} onRefresh={filterPosts} />
               }
             />
-            </View>
-        }
-      </View>
+          </View>
     </View>
   );
 }
@@ -196,6 +258,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff0db',
   },
   post: {
@@ -216,6 +279,8 @@ const styles = StyleSheet.create({
   },
   feed: {
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     minHeight: '100%',
   },
   postHeaderContainer: {
@@ -251,13 +316,28 @@ const styles = StyleSheet.create({
   flatList: {
     display: 'flex',
   },
-  noPostContainer: {
+  flatListContainer: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  noPostText: {
-    fontSize: 30,
+  emptyList: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    textAlign: 'center',
+  },
+  likes: {
+    fontSize: 18,
     fontWeight: 'bold',
-  }
+  },
+  commentUsername: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  commentText: {
+      fontSize: 16,
+  },
 });

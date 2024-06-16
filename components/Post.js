@@ -17,6 +17,7 @@ export default function Post() {
     const [image, setImage] = useState(null);
     const [caption, setCaption] = useState('');
     const [picture, setPicture] = useState(null);
+    const [disabled, setDisabled] = useState(false);
     const user = auth.currentUser;
 
     const uriToBlob = async (uri) => {
@@ -38,7 +39,18 @@ export default function Post() {
         }
     }
 
+    const checkPost = () => {
+        if (caption === '') {
+            alert('Please include a caption in your post!');
+        } else if (image === null) {
+            alert('Please upload a picture for your post!');
+        } else {
+            sendPost();
+        }
+    }
+
     const sendPost = async () => {
+        setDisabled(true);
         const blob = await uriToBlob(picture.assets[0].uri);
         let timeNow = Date.now();
         console.log(timeNow);
@@ -60,11 +72,14 @@ export default function Post() {
             caption: caption,
             timestamp: timeNow,
             comments: [],
+            usersLiked: [],
+            likes: 0,
         }).then(() => {
             setImage(null);
             setCaption('');
             setPicture(null);
             alert('Post successfully uploaded!')
+            setDisabled(false);
         });
     }
 
@@ -95,7 +110,7 @@ export default function Post() {
                     <Ionicons name="chevron-forward" color={"grey"} size={18} />
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.postButton} onPress={sendPost}>
+            <TouchableOpacity style={styles.postButton} onPress={checkPost} disabled={disabled}>
                 <Text style={styles.postButtonText}>Post</Text>
             </TouchableOpacity>
         </View>

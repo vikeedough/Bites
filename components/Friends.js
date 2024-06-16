@@ -11,6 +11,14 @@ const userRef = collection(db, "users");
 const placeholder = require('@/assets/images/placeholder.png');
 let DATA = [];
 
+const EmptyList = () => {
+    return (
+      <View style={styles.emptyList}>
+              <Text style={styles.emptyText}>No results to show.</Text>
+          </View>
+    )
+}
+
 export default function Friends({navigation}){
 
     const [search, setSearch] = useState('');
@@ -121,22 +129,17 @@ export default function Friends({navigation}){
             </View>
 
             <View style={styles.bottomContainer}>
-                {
-                    filtered.length === 0 ?
-                    <View style={styles.noResultContainer}>
-                        <Text style={styles.noResultText}>No results to show!</Text>
-                    </View>
-                    :
-                    <FlatList 
-                        data={filtered}
-                        style={styles.flatList}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id}
-                        refreshControl={
-                            <RefreshControl refreshing = {refreshing} onRefresh={fetchFriends} />
-                        }
-                    />
-                }
+                    
+                <FlatList 
+                    data={filtered}
+                    style={styles.flatList}
+                    ListEmptyComponent={EmptyList}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id}
+                    refreshControl={
+                        <RefreshControl refreshing = {refreshing} onRefresh={fetchFriends} />
+                    }
+                />
                     
             </View>
         </View>
@@ -217,14 +220,14 @@ const styles = StyleSheet.create({
         fontWeight: '400',
         textAlign: 'center',
     },
-    noResultContainer: {
+    emptyList: {
         display: 'flex',
         minHeight: '50%',
         justifyContent: 'center',
         alignContent: 'center',
         alignItems: 'center',
     },
-    noResultText: {
+    emptyText: {
         fontSize: 30,
         fontWeight: 'bold',
     },
