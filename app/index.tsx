@@ -19,6 +19,14 @@ const auth = firebaseAuth
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
 
+const LoadingScreen = () => {
+  return(
+    <View style={styles.loadingContainer}>
+      <Text style={styles.loadingText}>Bites</Text>
+    </View>
+  )
+}
+
 function MyTabs() {
 
   return (
@@ -84,24 +92,29 @@ function MyTabs() {
 
 export default function Index() {
 
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>(null);
+  const [appLoading, setAppLoading] = useState(true);
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      console.log('user', user)
-      setUser(user)
+      console.log('user', user);
+      setUser(user);
+      setAppLoading(false);
     })
   }, [])
 
   return (
     <NavigationContainer independent = {true}>
-      {user ? (
+      {appLoading ?
+      <LoadingScreen />
+      : (user ? (
          <MyTabs />
       ) : (
         <Stack.Navigator>
           <Stack.Screen name = "Login" component = {Login} options = {{headerShown : false}}/>
           <Stack.Screen name = "Signup" component = {Signup} options = {{headerTitle: ''}}/>
         </Stack.Navigator>
-      )}
+      ))}
       
     </NavigationContainer>
   );
@@ -119,5 +132,16 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     fontSize: 20,
     top: 40,
+  },
+  loadingContainer: {
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  loadingText: {
+    fontSize: 35,
+    color: '#EC6337',
+    textAlign: 'center',
   }
 });
