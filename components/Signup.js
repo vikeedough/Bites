@@ -29,7 +29,7 @@ export default function Signup() {
         alert('Sign up failed: ' + error.message)
     } finally {
         setLoading(false)
-    }
+    } 
   }
 
   const checkSamePassword = () => {

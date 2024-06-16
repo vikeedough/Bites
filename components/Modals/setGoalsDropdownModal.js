@@ -5,8 +5,6 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 
 const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModalVisible, updateDetail, detailType}) => {
 
-    //test test
-
     const [value, setValue] = useState(null);
 
     const genderData = [
@@ -30,7 +28,7 @@ const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModa
         {label: "Weight Loss", value: "Weight Loss"}
     ];
 
-    const finalDropdownData = () => {
+    const dropdownDataSelector = () => {
         if (detailType === 'gender') {
             return genderData;
         } else if (detailType === 'activeness') {
@@ -38,7 +36,31 @@ const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModa
         } else if (detailType === 'weight goal') {
             return weightGoalData;
         } else {
-            console.log('ERRORRRRR')
+            console.log('Dropdown selector error')
+        }
+    }
+
+    const modalContainerSelector = () => {
+        if (detailType === 'gender') {
+            return styles.genderModalContainer;
+        } else if (detailType === 'activeness') {
+            return styles.activenessModalContainer;
+        } else if (detailType === 'weight goal') {
+            return styles.weightGoalModalContainer;
+        } else {
+            console.log('modal container selector error')
+        }
+    }
+
+    const modalDropdownWidthSelector = () => {
+        if (detailType === 'gender') {
+            return styles.genderDropdown;
+        } else if (detailType === 'activeness') {
+            return styles.activenessDropdown;
+        } else if (detailType === 'weight goal') {
+            return styles.weightGoalDropdown;
+        } else {
+            console.log('modal dropdown width selector error')
         }
     }
         
@@ -49,40 +71,27 @@ const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModa
             return (
             <View style={styles.item}>
                 <Text style={styles.textItem}>{item.label}</Text>
-                {item.value === value && (
-                <AntDesign
-                    style={styles.icon}
-                    color="black"
-                    name="Safety"   
-                    size={20}
-                />
-                )}
+                {item.value === value}
             </View>
             );
         };
 
-
         return (
             <Dropdown
-            style={styles.dropdown}
+            style={modalDropdownWidthSelector()}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
             iconStyle={styles.iconStyle}
-            data={finalDropdownData()}
-            //search
+            data={dropdownDataSelector()}
             maxHeight={300}
             labelField="label"
             valueField="value"
-            placeholder="Gender"
-            //searchPlaceholder="Search..."
+            placeholder={detailType.charAt(0).toUpperCase() + detailType.slice(1)}
             value={value}
             onChange={item => {
                 setValue(item.value);
             }}
-            renderLeftIcon={() => (
-                <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-            )}
             renderItem={renderItem}
             />
         );
@@ -104,7 +113,7 @@ const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModa
             <TouchableWithoutFeedback onPress={() => {setGoalsDropdownModalVisible(false)}}>
                 <View style={styles.modalContainer}>
                     <TouchableWithoutFeedback>
-                        <View style={styles.modalContent}>
+                        <View style={modalContainerSelector()}>
                             <View style={{flex: 0.3}}>
                                 <Text style={styles.modalHeaderText}>Set {detailType.charAt(0).toUpperCase() + detailType.slice(1)}</Text>
                             </View>
@@ -137,9 +146,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
-    modalContent: {
-        width: 400,
-        height: 300,
+    genderModalContainer: {
+        width: 250,
+        height: 225,
+        padding: 20,
+        borderRadius: 10,
+        backgroundColor: 'white',
+    },
+    activenessModalContainer: {
+        width: 350,
+        height: 250,
+        padding: 20,
+        borderRadius: 10,
+        backgroundColor: 'white',
+    },
+    weightGoalModalContainer: {
+        width: 300,
+        height: 225,
         padding: 20,
         borderRadius: 10,
         backgroundColor: 'white',
@@ -180,13 +203,48 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         backgroundColor: '#ff924a'
     },
-    dropdown: {
+    genderDropdown: {
         margin: 16,
         height: 40,
-        width: 150,
+        width: 130,
         backgroundColor: 'white',
         borderRadius: 12,
         padding: 12,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 1.41,
+        elevation: 2,
+    },
+    activenessDropdown: {
+        margin: 16,
+        height: 60,
+        width: 225,
+        backgroundColor: 'white',
+        borderRadius: 12,
+        padding: 12,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 1.41,
+        elevation: 2,
+    },
+    weightGoalDropdown: {
+        margin: 16,
+        height: 40,
+        width: 200,
+        backgroundColor: 'white',
+        borderRadius: 12,
+        padding: 12,
+        alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -202,7 +260,7 @@ const styles = StyleSheet.create({
     item: {
     padding: 15,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     },
     textItem: {
@@ -213,7 +271,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     },
     selectedTextStyle: {
-    fontSize: 16,
+    fontSize: 15,
     },
     iconStyle: {
     width: 20,
