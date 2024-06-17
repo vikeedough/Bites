@@ -20,7 +20,7 @@ const EmptyList = () => {
   return (
     <View style={styles.emptyList}>
             <Text style={styles.emptyText}>No posts to show. Post a picture or add some friends to see their posts on your feed!</Text>
-        </View>
+    </View>
   )
 }
 
@@ -98,55 +98,54 @@ const Post = ({ id, user, time, image, caption, comments, likes, usersLiked }) =
   }, [user]);
 
   return (
-  <View style={styles.post}>
-    <View style={styles.postHeaderContainer}>
-      <Image resizeMode='auto' source={userPic === null ? placeholder : {uri: userPic}} style={styles.profileImage}/>
-      <View style={styles.postHeader}>
-        <Text style={styles.postText}>{username}</Text>
-        <Text style={styles.postTime}>{timeAgo.format(Date.now() - (Date.now() - time))}</Text>
+  <View style={styles.postContainer}>
+
+    <View style={styles.post}>
+
+      <View style={styles.postHeaderContainer}>
+        <Image resizeMode='auto' source={userPic === null ? placeholder : {uri: userPic}} style={styles.profileImage}/>
+        <View style={styles.postHeader}>
+          <Text style={styles.postText}>{username}</Text>
+          <Text style={styles.postTime}>{timeAgo.format(Date.now() - (Date.now() - time))}</Text>
+        </View>
       </View>
-    </View>
-    <Image
-      style={{
-        width: 320,
-        height: 320,
-        padding: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 20,
-        marginVertical: 10,
-      }}
-      source={{ uri: image }}
-    />
 
-    <Text style={styles.likes}>
-      <Text>{usersLiked.length}</Text>
-      <Text>{usersLiked.length === 1 ? ' like' : ' likes'}</Text>
-    </Text>
+      <Image
+        style={styles.image}
+        source={{ uri: image }}
+      />
 
-    <Text style={{fontSize: 18}}>
-      <Text style={{fontWeight: "bold"}}>{username}</Text>
-      <Text> {caption}</Text>
-    </Text>
-    <View style={{marginLeft: 10}}>
-      {comments.slice(0, 2).map( (item, id) => {
-        return (
-          <Result userId={item.userId} commentText={item.commentText} />
-        )
-      })}
+      <View style={styles.likeCommentContainer}>
+        <Text style={styles.likes}>
+          <Text>{usersLiked.length}</Text>
+          <Text>{usersLiked.length === 1 ? ' like' : ' likes'}</Text>
+        </Text>
+
+        <Text style={{fontSize: 18}}>
+          <Text style={{fontWeight: "bold"}}>{username}</Text>
+          <Text> {caption}</Text>
+        </Text>
+        <View style={{marginLeft: 10}}>
+          {comments.slice(0, 2).map( (item, id) => {
+            return (
+              <Result userId={item.userId} commentText={item.commentText} />
+            )
+          })}
+        </View>
+      </View>
+      <View style={styles.postBottom}>
+        <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#FFFFFF" 
+        color= '#EC6337' size = {30} onPress = {toggleLike} activeOpacity = {1} style={{paddingEnd: 0}}>
+        </AntDesign.Button>
+        <AntDesign.Button name="message1" backgroundColor="#FFFFFF" 
+        color= '#EC6337' size = {30} onPress={openComments} activeOpacity = {1} style={{paddingEnd: 0}}>
+        </AntDesign.Button>
+        <AntDesign.Button name="retweet" backgroundColor="#FFFFFF" 
+        color= '#EC6337' size = {30} activeOpacity = {1} style={{paddingEnd: 0}}>
+        </AntDesign.Button>
+      </View>
+      <Comments isVisible={modalVisible} onClose={closeComments} commentsContent={comments} postRef={postRef} />
     </View>
-    <View style={styles.postBottom}>
-      <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#fff0db" 
-      color= '#EC6337' size = {30} onPress = {toggleLike} activeOpacity = {1}>
-      </AntDesign.Button>
-      <AntDesign.Button name="message1" backgroundColor="#fff0db" 
-      color= '#EC6337' size = {30} onPress={openComments}>
-      </AntDesign.Button>
-      <AntDesign.Button name="retweet" backgroundColor="#fff0db" 
-      color= '#EC6337' size = {30}>
-      </AntDesign.Button>
-    </View>
-    <Comments isVisible={modalVisible} onClose={closeComments} commentsContent={comments} postRef={postRef} />
   </View>
 )};
 
@@ -259,17 +258,28 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff0db',
+    backgroundColor: '#F4F4F6',
+  },
+  postContainer: {
+    display: 'flex',
+    backgroundColor: '#F4F4F6',
   },
   post: {
     display: 'flex',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: '#fff0db',
-    paddingHorizontal: 20,
-    paddingTop: 10,
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 20,
+    marginVertical: 10,
+    borderRadius: 20,
+  },
+  image: {
+      width: 320,
+      height: 320,
+      padding: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginVertical: 10,
   },
   headerText: {
     marginTop: 5,
@@ -286,7 +296,8 @@ const styles = StyleSheet.create({
   postHeaderContainer: {
     display: 'flex',
     flexDirection: 'row',
-    marginTop: 10,
+    marginTop: 15,
+    marginHorizontal: 15,
   },
   profileImage: {
     width: 40,
@@ -296,6 +307,7 @@ const styles = StyleSheet.create({
   },
   postHeader: {
     display: 'flex',
+    paddingLeft: 5,
   },
   postText: {
     marginLeft: 5,
@@ -309,9 +321,17 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     textAlign: 'left',
   },
+  likeCommentContainer: {
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
   postBottom: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    borderTopColor: '#D4D4D6',
+    borderTopWidth: 1,
   },
   flatList: {
     display: 'flex',
@@ -325,6 +345,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   emptyText: {
     textAlign: 'center',

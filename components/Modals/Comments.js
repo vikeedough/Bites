@@ -63,7 +63,7 @@ export default function Comments( {isVisible, commentsContent, onClose, postRef}
 
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Comments</Text>
-                    <AntDesign.Button name="close" color= '#EC6337' backgroundColor='#25292e' size = {22} onPress={onClose} />
+                    <AntDesign.Button name="close" color= 'white' backgroundColor='#EC6337' size = {22} onPress={onClose} />
                 </View>
 
                 <View style={styles.flatListContainer}>
@@ -83,7 +83,7 @@ export default function Comments( {isVisible, commentsContent, onClose, postRef}
                         value={newComment}
                         placeholder='Type in your comment here'
                     />
-                    <AntDesign.Button name="upload" color= '#EC6337' backgroundColor='#464C55' size = {22} onPress={addComment} />
+                    <AntDesign.Button name="upload" color= '#EC6337' backgroundColor='#F4F4F6' size = {22} onPress={addComment} />
                 </View>
 
             </View>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         height: '50%',
         width: '100%',
-        backgroundColor: '#464C55',
+        backgroundColor: '#FFFFFF',
         borderTopRightRadius: 18,
         borderTopLeftRadius: 18,
         position: 'absolute',
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     header: {
         display: 'flex',
         height: '15%',
-        backgroundColor: '#25292e',
+        backgroundColor: '#EC6337',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
         paddingHorizontal: 20,
@@ -151,6 +151,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         position: 'absolute',
         bottom: 0,
+        backgroundColor: '#F4F4F6',
+        borderTopColor: 'grey',
+        borderTopWidth: 1,
     },
     input: {
         width: '87%',
