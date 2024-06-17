@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
 import Food from "@/components/Food.js"
 
 export default function Journal({navigation}) {
+
+  
+
+
+
   return (
     <View style={{flex: 1}}>
       <View style={styles.todayContainer}>
@@ -25,9 +30,9 @@ export default function Journal({navigation}) {
                 <Text style={styles.CalorieTitle}>Calories: 0</Text>
               </View>
             </View>
-            <View style ={{flex: 0.8}}>
+            <ScrollView contentContainerStyle={{flex: 0.8}}>
               <Text></Text>
-            </View>
+            </ScrollView>
           </View>
 
           <View style ={styles.MealContainer}>
@@ -118,7 +123,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 35,
     borderRadius: 8,
-    backgroundColor: '#48d1cc',
+    backgroundColor: '#EC6337',
   },
   MealContainer: {
     flex: 0.25,

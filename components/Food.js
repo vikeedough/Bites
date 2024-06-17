@@ -2,135 +2,124 @@ import React, { useState } from 'react';
 import { Text, StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
-
-
-const data = [
-  {label: "Breakfast", value: "Breakfast"},
-  {label: "Lunch", value: "Lunch"},
-  {label: "Dinner", value: "Dinner"},
-  {label: "Others", value: "Others"}
-]
-
-const DropdownComponent = () => {
-
-  const [value, setValue] = useState(null);
-
-  const renderItem = item => {
-    return (
-      <View style={styles.item}>
-        <Text style={styles.textItem}>{item.label}</Text>
-        {item.value === value && (
-          <AntDesign
-            style={styles.icon}
-            color="black"
-            name="Safety"   
-            size={20}
-          />
-        )}
-      </View>
-    );
-  };
-
-
-  return (
-    <Dropdown
-      style={styles.dropdown}
-      placeholderStyle={styles.placeholderStyle}
-      selectedTextStyle={styles.selectedTextStyle}
-      inputSearchStyle={styles.inputSearchStyle}
-      iconStyle={styles.iconStyle}
-      data={data}
-      search
-      maxHeight={300}
-      labelField="label"
-      valueField="value"
-      placeholder="Meal Type"
-      searchPlaceholder="Search..."
-      value={value}
-      onChange={item => {
-        setValue(item.value);
-      }}
-      renderLeftIcon={() => (
-        <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-      )}
-      renderItem={renderItem}
-    />
-  );
-};
-
-
-const NumberInput = () => {
-  const[number, setNumber] = useState('')
-
-
-  const handleNumberChange = (text) => {
-    setNumber(text)
-  }
-
-
-  return(
-    <TextInput style={styles.numberStyle}
-    keyboardType = "numeric"
-    value = {number}
-    onChangeText={handleNumberChange}/>
-  )
-}
-
+import MacroButton from '@/components/MacroButton.js';
 
 export default function Food() {
+
+  const [calories, setCalories] = React.useState(0);
+  const [protein, setProtein] = React.useState(0);
+  const [fat, setFat] = React.useState(0);
+  const [carbohydrates, setCarbohydrates] = React.useState(0);
+
+  const data = [
+    {label: "Breakfast", value: "Breakfast"},
+    {label: "Lunch", value: "Lunch"},
+    {label: "Dinner", value: "Dinner"},
+    {label: "Others", value: "Others"}
+  ]
+  
+  const DropdownComponent = () => {
+  
+    const [value, setValue] = useState(null);
+  
+    const renderItem = item => {
+      return (
+        <View style={styles.item}>
+          <Text style={styles.textItem}>{item.label}</Text>
+          {item.value === value}
+        </View>
+      );
+    };
+  
+  
+    return (
+      <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        inputSearchStyle={styles.inputSearchStyle}
+        iconStyle={styles.iconStyle}
+        data={data}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder="Meal Type"
+        value={value}
+        onChange={item => {
+          setValue(item.value);
+        }}
+        renderItem={renderItem}
+      />
+    );
+  };
+  
+  const NumberInput = () => {
+    const[number, setNumber] = useState('')
+  
+  
+    const handleNumberChange = (text) => {
+      setNumber(text)
+    }
+  
+  
+    return(
+      <TextInput style={styles.numberStyle}
+      keyboardType = "numeric"
+      value = {number}
+      onChangeText={handleNumberChange}/>
+    )
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.foodTitleContainer}>
         <Text style={styles.foodTitleText}>Food Name</Text>
       </View>
       <View style={styles.mealTypeContainer}>
-        <View>
+        <View style={styles.mealTypeTextContainer}>
           <Text style={styles.mealTypeText}>Meal Type</Text>
         </View>
-        <View>
+        <View style={styles.mealTypeDropdownContainer}>
           <DropdownComponent />
         </View>
       </View>
       <View style={styles.numServingsContainer}>
-        <View>
+        <View style={styles.numServingsTextContainer}>
           <Text style={styles.mealTypeText}>Number of Servings</Text>
         </View>
-        <View>
+        <View style={styles.numServingsTextInputContainer}>
           <NumberInput />
         </View>
       </View>
       <View style={styles.totalMacrosContainer}>
         <View style={styles.macrosContainer}>
           <TouchableOpacity>
-            <Text style={styles.macroNumber}>0g</Text>
+            <Text style={styles.macroNumber}>{calories}</Text>
           </TouchableOpacity>
-          <Text style={styles.macrosText}>Calories</Text>
+            <Text style={styles.macrosText}>Calories</Text>
         </View>
- 
-        <View style={styles.macrosContainer}>
-          <TouchableOpacity>
-            <Text style={styles.macroNumber}>0g</Text>
-          </TouchableOpacity>
-          <Text style={styles.macrosText}>Protein</Text>
-        </View>
-
 
         <View style={styles.macrosContainer}>
           <TouchableOpacity>
-            <Text style={styles.macroNumber}>0g</Text>
+            <Text style={styles.macroNumber}>{carbohydrates}g</Text>
           </TouchableOpacity>
-          <Text style={styles.macrosText}>Fat</Text>
+            <Text style={styles.macrosText}>Carbohydrates</Text>
         </View>
-
 
         <View style={styles.macrosContainer}>
           <TouchableOpacity>
-            <Text style={styles.macroNumber}>0g</Text>
+            <Text style={styles.macroNumber}>{protein}g</Text>
           </TouchableOpacity>
-          <Text style={styles.macrosText}>Carbohydrates</Text>
+            <Text style={styles.macrosText}>Protein</Text>
+        </View>
+
+        <View style={styles.macrosContainer}>
+          <TouchableOpacity>
+            <Text style={styles.macroNumber}>{fat}g</Text>
+          </TouchableOpacity>
+            <Text style={styles.macrosText}>Fat</Text>
         </View>
       </View>
-
 
       <View style={styles.barGraphContainer}>
         <Text>Bar Graph</Text>
@@ -163,6 +152,26 @@ const styles = StyleSheet.create({
     //backgroundColor: 'blue',
     alignItems: 'center',
   },
+  mealTypeTextContainer: {
+    flex: 1, 
+    alignItems: 'flex-start',
+    paddingLeft: 25
+  },
+  mealTypeDropdownContainer: {
+    flex: 1, 
+    alignItems: 'flex-end',
+    paddingRight: 25,
+  },
+  numServingsTextContainer: {
+    flex: 1, 
+    alignItems: 'flex-start',
+    paddingLeft: 25
+  },
+  numServingsTextInputContainer: {
+    flex: 1, 
+    alignItems: 'flex-end',
+    paddingRight: 25
+  },
   numServingsContainer: {
     flexDirection: 'row',
     flex: 0.15,
@@ -175,9 +184,8 @@ const styles = StyleSheet.create({
     //backgroundColor: 'red',
   },
   dropdown: {
-    margin: 16,
     height: 40,
-    width: 150,
+    width: 140,
     backgroundColor: 'white',
     borderRadius: 12,
     padding: 12,
@@ -205,6 +213,7 @@ const styles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 16,
+    color: '#EC6337'
   },
   selectedTextStyle: {
     fontSize: 16,
@@ -218,8 +227,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   numberStyle: {
-    width: 100,
-    height: 20,
+    width: 70,
+    height: 30,
     borderWidth: 1,
     borderRadius: 6,
   },
@@ -235,10 +244,12 @@ const styles = StyleSheet.create({
   },
   macrosText: {
     fontSize: 12,
-    paddingTop: 5
+    paddingTop: 5,
+    fontWeight: 'bold'
   },
   macroNumber: {
-    fontSize: 20
+    fontSize: 20,
+    color: '#EC6337'
   },
   barGraphContainer: {
     flex: 0.55,
