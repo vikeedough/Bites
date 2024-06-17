@@ -144,8 +144,8 @@ export default function Goals() {
   };
 
   const openDetailModal = (detail, type) => {
-    setCurrentDetail(detail)
-    setModalType(type)
+    setCurrentDetail(detail);
+    setModalType(type);
     setWarningModalVisible(true);
   };
 
