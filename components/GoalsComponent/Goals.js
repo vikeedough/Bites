@@ -104,8 +104,7 @@ export default function Goals() {
       if (docSnap.exists()) {
 
         console.log("inside the if statement")
-        // const macroGoalsArray = docSnap.data().macroGoals;
-        // console.log('Successfully found goalsArray (updatGoalsFunction): ' + macroGoalsArray);
+        console.log(newArray)
 
         await updateDoc(docRef, {
           macroGoals : newArray
@@ -115,7 +114,7 @@ export default function Goals() {
         console.log("No such document!");
         return null;
       }
-    
+
     }
     catch (error) {
       console.error("Error: " + error);
@@ -215,11 +214,17 @@ export default function Goals() {
   };
 
 
-  const MacroCalculator = () => {
+  const MacroCalculator = async () => {
 
-    let newAge = Number(age)
-    let newHeight = Number(height)
-    let newWeight = Number(weight)
+    console.log('--------------------------------')
+    console.log("Calories before: " + calories)
+    console.log("Carbo before: " + carbohydrates)
+    console.log("Protein before: " + protein)
+    console.log("Fat before: " + fat)
+
+    const newAge = Number(age)
+    const newHeight = Number(height)
+    const newWeight = Number(weight)
 
     let calculatedMBR;
     let rciActive;
@@ -308,20 +313,28 @@ export default function Goals() {
     // console.log(calculatedProtein)
     // console.log(calculatedCarbo)
     // console.log(calculatedFat)
+
+    const newCalories = Math.round(finalRCI);
+    const newCarbohydrates = Math.round(calculatedCarbo);
+    const newProtein = Math.round(calculatedProtein);
+    const newFat = Math.round(calculatedFat);
+
+    console.log("Calories after: " + newCalories)
+    console.log("Carbo after: " + newCarbohydrates)
+    console.log("Protein after: " + newProtein)
+    console.log("Fat after: " + newFat)
+    console.log('--------------------------------')
   
-    setCalories(Math.round(finalRCI));
-    setProtein(Math.round(calculatedProtein));
-    setCarbohydrates(Math.round(calculatedCarbo));
-    setFat(Math.round(calculatedFat));
+    setCalories(newCalories);
+    setCarbohydrates(newCarbohydrates);
+    setProtein(newProtein);
+    setFat(newFat);
 
-    console.log(calories)
-    console.log(carbohydrates)
-    console.log(protein)
-    console.log(fat)
+    const newMacroGoalArray = [newCalories, newCarbohydrates, newProtein, newFat];
 
-    const newMacroGoalArray = [calories, carbohydrates, protein, fat];
+    console.log(newMacroGoalArray)
     
-    updateMacroGoalsFunction(newMacroGoalArray);
+    await updateMacroGoalsFunction(newMacroGoalArray);
   
   }
 

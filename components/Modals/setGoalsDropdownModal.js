@@ -99,7 +99,7 @@ const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModa
 
     const handleConfirm = () => {
         updateDetail(value);
-        console.log('Confirm button for Dropdown is reached');
+        //console.log('Confirm button for Dropdown is reached');
         updateGoalsFunction(detailType, value);
         setGoalsDropdownModalVisible(false);
     };

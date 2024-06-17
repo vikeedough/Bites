@@ -2,6 +2,20 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
 import Food from "@/components/Food.js"
 
+
+/*
+
+  Bfast : []
+  Lunch : []
+  Dinner : []
+  Others : []
+
+
+*/
+
+
+
+
 export default function Journal({navigation}) {
 
   
