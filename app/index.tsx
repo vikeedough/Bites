@@ -32,10 +32,11 @@ function MyTabs() {
   return (
     <Tab.Navigator initialRouteName="Home" screenOptions={{
       tabBarStyle: {
-        backgroundColor: '#EC6337'
+        backgroundColor: '#EC6337',
+        paddingBottom: 5,
       },
-      tabBarActiveTintColor: 'white',  
-      tabBarInactiveTintColor: 'black', 
+      tabBarActiveTintColor: 'black',  
+      tabBarInactiveTintColor: 'white', 
     }}>
       <Tab.Screen name = "Bites" component = {HomeScreen} options={
         {headerShown: true,
@@ -48,8 +49,8 @@ function MyTabs() {
           headerStyle: {
             backgroundColor: '#EC6337'
           },
-          tabBarIcon: () => (
-            <Ionicons name="home" color={"black"} size={24} />
+          tabBarIcon: ({focused}) => (
+            <Ionicons name="home" color={focused ? "black" : 'white'} size={24} />
         )
       }}/>
 
@@ -57,8 +58,8 @@ function MyTabs() {
         { headerStyle: {
           backgroundColor: '#EC6337'
           },
-          tabBarIcon: () => (
-            <Ionicons name="map" color={"black"} size={24} />
+          tabBarIcon: ({focused}) => (
+            <Ionicons name="map" color={focused ? "black" : 'white'} size={24} />
           )
       }}/>
 
@@ -66,22 +67,22 @@ function MyTabs() {
         { headerStyle: {
           backgroundColor: '#EC6337'
           },
-          tabBarIcon: () => (
-            <Ionicons name="add-circle-outline" color={"black"} size={24} />
+          tabBarIcon: ({focused}) => (
+            <Ionicons name="add-circle-outline" color={focused ? "black" : 'white'} size={24} />
           )
       }}/>
 
       <Tab.Screen name = "FoodNavigator" component = {FoodNavigator} options={{
-          tabBarIcon: () => (
-            <Ionicons name="book" color={"black"} size={24} />
+          tabBarIcon: ({focused}) => (
+            <Ionicons name="book" color={focused ? "black" : 'white'} size={24} />
           ),
           tabBarLabel: 'Journal',
           headerShown: false
       }}/>
 
       <Tab.Screen name = "SettingsNavigator" component = {SettingsNavigator} options={{
-          tabBarIcon: () => (
-            <Ionicons name="settings" color={"black"} size={24} />
+          tabBarIcon: ({focused}) => (
+            <Ionicons name="settings" color={focused ? "black" : 'white'} size={24} />
           ),
           tabBarLabel: 'Settings',
           headerShown: false

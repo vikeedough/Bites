@@ -3,6 +3,7 @@ import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps'
 import { Text, View, StyleSheet, TextInput } from "react-native";
 import { firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
 import DisplayFood from '@/components/Modals/DisplayFood.js';
 
 const auth = firebaseAuth;
@@ -21,6 +22,7 @@ export default function Map() {
   const [selectedArray, setSelectedArray] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const openModal = (foodArray) => {
     if (mapLoaded) {
@@ -97,46 +99,67 @@ export default function Map() {
 
   }, []);
 
+  useEffect(() => {
+    if(selectedItem != null) {
+      openModal(selectedItem.foodArray);
+    }
+  }, [selectedItem])
+
   let MARKERS = [{
     coordinates: { latitude: 1.296567027997948, longitude: 103.78041830499755 },
     name: 'Frontier',
+    title: 'Frontier',
     place: 'Faculty of Science',
     foodArray: frontierArray,
+    id: 0,
   }, {
     coordinates: { latitude: 1.2908781410186392, longitude: 103.78076955379892 },
     name: 'PGP Canteen',
+    title: 'PGP Canteen',
     place: 'Prince George\'s Park',
     foodArray: pgpArray,
+    id: 1,
   }, {
     coordinates: { latitude: 1.2977399974538928, longitude: 103.77169897754129 },
     name: 'Techno Edge',
+    title: 'Techno Edge',
     place: 'College of Design and Engineering',
     foodArray: technoArray,
+    id: 2,
   }, {
     coordinates: { latitude: 1.294664673995315, longitude: 103.77245672237262 },
     name: 'The Deck',
+    title: 'The Deck',
     place: 'Faculty of Arts & Social Sciences',
     foodArray: deckArray,
+    id: 3,
   }, {
     coordinates: { latitude: 1.2945013055524734, longitude: 103.77430264881589 },
     name: 'The Terrace',
+    title: 'The Terrace',
     place: 'COM3',
     foodArray: terraceArray,
+    id: 4,
   }, {
     coordinates: { latitude: 1.3039238201203611, longitude: 103.7735817224521 },
     name: 'Fine Food',
+    title: 'Fine Food',
     place: 'Town Plaza',
     foodArray: fineFoodsArray,
+    id: 5,
   }, { 
     coordinates: { latitude: 1.3047119418047308, longitude: 103.77272591212657 },
     name: 'Flavours @ UTown',
+    title: 'Flavours @ UTown',
     place: 'UTown Stephen Riady Centre',
     foodArray: flavoursArray,
+    id: 6,
   },
   
   ]
 
     return (
+      <AutocompleteDropdownContextProvider>
         <View style={styles.container}>
           <MapView style={styles.map} provider={PROVIDER_GOOGLE} 
             initialRegion={{
@@ -161,15 +184,22 @@ export default function Map() {
           ))}
           </ MapView>
           <View style = {styles.inputArea}>
-            <TextInput
-              style={styles.input}
-              onChangeText={onChangeText}
-              value={text}
-              placeholder='e.g. Frontier'
+            <AutocompleteDropdown
+              clearOnFocus={false}
+              closeOnBlur={true}
+              closeOnSubmit={false}
+              onSelectItem={setSelectedItem}
+              dataSet={MARKERS}
+              containerStyle={styles.inputArea}
+              inputContainerStyle={styles.input}
+              textInputProps={{
+                placeholder: 'E.g. Frontier'
+              }}
             />
           </View>
           <DisplayFood isVisible={modalVisible} onClose={closeModal} foodArray={selectedArray} />
         </View>
+      </AutocompleteDropdownContextProvider>
       );
 }
 
@@ -182,7 +212,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   inputArea: {
-    flex: 1,
+    display: 'flex',
     position: 'absolute',
     top: 0,
     left: 15,

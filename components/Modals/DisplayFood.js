@@ -13,17 +13,46 @@ const Recommended = ({route}) => {
 
     const user = auth.currentUser.uid;
     const [macroGoalsArray, setMacroGoalsArray] = useState([]);
+    const [targetCals, setTargetCals] = useState(0);
+    const [targetCarbs, setTargetCarbs] = useState(0);
+    const [targetProteins, setTargetProteins] = useState(0);
+    const [targetFats, setTargetFats] = useState(0);
 
     const findMacroGoals = async () => {
-        const findMacroGoals = (await getDoc(doc(db, 'users', user))).data();
+        const findMacroGoals = (await getDoc(doc(db, 'users', user))).data().macroGoals;
+        await Promise.all(findMacroGoals);
         console.log(findMacroGoals);
-        setMacroGoalsArray(findMacroGoals.macroGoals);
-        console.log(macroGoalsArray);
+        setMacroGoalsArray(findMacroGoals);
+        setTargetCals(findMacroGoals[0] / 3);
+        setTargetCarbs(findMacroGoals[1] / 3);
+        setTargetProteins(findMacroGoals[2] / 3);
+        setTargetFats(findMacroGoals[3] / 3);
+        
     }
     
     useEffect(() => {
-        findMacroGoals();
-      }, [user]);
+        const findGoals = async () => {
+            const result = await findMacroGoals();
+            console.log(targetCals);
+            console.log(targetCarbs);
+            console.log(targetProteins);
+            console.log(targetFats);
+        }
+
+        findGoals();
+        
+      }, []);
+
+    // useEffect(() => {
+    //     setTargetCals(macroGoalsArray[0] / 3);
+    //     setTargetCarbs(macroGoalsArray[1] / 3);
+    //     setTargetProteins(macroGoalsArray[2] / 3);
+    //     setTargetFats(macroGoalsArray[3] / 3);
+    //     console.log(targetCals);
+    //     console.log(targetCarbs);
+    //     console.log(targetProteins);
+    //     console.log(targetFats);
+    // }, [macroGoalsArray]);
     
     const { foodArray } = route.params;
     const renderItem = ({item}) => 
@@ -37,15 +66,17 @@ const Recommended = ({route}) => {
         />
 
     const filteredFoodArray = foodArray.filter((item) => {
-
+        return (
+        ((item.calories >= 0.8 * targetCals && item.calories <= 1.2 * targetCals)       
+    ));
     });
 
     return (
-        <View>
+        <View> 
             <View style={styles.flatListContainer}>
 
                 <FlatList 
-                    data={foodArray}
+                    data={filteredFoodArray}
                     style={styles.flatList}
                     renderItem={renderItem}
                     keyExtractor={item => item.stall + item.food}
@@ -101,7 +132,7 @@ const Result = ({ stallName, foodName, calories, carbs, proteins, fats }) => {
                 <View style={styles.logFoodContainer}>
                     <TouchableOpacity>
                         <View style={styles.logFoodButton}>
-                            <Text>Log Food</Text>
+                            <Text style={styles.logFoodText}>Log Food</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -231,6 +262,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: '#EC6337',
         padding: 10,
+    },
+    logFoodText: {
+        color: '#FFFFFF'
     },
     numbersContainer: {
         display: 'flex',
