@@ -7,7 +7,7 @@ import { doc, setDoc, onSnapshot } from "firebase/firestore";
 import { updateProfile, onAuthStateChanged } from 'firebase/auth';
 import * as ImagePicker from 'expo-image-picker';
 import Profile from '@/components/Profile.js';
-import Goals from '@/components/Goals.js';
+import Goals from '@/components/GoalsComponent/Goals.js';
 import Progress from '@/components/Progress.js';
 import ProfileNavigator from '@/components/navigation/ProfileNavigator.js'
 import { useIsFocused } from '@react-navigation/native';

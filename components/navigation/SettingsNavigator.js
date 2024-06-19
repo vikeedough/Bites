@@ -2,7 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Settings from '@/components/Settings.js';
 import Profile from '@/components/Profile.js';
-import Goals from '@/components/Goals.js';
+import Goals from '@/components/GoalsComponent/Goals.js';
 import Progress from '@/components/Progress.js';
 import ProfileNavigator from "./ProfileNavigator";
 import Friends from "@/components/Friends.js";

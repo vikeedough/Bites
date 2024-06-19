@@ -19,7 +19,7 @@ const RecalculateModal = ( { recalVisible, setRecalVisible, goalsNumberModalVisi
                 return '';
         }
     };
-
+    
     return (
         <View>
             <SetGoalsNumberModal 
