@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     },
     flatList: {
         display: 'flex',
-      },
+    },
     flatListContainer: {
         display: 'flex',
         justifyContent: 'center',
