@@ -12,6 +12,9 @@ export default function JournalToFoodNavigator() {
                 headerStyle: {
                     backgroundColor: '#EC6337'
                 },
+                headerTitleStyle: {
+                    color: '#FFFFFF'
+                },
             }}/>
             <Stack.Screen name="Food" component={Food} options={{
                 headerStyle: {

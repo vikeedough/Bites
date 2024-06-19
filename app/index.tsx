@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Image } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack'
@@ -22,7 +22,9 @@ const Stack = createStackNavigator()
 const LoadingScreen = () => {
   return(
     <View style={styles.loadingContainer}>
-      <Text style={styles.loadingText}>Bites</Text>
+      <Image 
+        source={require('@/assets/images/new-splash.png')}
+      />
     </View>
   )
 }
@@ -41,11 +43,13 @@ function MyTabs() {
       <Tab.Screen name = "Bites" component = {HomeScreen} options={
         {headerShown: true,
           headerTitleAlign: 'center',
-          headerTitleStyle: {
-            fontSize: 30,
-            textAlign: 'center',
-            color: 'white',
-          },
+          headerTitle: () => (
+            <Image
+              source={require('@/assets/images/new-adaptive-icon.png')}
+              style={{ width: 50, height: 50 }}
+              resizeMode="contain"
+            />
+          ),
           headerStyle: {
             backgroundColor: '#EC6337'
           },
@@ -58,6 +62,9 @@ function MyTabs() {
         { headerStyle: {
           backgroundColor: '#EC6337'
           },
+          headerTitleStyle: {
+            color: '#FFFFFF'
+          },
           tabBarIcon: ({focused}) => (
             <Ionicons name="map" color={focused ? "black" : 'white'} size={24} />
           )
@@ -66,6 +73,9 @@ function MyTabs() {
       <Tab.Screen name = "Post" component = {Post} options={
         { headerStyle: {
           backgroundColor: '#EC6337'
+          },
+          headerTitleStyle: {
+            color: '#FFFFFF'
           },
           tabBarIcon: ({focused}) => (
             <Ionicons name="add-circle-outline" color={focused ? "black" : 'white'} size={24} />

@@ -17,6 +17,9 @@ export default function SettingsNavigator() {
                 headerStyle: {
                     backgroundColor: '#EC6337'
                   },
+                  headerTitleStyle: {
+                    color: '#FFFFFF'
+                  },
             }}/>
             <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} options={{ headerShown: false }}/>
             <Stack.Screen name="FriendsNavigator" component={FriendsNavigator} options={{

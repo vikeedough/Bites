@@ -168,13 +168,16 @@ const Result = ({ stallName, foodName, calories, carbs, proteins, fats }) => {
 
 }
 
-export default function DisplayFood( {isVisible, foodArray, onClose }) {
+export default function DisplayFood( {isVisible, foodArray, onClose, title }) {
     
     return (
         <Modal animationType="slide" transparent={true} visible={isVisible}>
             <View style={styles.container}> 
 
                 <View style={styles.header}>
+                    <View style={styles.headerText}>
+                        <Text style={styles.headerFoodStall}>{title}</Text>
+                    </View>
                     <AntDesign.Button 
                         name="close" 
                         color= 'white' 
@@ -213,12 +216,22 @@ const styles = StyleSheet.create({
     }, 
     header: {
         display: 'flex',
+        flexDirection: 'row',
         height: '8%',
         backgroundColor: '#EC6337',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
+        justifyContent: 'space-evenly',
+    },
+    headerText: {
+        display: 'flex',
+        width: '80%',
+        justifyContent: 'center',
+        paddingLeft: 10,
+    },
+    headerFoodStall: {
+        fontSize: 18,
+        color: '#FFFFFF',
     },
     flatListContainer: {
         display: 'flex',

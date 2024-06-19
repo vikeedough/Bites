@@ -11,7 +11,6 @@ const db = firebaseDb;
 
 export default function Map() {
 
-  const [text, onChangeText] = React.useState('');
   const [frontierArray, setFrontierArray] = useState([]);
   const [pgpArray, setPgpArray] = useState([]);
   const [technoArray, setTechnoArray] = useState([]);
@@ -20,13 +19,15 @@ export default function Map() {
   const [fineFoodsArray, setFineFoodsArray] = useState([]);
   const [flavoursArray, setFlavoursArray] = useState([]);
   const [selectedArray, setSelectedArray] = useState([]);
+  const [selectedTitle, setSelectedTitle] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const openModal = (foodArray) => {
+  const openModal = (foodArray, title) => {
     if (mapLoaded) {
       setSelectedArray(foodArray);
+      setSelectedTitle(title);
       setModalVisible(true);
     }
   }
@@ -101,7 +102,7 @@ export default function Map() {
 
   useEffect(() => {
     if(selectedItem != null) {
-      openModal(selectedItem.foodArray);
+      openModal(selectedItem.foodArray, selectedItem.title);
     }
   }, [selectedItem])
 
@@ -177,7 +178,7 @@ export default function Map() {
               title={item.name}
               description={item.place}
               onPress={() => {
-                openModal(item.foodArray);
+                openModal(item.foodArray, item.title);
                 console.log(item.foodArray);
               }}
             />
@@ -197,7 +198,7 @@ export default function Map() {
               }}
             />
           </View>
-          <DisplayFood isVisible={modalVisible} onClose={closeModal} foodArray={selectedArray} />
+          <DisplayFood isVisible={modalVisible} onClose={closeModal} foodArray={selectedArray} title={selectedTitle}/>
         </View>
       </AutocompleteDropdownContextProvider>
       );

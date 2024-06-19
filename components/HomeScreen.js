@@ -223,6 +223,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+
           <View style={styles.feed}>
               <FlatList
               style={styles.flatList}
@@ -259,6 +260,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F4F4F6',
+  },
+  headerContainer: {
+    display: 'flex',
+    width: '100%',
+    backgroundColor: '#EC6337',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   postContainer: {
     display: 'flex',
