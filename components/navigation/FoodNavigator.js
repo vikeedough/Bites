@@ -1,7 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Journal from "@/components/Journal.js";
-import Food from "@/components/Food.js";
+import Journal from "@/components/JournalComponent/Journal.js";
+import Food from "@/components/JournalComponent/Food.js";
 
 const Stack = createNativeStackNavigator();
 

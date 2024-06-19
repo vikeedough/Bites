@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -6,6 +6,7 @@ import MacroButton from '@/components/MacroButton.js';
 
 export default function Food() {
 
+  const [foodName, setFoodName] = useState('')
   const [calories, setCalories] = React.useState(0);
   const [protein, setProtein] = React.useState(0);
   const [fat, setFat] = React.useState(0);
