@@ -85,31 +85,45 @@ export default function Post() {
 
     return(
         <View style={styles.container}>
-            <View style={styles.captionContainer}>
-                <Text style={styles.captionText}>Caption</Text>
+
+            <View style={styles.topContainer}>
+                <View style={styles.topInnerContainer}>
+                    <View style={styles.captionContainer}>
+                        <Text style={styles.captionText}>Caption</Text>
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <TextInput 
+                            style={styles.description} 
+                            placeholder='Add a description!'
+                            onChangeText={setCaption}
+                            value={caption} 
+                            multiline />
+                    </View>
+                </View>
             </View>
-            <TextInput 
-                style={styles.description} 
-                placeholder='Add a description!'
-                onChangeText={setCaption}
-                value={caption} 
-                multiline />
-            <TouchableOpacity style={styles.imageUploadContainer} onPress={addImage}>
-                {
-                    image === null ? 
-                        <Text>Add Image</Text>
-                        :
-                        <Image source={{uri: image}} style={styles.uploadedImage} />
-                    
-                }
-            </TouchableOpacity>
-            <View style={styles.locationContainer}>
-                <TouchableOpacity style={styles.imageTextContainer}>
-                    <Ionicons name="cafe-sharp" color={"black"} size={18} />
-                    <Text style={styles.addLocationText}>Add Location</Text>
-                    <Ionicons name="chevron-forward" color={"grey"} size={18} />
+
+            <View style={styles.imageOuterContainer}>
+                <TouchableOpacity style={styles.imageUploadContainer} onPress={addImage}>
+                    {
+                        image === null ? 
+                        <Ionicons name="add-circle-outline" color={"black"} size={24} />
+                            :
+                            <Image source={{uri: image}} style={styles.uploadedImage} />
+                        
+                    }
                 </TouchableOpacity>
+
+                <View style={styles.locationContainer}>
+                    <TouchableOpacity style={styles.imageTextContainer}>
+                        <Ionicons name="location-sharp" color={"black"} size={18} />
+                        <Text style={styles.addLocationText}>Add Location</Text>
+                        <Ionicons name="chevron-forward" color={"grey"} size={18} />
+                    </TouchableOpacity>
+                </View>
             </View>
+            
+
+            
             <TouchableOpacity style={styles.postButton} onPress={checkPost} disabled={disabled}>
                 <Text style={styles.postButtonText}>Post</Text>
             </TouchableOpacity>
@@ -121,20 +135,50 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         alignItems: 'center',
-        padding: 16,
     },
     captionContainer: {
+        display: 'flex',
         width: '100%',
+        justifyContent: 'center',
+        alignItems: 'left',
+        marginHorizontal: 20,
+        marginTop: 10,
+    },
+    topContainer: {
+        display: 'flex',
+        width: '100%',
+        paddingHorizontal: 5,
+    },
+    imageOuterContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '90%',
+        borderRadius: 20,
+        paddingHorizontal: 5,
+        backgroundColor: '#FFFFFF',
+        marginHorizontal: 20,
+    },
+    topInnerContainer: {
+        display: 'flex',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 20,
+        margin: 10,
     },
     captionText: {
         fontSize: 20,
         fontWeight: 'bold',
+        textAlign: 'left',
+        textAlignVertical: 'center',
+    },
+    inputContainer: {
+        display: 'flex',
+        padding: 15,
     },
     description: {
         borderColor: 'rgba(224, 224, 224, 1)',
         borderWidth: 1,
         borderRadius: 8,
-        marginTop: 9,
         padding: 16,
         justifyContent: 'center',
         fontSize: 12,
@@ -142,6 +186,7 @@ const styles = StyleSheet.create({
         width: '100%',
         minHeight: 100,
         fontSize: 18,
+        backgroundColor: '#FFFFFF'
     },
     imageUploadContainer: {
         borderColor: 'rgba(190, 190, 190, 1)',
@@ -149,7 +194,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         borderStyle: 'dashed',
         display: 'flex',
-        marginTop: 17,
+        marginVertical: 15,
         width: '70%',
         alignItems: 'center',
         justifyContent: 'center',
@@ -163,7 +208,7 @@ const styles = StyleSheet.create({
     },
     locationContainer: {
         display: 'flex',
-        marginTop: 30,
+        marginVertical: 15,
         alignItems: 'center',
         borderColor: 'rgba(224, 224, 224, 1)',
         borderWidth: 1,
@@ -181,14 +226,16 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     postButton: {
+        display: 'flex',
+        width: '90%',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,
         backgroundColor: '#EC6337',
-        alignSelf: 'stretch',
+        alignSelf: 'center',
         paddingVertical: 10,
         paddingHorizontal: 16,
-        marginVertical: 40,
+        marginTop: 20,
     },
     postButtonText: {
         fontSize: 18,

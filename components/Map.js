@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps'
 import { Text, View, StyleSheet, TextInput } from "react-native";
 import { firebaseAuth, firebaseDb } from '@/firebaseConfig';
@@ -10,6 +10,9 @@ const auth = firebaseAuth;
 const db = firebaseDb;
 
 export default function Map() {
+
+  const mapRef = useRef(null);
+  const markerRef = useRef({});
 
   const [frontierArray, setFrontierArray] = useState([]);
   const [pgpArray, setPgpArray] = useState([]);
@@ -103,6 +106,13 @@ export default function Map() {
   useEffect(() => {
     if(selectedItem != null) {
       openModal(selectedItem.foodArray, selectedItem.title);
+      mapRef.current.animateToRegion({
+        latitude: selectedItem.coordinates.latitude - 0.0022,
+        longitude: selectedItem.coordinates.longitude,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      }, 1000);
+      markerRef.current[selectedItem.id].showCallout();
     }
   }, [selectedItem])
 
@@ -162,7 +172,10 @@ export default function Map() {
     return (
       <AutocompleteDropdownContextProvider>
         <View style={styles.container}>
-          <MapView style={styles.map} provider={PROVIDER_GOOGLE} 
+          <MapView 
+            ref={mapRef}
+            style={styles.map} 
+            provider={PROVIDER_GOOGLE} 
             initialRegion={{
               latitude: 1.294774591108752,
               longitude: 103.77405978567056,
@@ -177,9 +190,9 @@ export default function Map() {
               coordinate={item.coordinates}
               title={item.name}
               description={item.place}
+              ref={(ref) => (markerRef.current[item.id] = ref)}
               onPress={() => {
                 openModal(item.foodArray, item.title);
-                console.log(item.foodArray);
               }}
             />
           ))}
@@ -191,8 +204,10 @@ export default function Map() {
               closeOnSubmit={false}
               onSelectItem={setSelectedItem}
               dataSet={MARKERS}
-              containerStyle={styles.inputArea}
+              containerStyle={styles.dropdownContainer}
+              suggestionsListContainerStyle={styles.suggestionsListContainer}
               inputContainerStyle={styles.input}
+              emptyResultText={'No such place found!'}
               textInputProps={{
                 placeholder: 'E.g. Frontier'
               }}
@@ -206,7 +221,7 @@ export default function Map() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: 'flex',
   },
   map: {
     width: '100%',
@@ -215,17 +230,20 @@ const styles = StyleSheet.create({
   inputArea: {
     display: 'flex',
     position: 'absolute',
-    top: 0,
+    top: 5,
     left: 15,
     right: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
+    zIndex: 1,
+  },
+  dropdownContainer: {
+    zIndex: 2,
+  },
+  suggestionsListContainer: {
+    top: -80,
+    zIndex: 3,
   },
   input: {
-    height: 40,
-    margin: 15,
     borderWidth: 0,
-    width: 300,
     borderRadius: 20,
     backgroundColor: '#FFFFFF',
     textAlign: 'center',

@@ -1,24 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
+import React, { useEffect } from 'react';
+import { Text, View, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { firebaseApp, firebaseAuth, firebaseDb } from '../firebaseConfig';
-import { getStorage, ref, uploadBytes, getBytes, getDownloadURL, uploadString } from "firebase/storage";
-import { doc, setDoc, onSnapshot } from "firebase/firestore";
-import { updateProfile, onAuthStateChanged } from 'firebase/auth';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
+import { updateProfile } from 'firebase/auth';
 import * as ImagePicker from 'expo-image-picker';
-import Profile from '@/components/Profile.js';
 import Goals from '@/components/GoalsComponent/Goals.js';
 import Progress from '@/components/Progress.js';
-import ProfileNavigator from '@/components/navigation/ProfileNavigator.js'
 import { useIsFocused } from '@react-navigation/native';
 
-
-const app = firebaseApp
-const auth = firebaseAuth
-const db = firebaseDb
+const auth = firebaseAuth;
+const db = firebaseDb;
 const placeholder = require('@/assets/images/placeholder.png');
 
-const storage = getStorage()
+const storage = getStorage();
 
 export default function Settings({navigation}) {
 
@@ -63,7 +59,9 @@ export default function Settings({navigation}) {
 
   return (
 
-    <ScrollView contentContainerStyle={{flexGrow: 1}}>
+    <ScrollView contentContainerStyle={styles.container}>
+      
+      <View style={styles.cardContainer}>
 
         <View style={styles.imageContainer}>
             {
@@ -77,60 +75,121 @@ export default function Settings({navigation}) {
                 </View>
         </View>
 
-        <Text style={{fontWeight: 'bold', fontSize: 30, textAlign: 'center'}}> Welcome, {user.displayName}! </Text>
+        <View style={styles.welcomeContainer}>
+          <Text style={styles.usernameText}> Welcome, {user.displayName}! </Text>
+        </View>
         
-        <View style={{justifyContent: 'space-evenly', flex: 1}}>
+      </View>
 
-        <View style={styles.ButtonContainer}>
-            <TouchableOpacity onPress={()=> navigation.navigate("ProfileNavigator")}>
+      <View style={styles.bottomContainer}>
+
+          <TouchableOpacity onPress={()=> navigation.navigate("ProfileNavigator")}>
+            <View style={styles.ButtonContainer}>
+                <AntDesign.Button name="user" backgroundColor="#FFFFFF" 
+                color= '#EC6337' size = {20} style={{paddingEnd: 0, paddingLeft: 15}}>
+                </AntDesign.Button>
                 <Text style={styles.ButtonText}>Profile</Text>
-            </TouchableOpacity>
-        </View>
-
-        <View style={styles.ButtonContainer}>
-            <TouchableOpacity onPress={()=> navigation.navigate("FriendsNavigator")}>
-                <Text style={styles.ButtonText}>Friends</Text>
-            </TouchableOpacity>
-        </View>
-
-        <View style={styles.ButtonContainer}>
-            <TouchableOpacity onPress={()=> navigation.navigate(Goals)}>
-                <Text style={styles.ButtonText}>Goals</Text>
-            </TouchableOpacity>
-        </View>
-
-        <View style={styles.ButtonContainer}>
-            <TouchableOpacity onPress={()=> navigation.navigate(Progress)}>
-                <Text style={styles.ButtonText}>Progress</Text>
-            </TouchableOpacity>
-        </View>
+            </View>
+          </TouchableOpacity>
         
-        <View style={styles.ButtonContainer}>
-            <TouchableOpacity onPress = {() => auth.signOut()}>
-                <Text style={styles.ButtonText}>Logout</Text>
-            </TouchableOpacity>
-        </View>
 
-        </View>
-      </ScrollView>
+        
+          <TouchableOpacity onPress={()=> navigation.navigate("FriendsNavigator")}>
+            <View style={styles.ButtonContainer}>
+                <AntDesign.Button name="team" backgroundColor="#FFFFFF" 
+                color= '#EC6337' size = {20} style={{paddingEnd: 0, paddingLeft: 15}}>
+                </AntDesign.Button>
+                <Text style={styles.ButtonText}>Friends</Text>
+            </View>
+          </TouchableOpacity>
+        
+
+        
+          <TouchableOpacity onPress={()=> navigation.navigate(Goals)}>
+            <View style={styles.ButtonContainer}>
+                <AntDesign.Button name="rocket1" backgroundColor="#FFFFFF" 
+                color= '#EC6337' size = {20} style={{paddingEnd: 0, paddingLeft: 15}}>
+                </AntDesign.Button>
+                <Text style={styles.ButtonText}>Goals</Text>
+              </View>
+          </TouchableOpacity>
+        
+
+        
+          <TouchableOpacity onPress={()=> navigation.navigate(Progress)}>
+            <View style={styles.ButtonContainer}>
+                <AntDesign.Button name="Trophy" backgroundColor="#FFFFFF" 
+                color= '#EC6337' size = {20} style={{paddingEnd: 0, paddingLeft: 15}}>
+                </AntDesign.Button>
+                <Text style={styles.ButtonText}>Achievements</Text>
+              </View>
+          </TouchableOpacity>
+        
+        
+        
+          <TouchableOpacity onPress = {() => auth.signOut()}>
+            <View style={styles.ButtonContainer}>
+                <AntDesign.Button name="poweroff" backgroundColor="#FFFFFF" 
+                color= '#EC6337' size = {20} style={{paddingEnd: 0, paddingLeft: 15}}>
+                </AntDesign.Button>
+                <Text style={styles.ButtonText}>Logout</Text>
+              </View>
+          </TouchableOpacity>
+        
+
+      </View>
+    </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
+  bottomContainer: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    height: '70%',
+    backgroundColor: '#F4F4F6',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 25,
+    paddingBottom: 40,
+  },
   ButtonContainer: {
-    flex: 0.08,
-    justifyContent: 'center',
-    alignItems: 'left'
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    paddingVertical: 10,
+    marginHorizontal: 20,
+    alignItems: 'center',
   },
   ButtonText: {
     fontSize: 20,
     fontWeight: 'bold',
-    paddingLeft: 20
+    textAlign: 'center',
+  },
+  cardContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    marginTop: 15,
+    borderRadius: 20,
+    height: '30%',
   },
   container: { 
-    flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center' 
+    flexGrow: 1,
+    backgroundColor: 'white',
+  },
+  welcomeContainer: {
+    display: 'flex',
+    width: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  usernameText: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    textAlign: 'center',
   },
   loginText: {
     fontWeight: 'bold',
