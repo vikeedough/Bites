@@ -8,24 +8,6 @@ import { ref } from 'firebase/storage';
 import { ForceTouchGestureHandler } from 'react-native-gesture-handler';
 import MacroCalculator from '@/components/GoalsComponent/MacroCalculator.js';
 
-/*
-
-() => 
-  <MacroCalculator 
-    gender={gender}
-    age={age}
-    height={height}
-    weight={weight}
-    activeness={activeness}
-    weightGoal={weightGoal}
-    setCalories={setCalories}
-    setProtein={setProtein}
-    setCarbohydrates={setCarbohydrates}
-    setFat={setFat}
-  />
-
-*/
-
 const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
@@ -337,9 +319,6 @@ export default function Goals() {
     await updateMacroGoalsFunction(newMacroGoalArray);
   
   }
-
-
-
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

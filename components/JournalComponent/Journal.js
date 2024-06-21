@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
 import Food from "@/components/JournalComponent/Food.js"
 import { Ionicons } from '@expo/vector-icons';
@@ -6,12 +6,12 @@ import CalendarModal from '@/components/JournalComponent/CalendarModal.js';
 import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
+import { useFocusEffect } from '@react-navigation/native';
 import { ref } from 'firebase/storage';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
-//export let passedFoodEntry; 
 
 export default function Journal({navigation}) {
 
@@ -20,7 +20,24 @@ export default function Journal({navigation}) {
   const [calendarModal, setCalendarModal] = useState(false);
   const [selectedDayID, setSelectedDayID] = useState('');
   const [currentFoodEntry, setCurrentFoodEntry] = useState('');
-  const [dateLabel, setDateLabel] = useState('Today')
+  const [dateLabel, setDateLabel] = useState('Today');
+
+  const [breakfastArray, setBreakfastArray] = useState([]);
+  const [lunchArray, setLunchArray] = useState([]);
+  const [dinnerArray, setDinnerArray] = useState([]);
+  const [othersArray, setOthersArray] = useState([]);
+  // const [totalBreakfastCalories, setTotalBreakfastCalories] = useState(0);
+  // const [totalLunchCalories, setTotalLunchCalories] = useState(0);
+  // const [totalDinnerCalories, setTotalDinnerCalories] = useState(0);
+  // const [totalOthersCalories, setTotalOthersCalories] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+
+      checkAndCreateEntry(todayDateStringID);    
+
+    }, [currentFoodEntry])
+  );
 
   const checkAndCreateEntry = async (date) => {
 
@@ -29,7 +46,7 @@ export default function Journal({navigation}) {
       const docRef = doc(db, 'users', auth.currentUser.uid);
       const foodLogCollectionRef = collection(docRef, 'FoodLog');
       const foodEntryDocRef = doc(foodLogCollectionRef, date);
-      const foodEntry = await getDoc(foodEntryDocRef)
+      const foodEntry = await getDoc(foodEntryDocRef);
 
       if (!foodEntry.exists()) {
 
@@ -50,16 +67,19 @@ export default function Journal({navigation}) {
       }
 
       else {
-        setCurrentFoodEntry(foodEntry.data())
+        setCurrentFoodEntry(foodEntry.data());
+
+        setBreakfastArray(foodEntry.data().breakfast);
+        setLunchArray(foodEntry.data().lunch);
+        setDinnerArray(foodEntry.data().dinner);
+        setOthersArray(foodEntry.data().others);
       }
 
-      console.log(currentFoodEntry)
     }
 
     catch (error) {
       console.error("Error occured when fetching data " + error)
     }
-
   }
   
   const openCalendarModal = () => {
@@ -79,10 +99,6 @@ export default function Journal({navigation}) {
     setCalendarModal(false);
   }
 
-  useEffect(() => {
-    checkAndCreateEntry(todayDateStringID)
-  }, [])
-
   const calendarLabel = (newDay) => {
     if (newDay === todayDateStringID) {
       setDateLabel("Today");
@@ -93,8 +109,22 @@ export default function Journal({navigation}) {
 
   const navigateToAddFood = () => {
     console.log("In Journal Page " + currentFoodEntry);
-    //passedFoodEntry = currentFoodEntry;
-    navigation.navigate(Food);
+    navigation.navigate('Food', { currentFoodEntry });
+  }
+
+  const updateDisplay = (foodArray) => {
+
+    return foodArray.map((food, index) => (
+      <View key={index} style={styles.mealDisplayContainer}>
+        <View style={{flex: 1}}>
+          <Text style={styles.mealDisplayTitle}>{food.foodName}</Text>
+        </View>
+        <View style={{flex: 1}}>
+          <Text style={styles.calorieDisplayText}>{food.calories}</Text>
+        </View>
+      </View>
+    ))
+
   }
 
   return (
@@ -127,11 +157,11 @@ export default function Journal({navigation}) {
                 <Text style={styles.MealTitle}>Breakfast</Text>
               </View>
               <View style={{flex: 1}}>
-                <Text style={styles.CalorieTitle}>Calories: 0</Text>
+                <Text style={styles.CalorieTitle}>Calories: {breakfastArray.reduce((total, item) => total + item.calories, 0)}</Text>
               </View>
             </View>
             <ScrollView contentContainerStyle={{flex: 0.8}}>
-              <Text></Text>
+              {updateDisplay(breakfastArray)}
             </ScrollView>
           </View>
 
@@ -141,11 +171,11 @@ export default function Journal({navigation}) {
                 <Text style={styles.MealTitle}>Lunch</Text>
               </View>
               <View style={{flex: 1}}>
-                <Text style={styles.CalorieTitle}>Calories: 0</Text>
+                <Text style={styles.CalorieTitle}>Calories: {lunchArray.reduce((total, item) => total + item.calories, 0)}</Text>
               </View>
             </View>
             <View style ={{flex: 0.8}}>
-              <Text></Text>
+              {updateDisplay(lunchArray)}
             </View>
           </View>
 
@@ -155,11 +185,11 @@ export default function Journal({navigation}) {
                 <Text style={styles.MealTitle}>Dinner</Text>
               </View>
               <View style={{flex: 1}}>
-                <Text style={styles.CalorieTitle}>Calories: 0</Text>
+                <Text style={styles.CalorieTitle}>Calories: {dinnerArray.reduce((total, item) => total + item.calories, 0)}</Text>
               </View>
             </View>
             <View style ={{flex: 0.8}}>
-              <Text></Text>
+              {updateDisplay(dinnerArray)}
             </View>
           </View>
 
@@ -169,11 +199,11 @@ export default function Journal({navigation}) {
                 <Text style={styles.MealTitle}>Others</Text>
               </View>
               <View style={{flex: 1}}>
-                <Text style={styles.CalorieTitle}>Calories: 0</Text>
+                <Text style={styles.CalorieTitle}>Calories: {othersArray.reduce((total, item) => total + item.calories, 0)}</Text>
               </View>
             </View>
             <View style ={{flex: 0.8}}>
-              <Text></Text>
+              {updateDisplay(othersArray)}
             </View>
           </View>
           
@@ -258,5 +288,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 0.6,
     //backgroundColor: 'red'
+  },
+  mealDisplayContainer: {
+    flexDirection: 'row',
+    height: 40,
+    alignItems: 'center',
+    borderBottomWidth: 0.2,
+  },
+  mealDisplayTitle: {
+    fontSize: 16,
+    paddingLeft: 10,
+  },
+  calorieDisplayText: {
+    fontSize: 16,
+    textAlign: 'right',
+    paddingRight: 10
   }
 });
