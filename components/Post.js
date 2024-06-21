@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Touchable } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useState, React } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 import { updateProfile } from 'firebase/auth';
 import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -14,17 +15,44 @@ const storage = getStorage();
 
 export default function Post() {
 
+    const MARKERS = [{
+        title: 'Frontier',
+        id: 0,
+    }, {
+        title: 'PGP Canteen',
+        id: 1,
+    }, {
+        title: 'Techno Edge',
+        id: 2,
+    }, {
+        title: 'The Deck',
+        id: 3,
+    }, {
+        title: 'The Terrace',
+        id: 4,
+    }, {
+        title: 'Fine Food',
+        id: 5,
+    }, {
+        title: 'Flavours',
+        id: 6,
+    }];
+
+    const [locationInput, setLocationInput] = useState('');
+    const [selectedLocation, setSelectedLocation] = useState('');
+    const [selectedItem, setSelectedItem] = useState(null);
     const [image, setImage] = useState(null);
     const [caption, setCaption] = useState('');
     const [picture, setPicture] = useState(null);
     const [disabled, setDisabled] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
     const user = auth.currentUser;
 
     const uriToBlob = async (uri) => {
         const response = await fetch(uri);
         const blob = await response.blob();
         return blob;
-      };
+    };
 
     const addImage = async () => {
         let picture = await ImagePicker.launchImageLibraryAsync({
@@ -32,11 +60,30 @@ export default function Post() {
             allowsEditing: true,
             aspect: [1,1],
             quality: 1,
-          });
+        });
         setPicture(picture);
         if (!picture.canceled) {
             setImage(picture.assets[0].uri);
         }
+    }
+
+    useEffect(() => {
+        if (selectedItem != null) {
+            setLocationInput(selectedItem.title);
+        } else {
+            setLocationInput('');
+        }
+    }, [selectedItem]);
+
+    const clearLocation = () => {
+        setSelectedLocation('');
+    }
+
+    const addLocation = () => {
+        if (locationInput === '') {
+            alert('Enter a location!');
+        }
+        setSelectedLocation(locationInput);
     }
 
     const checkPost = () => {
@@ -59,12 +106,6 @@ export default function Post() {
             console.log('Uploaded picture onto Storage!');
         });
         let url = await getDownloadURL(pictureRef);
-        const postObject = {
-            pictureURL: url,
-            caption: caption,
-            time: timeNow,
-            comments: []
-        }
         const postsRef = doc(db, "posts", user.uid + '_' + timeNow.toString());
         await setDoc(postsRef, {
             userId: user.uid, 
@@ -74,16 +115,30 @@ export default function Post() {
             comments: [],
             usersLiked: [],
             likes: 0,
+            location: selectedLocation,
         }).then(() => {
             setImage(null);
             setCaption('');
             setPicture(null);
+            setLocationInput('');
+            setSelectedLocation('');
+            setSelectedItem(null);
             alert('Post successfully uploaded!')
             setDisabled(false);
         });
     }
 
+    const handleDropdownOpen = () => {
+        setShowDropdown(true);
+    };
+
+    const handleDropdownClose = () => {
+        setShowDropdown(false);
+    };
+
     return(
+        <AutocompleteDropdownContextProvider>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.container}>
 
             <View style={styles.topContainer}>
@@ -113,21 +168,60 @@ export default function Post() {
                     }
                 </TouchableOpacity>
 
-                <View style={styles.locationContainer}>
-                    <TouchableOpacity style={styles.imageTextContainer}>
-                        <Ionicons name="location-sharp" color={"black"} size={18} />
-                        <Text style={styles.addLocationText}>Add Location</Text>
-                        <Ionicons name="chevron-forward" color={"grey"} size={18} />
-                    </TouchableOpacity>
-                </View>
+                <AutocompleteDropdown
+                    clearOnFocus={false}
+                    closeOnBlur={true}
+                    closeOnSubmit={false}
+                    onSelectItem={setSelectedItem}
+                    dataSet={MARKERS}
+                    containerStyle={styles.dropdownContainer}
+                    suggestionsListContainerStyle={styles.suggestionsListContainer}
+                    inputContainerStyle={styles.input}
+                    emptyResultText={'No such place found!'}
+                    textInputProps={{
+                        placeholder: 'E.g. Frontier',
+                        style: styles.dropdownInput
+                    }}
+                    matchFrom="start"
+                    direction="up"
+                    open={showDropdown}
+                    onShow={handleDropdownOpen}
+                    onHide={handleDropdownClose}
+                    value={locationInput}
+                    onChangeText={setLocationInput}
+                />
+
+                {selectedLocation != ''
+                    ?  <View>
+                            <Text style={{textAlign: 'center'}}>Selected location: {selectedLocation}</Text>
+                            <View style={styles.locationContainer}>
+                            <TouchableOpacity style={styles.imageTextContainer} onPress={clearLocation}>
+                                <Ionicons name="location-sharp" color={"black"} size={18} />
+                                <Text style={styles.addLocationText}>Remove Location</Text>
+                                <Ionicons name="chevron-forward" color={"grey"} size={18} />
+                            </TouchableOpacity>
+                            </View>
+                        </View>
+                        
+                    : <View style={styles.locationContainer}>
+                        <TouchableOpacity style={styles.imageTextContainer} onPress={addLocation}>
+                            <Ionicons name="location-sharp" color={"black"} size={18} />
+                            <Text style={styles.addLocationText}>Add Location</Text>
+                            <Ionicons name="chevron-forward" color={"grey"} size={18} />
+                        </TouchableOpacity>
+                        </View>
+                }
+
+                
             </View>
             
 
-            
             <TouchableOpacity style={styles.postButton} onPress={checkPost} disabled={disabled}>
                 <Text style={styles.postButtonText}>Post</Text>
             </TouchableOpacity>
         </View>
+        </TouchableWithoutFeedback>
+        </AutocompleteDropdownContextProvider>
     )
 }
 
@@ -195,7 +289,7 @@ const styles = StyleSheet.create({
         borderStyle: 'dashed',
         display: 'flex',
         marginVertical: 15,
-        width: '70%',
+        width: '60%',
         alignItems: 'center',
         justifyContent: 'center',
         aspectRatio: 1,
@@ -240,5 +334,24 @@ const styles = StyleSheet.create({
     postButtonText: {
         fontSize: 18,
         color: 'white',
-    }
+    },
+    dropdownContainer: {
+        width: '80%',
+        backgroundColor: '#FFFFFF',
+        borderColor: 'rgba(224, 224, 224, 1)',
+    },
+    suggestionsListContainer: {
+        width: '100%',
+        backgroundColor: '#FFFFFF',
+        top: -70,
+        zIndex: 5,
+    },
+    input: {
+        borderWidth: 1,
+        borderRadius: 20,
+        backgroundColor: '#FFFFFF',
+        textAlign: 'center',
+        borderColor: 'rgba(224, 224, 224, 1)',
+    },
+
 });

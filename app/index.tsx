@@ -5,9 +5,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack'
 import HomeScreen from '@/components/HomeScreen.js';
 import Map from '@/components/Map.js';
-import Login from '@/components/Login.js';
+import Login from '@/components/StartupPages/Login';
 import Post from '@/components/Post.js';
-import Signup from '@/components/Signup.js'
+import Signup from '@/components/StartupPages/Signup.js'
 import { Ionicons } from '@expo/vector-icons';
 import FoodNavigator from "@/components/navigation/FoodNavigator.js";
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'

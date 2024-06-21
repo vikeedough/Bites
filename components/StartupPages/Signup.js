@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button } from "react-native";
-import { firebaseApp, firebaseAuth, firebaseDb } from '../firebaseConfig'
+import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from "firebase/firestore";
 

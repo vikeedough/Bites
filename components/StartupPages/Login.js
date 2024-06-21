@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button } from "react-native";
-import {firebaseApp, firebaseAuth} from '../firebaseConfig'
+import {firebaseApp, firebaseAuth} from '@/firebaseConfig'
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const app = firebaseApp

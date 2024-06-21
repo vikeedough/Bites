@@ -147,6 +147,7 @@ export default function AddFriends(){
 const styles = StyleSheet.create({
     container: {
         display: 'flex',
+        backgroundColor: '#F4F4F6',
     },
     inputContainer: {
         padding: 15,
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     },
     cardContainer: {
         borderRadius: 40,
-        backgroundColor: '#d9d9d9',
+        backgroundColor: '#FFFFFF',
         padding: 22,
         marginVertical: 10,
         display: 'flex',

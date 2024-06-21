@@ -45,7 +45,7 @@ const Result = ({ userId, commentText }) => {
   )
 }
 
-const Post = ({ id, user, time, image, caption, comments, likes, usersLiked }) => {
+const Post = ({ id, user, time, image, caption, comments, likes, usersLiked, location }) => {
   
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -103,10 +103,25 @@ const Post = ({ id, user, time, image, caption, comments, likes, usersLiked }) =
     <View style={styles.post}>
 
       <View style={styles.postHeaderContainer}>
-        <Image resizeMode='auto' source={userPic === null ? placeholder : {uri: userPic}} style={styles.profileImage}/>
-        <View style={styles.postHeader}>
-          <Text style={styles.postText}>{username}</Text>
-          <Text style={styles.postTime}>{timeAgo.format(Date.now() - (Date.now() - time))}</Text>
+        <View style={styles.postHeaderLeftContainer}>
+          <Image resizeMode='auto' source={userPic === null ? placeholder : {uri: userPic}} style={styles.profileImage}/>
+          <View style={styles.postHeader}>
+            <Text style={styles.postText}>{username}</Text>
+            <Text style={styles.postTime}>{timeAgo.format(Date.now() - (Date.now() - time))}</Text>
+          </View>
+        </View>
+        <View style={styles.postHeaderRightContainer}>
+          {
+            location != '' 
+            ? <View style={styles.locationContainer}>
+            <AntDesign.Button name='enviromento' backgroundColor="#FFFFFF" 
+            color= '#EC6337' size = {18} activeOpacity = {1} style={{paddingEnd: 0, marginEnd: -8}}>
+            </AntDesign.Button>
+            <Text style={styles.locationText}>{location}</Text>
+          </View>
+            : <View></View>
+          }
+          
         </View>
       </View>
 
@@ -116,16 +131,17 @@ const Post = ({ id, user, time, image, caption, comments, likes, usersLiked }) =
       />
 
       <View style={styles.likeCommentContainer}>
+
         <Text style={styles.likes}>
           <Text>{usersLiked.length}</Text>
           <Text>{usersLiked.length === 1 ? ' like' : ' likes'}</Text>
         </Text>
 
-        <Text style={{fontSize: 18}}>
-          <Text style={{fontWeight: "bold"}}>{username}</Text>
+        <Text style={styles.usernameText}>
+          <Text style={styles.usernameWeight}>{username}</Text>
           <Text> {caption}</Text>
         </Text>
-        <View style={{marginLeft: 10}}>
+        <View style={styles.commentsLeftIndent}>
           {comments.slice(0, 2).map( (item, id) => {
             return (
               <Result userId={item.userId} commentText={item.commentText} />
@@ -133,6 +149,7 @@ const Post = ({ id, user, time, image, caption, comments, likes, usersLiked }) =
           })}
         </View>
       </View>
+
       <View style={styles.postBottom}>
         <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#FFFFFF" 
         color= '#EC6337' size = {30} onPress = {toggleLike} activeOpacity = {1} style={{paddingEnd: 0}}>
@@ -144,7 +161,9 @@ const Post = ({ id, user, time, image, caption, comments, likes, usersLiked }) =
         color= '#EC6337' size = {30} activeOpacity = {1} style={{paddingEnd: 0}}>
         </AntDesign.Button>
       </View>
+
       <Comments isVisible={modalVisible} onClose={closeComments} commentsContent={comments} postRef={postRef} />
+
     </View>
   </View>
 )};
@@ -178,6 +197,7 @@ export default function HomeScreen() {
           comments: doc.data().comments,
           likes: doc.data().likes,
           usersLiked: doc.data().usersLiked,
+          location: doc.data().location,
         }
       });
       setPosts(updatePosts);
@@ -195,11 +215,10 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-     filterPosts();
+    filterPosts();
   }, [posts, friends]);
 
   const filterPosts = async () => {
-
 
     DATA = posts;
     console.log(DATA);
@@ -241,6 +260,7 @@ export default function HomeScreen() {
                   comments={item.comments}
                   likes={item.likes}
                   usersLiked={item.usersLiked}
+                  location={item.location}
                 />
               )}
               }
@@ -307,6 +327,32 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginHorizontal: 15,
   },
+  postHeaderLeftContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '70%',
+  },
+  postHeaderRightContainer: {
+    display: 'flex',
+    width: '30%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  locationContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    borderColor: '#FFFFFF',
+  },
+  locationText: {
+    color: '#EC6337',
+    fontSize: 15,
+    textAlign: 'center',
+  },
   profileImage: {
     width: 40,
     margin: 'auto 0',
@@ -331,7 +377,7 @@ const styles = StyleSheet.create({
   },
   likeCommentContainer: {
     marginHorizontal: 10,
-    marginVertical: 10,
+    marginBottom: 10,
   },
   postBottom: {
     flexDirection: 'row',
@@ -369,4 +415,13 @@ const styles = StyleSheet.create({
   commentText: {
       fontSize: 16,
   },
+  usernameText: {
+    fontSize: 18,
+  },
+  usernameWeight: {
+    fontWeight: 'bold',
+  },
+  commentsLeftIndent: {
+    marginLeft: 10,
+  }
 });

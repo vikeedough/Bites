@@ -59,7 +59,7 @@ export default function Settings({navigation}) {
 
   return (
 
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       
       <View style={styles.cardContainer}>
 
@@ -138,7 +138,8 @@ export default function Settings({navigation}) {
         
 
       </View>
-    </ScrollView>
+
+    </View>
     );
 }
 
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     height: '30%',
   },
   container: { 
-    flexGrow: 1,
+    display: 'flex',
     backgroundColor: 'white',
   },
   welcomeContainer: {

@@ -13,9 +13,9 @@ let DATA = [];
 
 const EmptyList = () => {
     return (
-      <View style={styles.emptyList}>
-              <Text style={styles.emptyText}>No results to show.</Text>
-          </View>
+        <View style={styles.emptyList}>
+            <Text style={styles.emptyText}>No results to show.</Text>
+        </View>
     )
 }
 
@@ -121,11 +121,13 @@ export default function Friends({navigation}){
                         value={search}
                     />
                 </View>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.addFriends} onPress={() => navigation.navigate("Add Friends")}>
-                        <Text>Add Friends</Text>
-                    </TouchableOpacity>
-                </View>
+
+                <TouchableOpacity onPress={() => navigation.navigate("Add Friends")}>
+                    <View style={styles.addFriendsContainer}>
+                        <Text style={styles.addFriendsButton}>Add Friends</Text>
+                    </View>
+                </TouchableOpacity>
+                
             </View>
 
             <View style={styles.bottomContainer}>
@@ -149,6 +151,7 @@ export default function Friends({navigation}){
 const styles = StyleSheet.create({
     container: {
         display: 'flex',
+        backgroundColor: '#F4F4F6',
     },
     topContainer: {
         display: 'flex',
@@ -157,7 +160,8 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         padding: 15,
-        flex: 8,
+        display: 'flex',
+        width: '70%',
     },
     input: {
         borderWidth: 1,
@@ -165,9 +169,10 @@ const styles = StyleSheet.create({
         height: 35,
     },
     buttonContainer: {
-        flex: 2,
+        display: 'flex',
         paddingVertical: 15,
         paddingRight: 15,
+        backgroundColor: 'red',
     },
     addFriends: {
         justifyContent: 'center',
@@ -187,7 +192,7 @@ const styles = StyleSheet.create({
     },
     cardContainer: {
         borderRadius: 40,
-        backgroundColor: '#d9d9d9',
+        backgroundColor: '#FFFFFF',
         padding: 22,
         marginVertical: 10,
         display: 'flex',
@@ -208,7 +213,16 @@ const styles = StyleSheet.create({
         color: "#000",
         fontWeight: '400',
     },
+    addFriendsContainer: {
+        display: 'flex',
+        backgroundColor: '#EC6337',
+        borderRadius: 40,
+        padding: 15,
+        marginTop: 10,
+        marginRight: 10,
+    },
     buttonContainerr: {
+        display: 'flex',
         backgroundColor: '#EC6337',
         borderRadius: 40,
         paddingVertical: 15,
@@ -216,7 +230,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 13,
-        color: '#fff',
+        color: '#FFFFFF',
         fontWeight: '400',
         textAlign: 'center',
     },
@@ -233,6 +247,9 @@ const styles = StyleSheet.create({
     },
     flatList: {
         display: 'flex',
-    }
-
+    },
+    addFriendsButton: {
+        color: '#FFFFFF',
+        textAlign: 'center',
+    },
 });
