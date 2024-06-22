@@ -13,6 +13,7 @@ import FoodNavigator from "@/components/navigation/FoodNavigator.js";
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'
 import { onAuthStateChanged, User } from 'firebase/auth';
 import SettingsNavigator from '@/components/navigation/SettingsNavigator.js';
+//import MaptoFoodNavigator from '@/components/navigation/MapToFoodNavigator.js';
 
 const app = firebaseApp
 const auth = firebaseAuth

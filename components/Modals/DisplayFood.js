@@ -4,6 +4,8 @@ import { getDoc, doc } from 'firebase/firestore';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { firebaseAuth, firebaseDb } from "@/firebaseConfig";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import ShortcutToFood from "@/components/Modals/ShortcutToFood.js"
+import { onLog } from "firebase/app";
 
 const Tab = createMaterialTopTabNavigator();
 const auth = firebaseAuth;
@@ -91,6 +93,7 @@ const Recommended = ({route}) => {
 const AllFood = ({route}) => {
 
     const { foodArray } = route.params;
+
     const renderItem = ({item}) => 
         <Result 
             stallName={item.stall} 
@@ -98,8 +101,7 @@ const AllFood = ({route}) => {
             calories={item.calories} 
             carbs={item.carbohydrates} 
             proteins={item.proteins} 
-            fats={item.fats} 
-        />
+            fats={item.fats} />
 
     return (
         <View>
@@ -117,10 +119,30 @@ const AllFood = ({route}) => {
     );
 }
 
-const Result = ({ stallName, foodName, calories, carbs, proteins, fats }) => {
+const Result = ({ stallName, foodName, calories, carbs, proteins, fats}) => {
+    
+    const [shortcutModal, setShortcutModal] = useState(false);
+
+    const selectedFood = {
+        food: foodName,
+        calories: calories,
+        carbohydrates: carbs,
+        proteins: proteins,
+        fats: fats
+    }
+
+    const onLogFoodPress = () => {
+        //console.log("In Log Food button!");
+        setShortcutModal(true);
+    }
 
     return(
         <View style={styles.itemContainer}>
+
+            <ShortcutToFood
+                shortcutModal={shortcutModal}
+                setShortcutModal={setShortcutModal}
+                selectedFood={selectedFood} />
 
             <View style={styles.headerContainer}>
 
@@ -130,7 +152,7 @@ const Result = ({ stallName, foodName, calories, carbs, proteins, fats }) => {
                 </View>
 
                 <View style={styles.logFoodContainer}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => onLogFoodPress()}>
                         <View style={styles.logFoodButton}>
                             <Text style={styles.logFoodText}>Log Food</Text>
                         </View>
@@ -168,7 +190,7 @@ const Result = ({ stallName, foodName, calories, carbs, proteins, fats }) => {
 
 }
 
-export default function DisplayFood( {isVisible, foodArray, onClose, title }) {
+export default function DisplayFood( {isVisible, foodArray, onClose, title}) {
     
     return (
         <Modal animationType="slide" transparent={true} visible={isVisible}>
