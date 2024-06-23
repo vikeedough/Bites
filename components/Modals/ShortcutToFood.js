@@ -30,13 +30,18 @@ export default function ShortcutToFood({selectedFood, shortcutModal, setShortcut
     useEffect(() => {
 
         if (selectedFood) {
-            setCalories(selectedFood.calories);
-            setCarbs(selectedFood.carbohydrates);
-            setProtein(selectedFood.proteins)
-            setFat(selectedFood.fats)
+            updateMarcoValues(selectedFood, numOfServings)
         }
 
-    })
+    }, [])
+
+    // useEffect(() => {
+
+    //     if (selectedFood) {
+    //         updateMarcoValues(selectedFood, numOfServings)
+    //     }
+
+    // }, [numOfServings])
 
     const mealTypeData = [
         {label: "Breakfast", value: "breakfast"},
@@ -67,10 +72,11 @@ export default function ShortcutToFood({selectedFood, shortcutModal, setShortcut
     }
 
     const updateMarcoValues = (food, servings) => {
-        setCalories(food.calories * servings);
-        setCarbs(food.carbohydrates * servings);
-        setProtein(food.proteins * servings);
-        setFat(food.fats * servings);
+        // console.log("In Update macros function")
+        setCalories(Math.round(food.calories * servings));
+        setCarbs(Math.round(food.carbohydrates * servings));
+        setProtein(Math.round(food.proteins * servings));
+        setFat(Math.round(food.fats * servings));
     }
     
     const logMealEntry = async () => {
@@ -250,7 +256,7 @@ const styles = StyleSheet.create({
         flex: 0.20,
         justifyContent: 'center',
         borderBottomWidth: 0.5,
-        backgroundColor: 'red'
+        //backgroundColor: 'red'
     },
     foodTitleText: {
         fontSize: 35,
