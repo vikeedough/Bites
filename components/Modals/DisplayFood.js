@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Modal, StyleSheet, View, Text, FlatList, TouchableOpacity } from "react-native";
+import { Button, Modal, StyleSheet, View, Text, FlatList, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { getDoc, doc } from 'firebase/firestore';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { firebaseAuth, firebaseDb } from "@/firebaseConfig";
@@ -11,8 +11,7 @@ const Tab = createMaterialTopTabNavigator();
 const auth = firebaseAuth;
 const db = firebaseDb;
 
-const Recommended = ({route}) => {
-
+const Recommended = ({ route }) => {
     const user = auth.currentUser.uid;
     const [macroGoalsArray, setMacroGoalsArray] = useState([]);
     const [targetCals, setTargetCals] = useState(0);
@@ -29,12 +28,11 @@ const Recommended = ({route}) => {
         setTargetCarbs(findMacroGoals[1] / 3);
         setTargetProteins(findMacroGoals[2] / 3);
         setTargetFats(findMacroGoals[3] / 3);
-        
     }
-    
+
     useEffect(() => {
         const findGoals = async () => {
-            const result = await findMacroGoals();
+            await findMacroGoals();
             console.log(targetCals);
             console.log(targetCarbs);
             console.log(targetProteins);
@@ -42,78 +40,61 @@ const Recommended = ({route}) => {
         }
 
         findGoals();
-        
-      }, []);
+    }, []);
 
-    // useEffect(() => {
-    //     setTargetCals(macroGoalsArray[0] / 3);
-    //     setTargetCarbs(macroGoalsArray[1] / 3);
-    //     setTargetProteins(macroGoalsArray[2] / 3);
-    //     setTargetFats(macroGoalsArray[3] / 3);
-    //     console.log(targetCals);
-    //     console.log(targetCarbs);
-    //     console.log(targetProteins);
-    //     console.log(targetFats);
-    // }, [macroGoalsArray]);
-    
     const { foodArray } = route.params;
-    const renderItem = ({item}) => 
-        <Result 
-            stallName={item.stall} 
-            foodName={item.food} 
-            calories={item.calories} 
-            carbs={item.carbohydrates} 
-            proteins={item.proteins} 
-            fats={item.fats} 
+    const renderItem = ({ item }) =>
+        <Result
+            stallName={item.stall}
+            foodName={item.food}
+            calories={item.calories}
+            carbs={item.carbohydrates}
+            proteins={item.proteins}
+            fats={item.fats}
         />
 
     const filteredFoodArray = foodArray.filter((item) => {
         return (
-        ((item.calories >= 0.8 * targetCals && item.calories <= 1.2 * targetCals)       
-    ));
+            ((item.calories >= 0.8 * targetCals && item.calories <= 1.2 * targetCals))
+        );
     });
 
     return (
-        <View> 
+        <View>
             <View style={styles.flatListContainer}>
-
-                <FlatList 
+                <FlatList
                     data={filteredFoodArray}
                     style={styles.flatList}
                     renderItem={renderItem}
                     keyExtractor={item => item.stall + item.food}
                 />
-
             </View>
         </View>
     );
-    
+
 }
 
-const AllFood = ({route}) => {
-
+const AllFood = ({ route }) => {
     const { foodArray } = route.params;
-
-    const renderItem = ({item}) => 
-        <Result 
-            stallName={item.stall} 
-            foodName={item.food} 
-            calories={item.calories} 
-            carbs={item.carbohydrates} 
-            proteins={item.proteins} 
-            fats={item.fats} />
+    const renderItem = ({ item }) =>
+        <Result
+            stallName={item.stall}
+            foodName={item.food}
+            calories={item.calories}
+            carbs={item.carbohydrates}
+            proteins={item.proteins}
+            fats={item.fats}
+        />
 
     return (
         <View>
             <View style={styles.flatListContainer}>
-
-                <FlatList 
+                <FlatList
                     data={foodArray}
                     style={styles.flatList}
                     renderItem={renderItem}
                     keyExtractor={item => item.stall + item.food}
                 />
-
             </View>
         </View>
     );
@@ -145,12 +126,10 @@ const Result = ({ stallName, foodName, calories, carbs, proteins, fats}) => {
                 selectedFood={selectedFood} />
 
             <View style={styles.headerContainer}>
-
                 <View style={styles.headerTextContainer}>
                     <Text style={styles.foodName}>{foodName}</Text>
                     <Text style={styles.stallName}>{stallName}</Text>
                 </View>
-
                 <View style={styles.logFoodContainer}>
                     <TouchableOpacity onPress={() => onLogFoodPress()}>
                         <View style={styles.logFoodButton}>
@@ -158,57 +137,49 @@ const Result = ({ stallName, foodName, calories, carbs, proteins, fats}) => {
                         </View>
                     </TouchableOpacity>
                 </View>
-                
             </View>
-            
             <View style={styles.numbersContainer}>
-
                 <View style={styles.numbersSubContainer}>
                     <Text style={styles.numberHeader}>Calories</Text>
                     <Text style={styles.numberText}>{calories} cal</Text>
                 </View>
-                
                 <View style={styles.numbersSubContainer}>
                     <Text style={styles.numberHeader}>Carbohydrates</Text>
                     <Text style={styles.numberText}>{carbs}g</Text>
                 </View>
-
                 <View style={styles.numbersSubContainer}>
                     <Text style={styles.numberHeader}>Proteins</Text>
                     <Text style={styles.numberText}>{proteins}g</Text>
                 </View>
-
                 <View style={styles.numbersSubContainer}>
                     <Text style={styles.numberHeader}>Fats</Text>
                     <Text style={styles.numberText}>{fats}g</Text>
                 </View>
-
             </View>
-            
         </View>
     );
-
 }
 
-export default function DisplayFood( {isVisible, foodArray, onClose, title}) {
-    
+export default function DisplayFood({ isVisible, foodArray, onClose, title }) {
     return (
         <Modal animationType="slide" transparent={true} visible={isVisible}>
-            <View style={styles.container}> 
-
+            <TouchableWithoutFeedback onPress={onClose}>
+                <View style={styles.modalOverlay} />
+            </TouchableWithoutFeedback>
+            <View style={styles.container}>
                 <View style={styles.header}>
                     <View style={styles.headerText}>
                         <Text style={styles.headerFoodStall}>{title}</Text>
                     </View>
-                    <AntDesign.Button 
-                        name="close" 
-                        color= 'white' 
-                        backgroundColor='#EC6337' 
-                        size = {22} 
-                        onPress={onClose} 
-                        style={{paddingEnd: 0}} />
+                    <AntDesign.Button
+                        name="close"
+                        color='white'
+                        backgroundColor='#EC6337'
+                        size={22}
+                        onPress={onClose}
+                        style={{ paddingEnd: 0 }}
+                    />
                 </View>
-
                 <Tab.Navigator
                     screenOptions={{
                         tabBarIndicatorStyle: {
@@ -216,16 +187,18 @@ export default function DisplayFood( {isVisible, foodArray, onClose, title}) {
                         }
                     }}
                 >
-                    <Tab.Screen name="Recommended" component={Recommended} initialParams={{foodArray}}/>
-                    <Tab.Screen name="All Food" component={AllFood} initialParams={{foodArray}}/>
+                    <Tab.Screen name="Recommended" component={Recommended} initialParams={{ foodArray }} />
+                    <Tab.Screen name="All Food" component={AllFood} initialParams={{ foodArray }} />
                 </Tab.Navigator>
-
             </View>
         </Modal>
     )
 }
 
 const styles = StyleSheet.create({
+    modalOverlay: {
+        flex: 1,
+    },
     container: {
         display: 'flex',
         height: '70%',
@@ -235,7 +208,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 18,
         position: 'absolute',
         bottom: 0,
-    }, 
+    },
     header: {
         display: 'flex',
         flexDirection: 'row',
@@ -325,4 +298,4 @@ const styles = StyleSheet.create({
         fontStyle: 'italic',
         fontSize: 18,
     }
-})
+});

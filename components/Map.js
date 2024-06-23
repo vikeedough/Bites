@@ -195,6 +195,13 @@ export default function Map() {
               ref={(ref) => (markerRef.current[item.id] = ref)}
               onPress={() => {
                 openModal(item.foodArray, item.title);
+                mapRef.current.animateToRegion({
+                  latitude: item.coordinates.latitude - 0.0022,
+                  longitude: item.coordinates.longitude,
+                  latitudeDelta: 0.005,
+                  longitudeDelta: 0.005,
+                }, 1000);
+                markerRef.current[item.id].showCallout();
               }}
             />
           ))}
