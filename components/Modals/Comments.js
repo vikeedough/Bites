@@ -1,4 +1,4 @@
-import { Modal, View, StyleSheet, Text, FlatList, TextInput } from 'react-native'; 
+import { Modal, View, StyleSheet, Text, FlatList, TextInput, TouchableWithoutFeedback } from 'react-native'; 
 import { useState, useEffect } from 'react';
 import { firebaseAuth, firebaseDb} from '@/firebaseConfig';
 import { getDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
@@ -26,7 +26,7 @@ const Result = ({ userId, commentText }) => {
     
     useEffect(() => {
         findUsername();
-      }, [userId]);
+    }, [userId]);
     
     return (
     <View style={styles.commentContainer}>
@@ -59,6 +59,11 @@ export default function Comments( {isVisible, commentsContent, onClose, postRef}
 
     return (
         <Modal animationType='slide' transparent={true} visible={isVisible}>
+
+            <TouchableWithoutFeedback onPress={onClose}>
+                <View style={styles.modalOverlay} />
+            </TouchableWithoutFeedback>
+
             <View style={styles.container}>
 
                 <View style={styles.header}>
@@ -92,6 +97,9 @@ export default function Comments( {isVisible, commentsContent, onClose, postRef}
 }
 
 const styles = StyleSheet.create({
+    modalOverlay: {
+        flex: 1,
+    },
     container: {
         display: 'flex',
         height: '50%',
