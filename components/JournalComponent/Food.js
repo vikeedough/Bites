@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, View, TextInput, TouchableOpacity, FlatListComponent } from 'react-native';
+import { Text, StyleSheet, View, TextInput, TouchableOpacity, FlatListComponent, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MacroButton from '@/components/MacroButton.js';
@@ -12,6 +12,8 @@ import { set } from 'date-fns';
 import AlertModal from "@/components/JournalComponent/AlertModal.js"
 import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
+import FoodDatabase from "@/components/FoodDatabase.js";
+import flavoursFoodData from '@/components/FoodDatabase.js';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -22,20 +24,21 @@ export default function Food() {
   const route = useRoute();
   const { currentFoodEntry } = route.params || {};
   const navigation = useNavigation();
-  console.log("In the Food Page aSDAd")
-  console.log(currentFoodEntry)
+  // console.log("In the Food Page aSDAd")
+  // console.log(currentFoodEntry)
 
   const [selectedFood, setSelectedFood] = useState(null);
   const [mealType, setMealType] = useState(null);
   const [numOfServings, setNumOfServings] = useState(1);
   const [textInputFocus, setTextInputFocus] = useState(false);
   const [alertModal, setAlertModal] = useState(false);
-  const [alertType, setAlertType] = useState('')
+  const [alertType, setAlertType] = useState('');
+  const [flavoursArray, setFlavoursArray] = useState([]);
 
-  const [calories, setCalories] = useState(0)
-  const [carbs, setCarbs] = useState(0)
-  const [protein, setProtein] = useState(0)
-  const [fat, setFat] = useState(0)
+  const [calories, setCalories] = useState(0);
+  const [carbs, setCarbs] = useState(0);
+  const [protein, setProtein] = useState(0);
+  const [fat, setFat] = useState(0);
 
   const mealTypeData = [
     {label: "Breakfast", value: "breakfast"},
@@ -44,12 +47,19 @@ export default function Food() {
     {label: "Others", value: "others"}
   ]
 
-  const testMealData = [
-    {id: 0, title: "Chicken Rice", value: "Chicken Rice", calories: 600, carbs: 100, protein: 25, fat: 20},
-    {id: 1, title: "Fried Rice", value: "Fried Rice" , calories: 700, carbs: 150, protein: 20, fat: 30},
-    {id: 2, title: "Noodles", value: "Noodles" , calories: 450, carbs: 70, protein: 15, fat: 10},
-    {id: 3, title: "Pancakes", value: "Pancakes" , calories: 200, carbs: 40, protein: 5, fat: 30}
-  ]
+  const flavours = async () => {
+    const test = await flavoursFoodData();
+    setFlavoursArray(test);
+  }
+  
+  //flavours();
+
+  // const testMealData = [
+  //   {id: 0, title: "Chicken Rice", value: "Chicken Rice", calories: 600, carbs: 100, protein: 25, fat: 20},
+  //   {id: 1, title: "Fried Rice", value: "Fried Rice" , calories: 700, carbs: 150, protein: 20, fat: 30},
+  //   {id: 2, title: "Noodles", value: "Noodles" , calories: 450, carbs: 70, protein: 15, fat: 10},
+  //   {id: 3, title: "Pancakes", value: "Pancakes" , calories: 200, carbs: 40, protein: 5, fat: 30}
+  // ]
 
   const onDropdownChange = (item) => {
     setMealType(item.value);
@@ -74,6 +84,13 @@ export default function Food() {
   }
 
   useEffect(() => {
+    flavours();
+  }, [])
+
+  // console.log("Logging Flavours Array...")
+  // console.log(flavoursArray);
+
+  useEffect(() => {
     // console.log("Meal type data: " + mealType)
     // console.log("Num of Servings: " + numOfServings)
     // console.log("Text Input enabled: " + textInputEnabled)
@@ -83,14 +100,13 @@ export default function Food() {
       updateMarcoValues(selectedFood, numOfServings);
     }
 
-    console.log("In useEffect!")
-    console.log(calories);
-    console.log(carbs);
-    console.log(protein);
-    console.log(fat);
-    console.log(mealType);
+    // console.log("In useEffect!")
+    // console.log(calories);
+    // console.log(carbs);
+    // console.log(protein);
+    // console.log(fat);
+    // console.log(mealType);
     
-
   }, [selectedFood, numOfServings, mealType])
 
   const onSelectAutoDropdownItem = (food) => {
@@ -102,15 +118,15 @@ export default function Food() {
 
   const updateMarcoValues = (food, servings) => {
     setCalories(food.calories * servings);
-    setCarbs(food.carbs * servings);
-    setProtein(food.protein * servings);
-    setFat(food.fat * servings);
+    setCarbs(food.carbohydrates * servings);
+    setProtein(food.proteins * servings);
+    setFat(food.fats * servings);
   }
 
   const logMealEntry = async () => {
 
     const newFoodEntry = {
-      foodName: selectedFood.title,
+      foodName: selectedFood.food,
       calories: calories,
       carbs: carbs,
       protein: protein,
@@ -175,7 +191,8 @@ export default function Food() {
             closeOnBlur={true}
             closeOnSubmit={false}
             onSelectItem={onSelectAutoDropdownItem}
-            dataSet={testMealData}
+            dataSet={flavoursArray}
+            
             containerStyle={styles.autoDropdownInputContainer}
             // suggestionsListContainerStyle={styles.suggestionsListContainer}
             inputContainerStyle={styles.autoDropdownText}
@@ -187,7 +204,7 @@ export default function Food() {
         </View>
 
         <View style={styles.foodTitleContainer}>
-          <Text style={styles.foodTitleText}>{selectedFood ? `${selectedFood.title}` : ''}</Text>
+          <Text style={styles.foodTitleText}>{selectedFood ? `${selectedFood.food}` : ''}</Text>
         </View>
 
         <View style={styles.mealTypeContainer}>
@@ -261,7 +278,7 @@ export default function Food() {
         </View>
 
         <View style={styles.barGraphContainer}>
-          <Text>Bar Graph</Text>
+          {/* <Text>Bar Graph</Text> */}
         </View>
 
         <View style={styles.tickContainer}>
@@ -309,7 +326,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingLeft: 20,
   },
-
   mealTypeContainer: {
     flexDirection: 'row',
     flex: 0.12,
@@ -419,13 +435,13 @@ const styles = StyleSheet.create({
     color: '#EC6337'
   },
   barGraphContainer: {
-    flex: 0.25,
+    flex: 0.15,
     justifyContent: 'center',
     alignItems: 'center',
     //backgroundColor: 'red'
   },
   tickContainer: {
-    flex: 0.15,
+    flex: 0.25,
     justifyContent: 'center',
     alignItems: 'center',
     //backgroundColor: 'green'

@@ -4,6 +4,8 @@ import { getDoc, doc } from 'firebase/firestore';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { firebaseAuth, firebaseDb } from "@/firebaseConfig";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import ShortcutToFood from "@/components/Modals/ShortcutToFood.js"
+import { onLog } from "firebase/app";
 
 const Tab = createMaterialTopTabNavigator();
 const auth = firebaseAuth;
@@ -98,16 +100,38 @@ const AllFood = ({ route }) => {
     );
 }
 
-const Result = ({ stallName, foodName, calories, carbs, proteins, fats }) => {
-    return (
+const Result = ({ stallName, foodName, calories, carbs, proteins, fats}) => {
+    
+    const [shortcutModal, setShortcutModal] = useState(false);
+
+    const selectedFood = {
+        food: foodName,
+        calories: calories,
+        carbohydrates: carbs,
+        proteins: proteins,
+        fats: fats
+    }
+
+    const onLogFoodPress = () => {
+        //console.log("In Log Food button!");
+        setShortcutModal(true);
+    }
+
+    return(
         <View style={styles.itemContainer}>
+
+            <ShortcutToFood
+                shortcutModal={shortcutModal}
+                setShortcutModal={setShortcutModal}
+                selectedFood={selectedFood} />
+
             <View style={styles.headerContainer}>
                 <View style={styles.headerTextContainer}>
                     <Text style={styles.foodName}>{foodName}</Text>
                     <Text style={styles.stallName}>{stallName}</Text>
                 </View>
                 <View style={styles.logFoodContainer}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => onLogFoodPress()}>
                         <View style={styles.logFoodButton}>
                             <Text style={styles.logFoodText}>Log Food</Text>
                         </View>

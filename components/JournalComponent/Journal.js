@@ -34,7 +34,12 @@ export default function Journal({navigation}) {
   useFocusEffect(
     useCallback(() => {
 
-      checkAndCreateEntry(todayDateStringID);    
+      if (!selectedDayID) {
+        checkAndCreateEntry(todayDateStringID); 
+      } else {
+        checkAndCreateEntry(selectedDayID)
+      }
+         
 
     }, [currentFoodEntry])
   );
@@ -127,6 +132,23 @@ export default function Journal({navigation}) {
 
   }
 
+  const calorieEquation = () => {
+    const totalBfastCalories = breakfastArray.reduce((total, item) => total + item.calories, 0);
+    const totalLunchCalories = lunchArray.reduce((total, item) => total + item.calories, 0);
+    const totalDinnerCalories = dinnerArray.reduce((total, item) => total + item.calories, 0);
+    const totalOthersCalories = othersArray.reduce((total, item) => total + item.calories, 0);
+    const totalCalories = totalBfastCalories + totalLunchCalories + totalDinnerCalories + totalOthersCalories;
+
+    return (
+      <View style={{padding: 10, alignItems: 'center'}}>
+        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Total Calories</Text>
+        <Text style={{fontSize: 20, paddingTop: 10}}>{totalBfastCalories} + {totalLunchCalories} + {totalDinnerCalories} + {totalOthersCalories} = {totalCalories}</Text>
+      </View>
+      
+    )
+
+  }
+
   return (
     <View style={styles.container}>
 
@@ -143,8 +165,9 @@ export default function Journal({navigation}) {
       </View>
 
       <View style={styles.barGraphContainer}>
-        <Text>Today's Date: {todayDateStringID}</Text>
-        <Text>Selected Day: {selectedDayID}</Text>
+        {calorieEquation()}
+        {/* <Text>Today's Date: {todayDateStringID}</Text>
+        <Text>Selected Day: {selectedDayID ? selectedDayID : ''}</Text> */}
         {/* <Text style={{fontSize: 20}}>Bar Graph</Text> */}
       </View>
 
