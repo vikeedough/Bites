@@ -27,35 +27,74 @@ export default function Login({navigation}) {
 
     return (
         <View style = {styles.container}>
-          <Text style = {styles.loginText}>Bites</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={onChangeEmail}
-            value={email}
-            placeholder='email'
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={onChangePassword}
-            value={password}
-            placeholder='password'
-            secureTextEntry = {true}
-          />
-          <View style = {{padding: 10}}>
-            <Button title = "Log in!" onPress = {signIn} color = '#EC6337' />
+          <View style = {styles.innerContainer}>
+            <Text style = {styles.loginText}>Bites</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={onChangeEmail}
+              value={email}
+              placeholder='email'
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={onChangePassword}
+              value={password}
+              placeholder='password'
+              secureTextEntry = {true}
+            />
+            <View style = {{padding: 10}}>
+              <Button title = "Log in!" onPress = {signIn} color = '#EC6337' />
+            </View>
+
+            <View style={styles.noAccountContainer}>
+
+              <View>
+                <Text>Don't have an account? </Text>
+              </View>
+
+              <View>
+                <TouchableOpacity>
+                  <Text style = {{color: '#EC6337'}} 
+                  onPress = {() => navigation.navigate('Signup')}>Sign up here!
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+            </View>
+            
           </View>
-          <TouchableOpacity>
-            <Text style = {{color: '#EC6337', margin: 10}} onPress = {() => navigation.navigate('Signup')}>I don't have an account</Text>
-          </TouchableOpacity>
         </View>
       );
 }
 
 const styles = StyleSheet.create({
   container: { 
-    flex: 1,
+    display: 'flex',
+    height: '100%',
+    width: '100%',
     justifyContent: 'center', 
-    alignItems: 'center' 
+    alignItems: 'center',
+    backgroundColor: '#F4F4F6',
+  },
+  innerContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+    width: '90%',
+    height: '70%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+  },
+  noAccountContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '10%',
+  },
+  totalText: {
+    textAlign: 'center',
   },
   loginText: {
     fontWeight: 'bold',
@@ -66,9 +105,10 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 0,
     margin: 5,
+    height: '8%',
     width: "80%",
-    borderRadius: 20,
-    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    backgroundColor: '#F4F4F6',
     textAlign: 'center',
   },
 
