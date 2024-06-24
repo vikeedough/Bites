@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
 import Food from "@/components/JournalComponent/Food.js"
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import CalendarModal from '@/components/JournalComponent/CalendarModal.js';
 import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
@@ -121,12 +121,19 @@ export default function Journal({navigation}) {
 
     return foodArray.map((food, index) => (
       <View key={index} style={styles.mealDisplayContainer}>
-        <View style={{flex: 1}}>
-          <Text style={styles.mealDisplayTitle}>{food.foodName}</Text>
+
+        <View style={styles.foodNameContainer}>
+          <View style={styles.innerFoodNameContainer}>
+            <Text style={styles.mealDisplayTitle}>{food.foodName}</Text>
+          </View>
         </View>
-        <View style={{flex: 1}}>
-          <Text style={styles.calorieDisplayText}>{food.calories}</Text>
+
+        <View style={styles.foodCaloriesContainer}>
+          <View style={styles.innerFoodCaloriesContainer}>
+            <Text style={styles.calorieDisplayText}>{food.calories}</Text>
+          </View>
         </View>
+
       </View>
     ))
 
@@ -140,9 +147,34 @@ export default function Journal({navigation}) {
     const totalCalories = totalBfastCalories + totalLunchCalories + totalDinnerCalories + totalOthersCalories;
 
     return (
-      <View style={{padding: 10, alignItems: 'center'}}>
-        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Total Calories</Text>
-        <Text style={{fontSize: 20, paddingTop: 10}}>{totalBfastCalories} + {totalLunchCalories} + {totalDinnerCalories} + {totalOthersCalories} = {totalCalories}</Text>
+      <View style={styles.calorieEquationContainer}>
+        <View style={styles.totalCaloriesContainer}>
+          <Text style={styles.calculatedCaloriesText}>{totalCalories}</Text>
+          <Text style={styles.mealCaloriesText}>Total Calories</Text>
+        </View>
+        <View style={styles.addedMacrosContainer}>
+          
+          <View style={styles.individualMacroContainer}>
+            <Text style={styles.individualCaloriesText}>{totalBfastCalories}</Text>
+            <Text style={styles.mealCaloriesText}>Breakfast</Text>
+          </View>
+
+          <View style={styles.individualMacroContainer}>
+            <Text style={styles.individualCaloriesText}>{totalLunchCalories}</Text>
+            <Text style={styles.mealCaloriesText}>Lunch</Text>
+          </View>
+
+          <View style={styles.individualMacroContainer}>
+            <Text style={styles.individualCaloriesText}>{totalDinnerCalories}</Text>
+            <Text style={styles.mealCaloriesText}>Dinner</Text>
+          </View>
+
+          <View style={styles.individualMacroContainer}>
+            <Text style={styles.individualCaloriesText}>{totalOthersCalories}</Text>
+            <Text style={styles.mealCaloriesText}>Others</Text>
+          </View>
+
+        </View>
       </View>
       
     )
@@ -172,61 +204,110 @@ export default function Journal({navigation}) {
       </View>
 
       <View style={styles.BodyContainer}>
+        <Text style={styles.foodDiaryText}>Food Diary</Text>
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
 
           <View style ={styles.MealContainer}>
-            <View style={styles.MealHeader}>
-              <View style={{flex: 1}}>
-                <Text style={styles.MealTitle}>Breakfast</Text>
-              </View>
-              <View style={{flex: 1}}>
-                <Text style={styles.CalorieTitle}>Calories: {breakfastArray.reduce((total, item) => total + item.calories, 0)}</Text>
-              </View>
+            <View style={styles.mealLeftContainer}>
+              <MaterialCommunityIcons 
+                name='food-apple-outline' 
+                color='#EC6337'
+                size={20}
+                style={{paddingEnd: 0}}
+              />
             </View>
-            <ScrollView contentContainerStyle={{flex: 0.8}}>
-              {updateDisplay(breakfastArray)}
-            </ScrollView>
-          </View>
-
-          <View style ={styles.MealContainer}>
-            <View style={styles.MealHeader}>
-              <View style={{flex: 1}}>
-                <Text style={styles.MealTitle}>Lunch</Text>
+            <View style={styles.mealRightContainer}>
+              <View style={styles.MealHeader}>
+                <View style={styles.mealLeftHeader}>
+                  <Text style={styles.MealTitle}>Breakfast</Text>
+                </View>
+                <View style={styles.mealRightHeader}>
+                  <Text style={styles.CalorieTitle}>{breakfastArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                </View>
               </View>
-              <View style={{flex: 1}}>
-                <Text style={styles.CalorieTitle}>Calories: {lunchArray.reduce((total, item) => total + item.calories, 0)}</Text>
+              <View style={styles.arrayMapContainer}>
+                <ScrollView>
+                  {updateDisplay(breakfastArray)}
+                </ScrollView>
               </View>
-            </View>
-            <View style ={{flex: 0.8}}>
-              {updateDisplay(lunchArray)}
             </View>
           </View>
 
           <View style ={styles.MealContainer}>
-            <View style={styles.MealHeader}>
-              <View style={{flex: 1}}>
-                <Text style={styles.MealTitle}>Dinner</Text>
-              </View>
-              <View style={{flex: 1}}>
-                <Text style={styles.CalorieTitle}>Calories: {dinnerArray.reduce((total, item) => total + item.calories, 0)}</Text>
-              </View>
+            <View style={styles.mealLeftContainer}>
+              <MaterialCommunityIcons 
+                name='food-outline' 
+                color='#EC6337'
+                size={20}
+                style={{paddingEnd: 0}}
+              />
             </View>
-            <View style ={{flex: 0.8}}>
-              {updateDisplay(dinnerArray)}
+            <View style={styles.mealRightContainer}>
+              <View style={styles.MealHeader}>
+                <View style={styles.mealLeftHeader}>
+                  <Text style={styles.MealTitle}>Lunch</Text>
+                </View>
+                <View style={styles.mealRightHeader}>
+                  <Text style={styles.CalorieTitle}>{lunchArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                </View>
+              </View>
+              <View style={styles.arrayMapContainer}>
+                <ScrollView>
+                  {updateDisplay(lunchArray)}
+                </ScrollView>
+              </View>
             </View>
           </View>
 
           <View style ={styles.MealContainer}>
-            <View style={styles.MealHeader}>
-              <View style={{flex: 1}}>
-                <Text style={styles.MealTitle}>Others</Text>
+            <View style={styles.mealLeftContainer}>
+              <MaterialCommunityIcons 
+                name='food-drumstick-outline' 
+                color='#EC6337'
+                size={20}
+                style={{paddingEnd: 0}}
+              />
+            </View>
+            <View style={styles.mealRightContainer}>
+              <View style={styles.MealHeader}>
+                <View style={styles.mealLeftHeader}>
+                  <Text style={styles.MealTitle}>Dinner</Text>
+                </View>
+                <View style={styles.mealRightHeader}>
+                  <Text style={styles.CalorieTitle}>{dinnerArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                </View>
               </View>
-              <View style={{flex: 1}}>
-                <Text style={styles.CalorieTitle}>Calories: {othersArray.reduce((total, item) => total + item.calories, 0)}</Text>
+              <View style={styles.arrayMapContainer}>
+                <ScrollView>
+                  {updateDisplay(dinnerArray)}
+                </ScrollView>
               </View>
             </View>
-            <View style ={{flex: 0.8}}>
-              {updateDisplay(othersArray)}
+          </View>
+
+          <View style ={styles.MealContainer}>
+            <View style={styles.mealLeftContainer}>
+              <MaterialCommunityIcons 
+                name='food-hot-dog' 
+                color='#EC6337'
+                size={20}
+                style={{paddingEnd: 0}}
+              />
+            </View>
+            <View style={styles.mealRightContainer}>
+              <View style={styles.MealHeader}>
+                <View style={styles.mealLeftHeader}>
+                  <Text style={styles.MealTitle}>Others</Text>
+                </View>
+                <View style={styles.mealRightHeader}>
+                  <Text style={styles.CalorieTitle}>{othersArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                </View>
+              </View>
+              <View style={styles.arrayMapContainer}>
+                <ScrollView>
+                  {updateDisplay(othersArray)}
+                </ScrollView>
+              </View>
             </View>
           </View>
           
@@ -235,7 +316,7 @@ export default function Journal({navigation}) {
 
       <View style={styles.ButtonContainer}>
         <TouchableOpacity style={styles.AddFoodButton} onPress={navigateToAddFood}>
-          <Text>Add Food</Text>
+          <Text style={styles.addFoodText}>Add Food Entry</Text>
         </TouchableOpacity>
       </View>
       
@@ -246,16 +327,16 @@ export default function Journal({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    display: 'flex',
+    backgroundColor: '#F4F4F6',
+    height: '100%',
   },
   todayContainer: {
-    flex: 0.06,
+    display: 'flex',
+    height: '8%',
     flexDirection: 'row',
-    borderBottomWidth: 0.6,
-    borderTopWidth: 0.6,
-    //backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: 15,
   },
   todayText: {
     fontSize: 18, 
@@ -265,34 +346,100 @@ const styles = StyleSheet.create({
     paddingLeft: 5
   },
   barGraphContainer: {
-    flex: 0.15,
-    borderBottomWidth: 0.6,
-    //backgroundColor: 'green',
+    display: 'flex',
+    height: '20%',
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 15,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  calorieEquationContainer: {
+    display: 'flex',
+    width: '100%',
+    borderRadius: 10,
+  },
+  totalCaloriesContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '60%',
+    width: '100%',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  calculatedCaloriesText: {
+    color: '#EC6337',
+    fontSize: 35,
+    fontWeight: 'bold',
+  },
+  individualCaloriesText: {
+    color: '#EC6337',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  mealCaloriesText: {
+    fontWeight: 'bold',
+  },
+  addedMacrosContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    borderTopWidth: 1,
+    borderColor: '#F4F4F6',
+    height: '40%',
+    width: '100%',
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  individualMacroContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   BodyContainer: {
-    flex: 0.70,
-    //backgroundColor: 'yellow',
+    display: 'flex',
+    height: '62%',
+    marginHorizontal: 15,
+    paddingTop: 5,
+  },
+  foodDiaryText: {
+    fontWeight: 'bold',
+    fontSize: 20,
   },
   ButtonContainer: {
-    flex: 0.09,
-    borderBottomWidth: 0.6,
-    //backgroundColor: 'orange',
+    display: 'flex',
+    height: '10%',
     justifyContent: 'center',
     alignItems: 'center'
   },
   AddFoodButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 100,
-    height: 35,
+    height: '60%',
+    width: '80%',
     borderRadius: 8,
     backgroundColor: '#EC6337',
   },
   MealContainer: {
-    flex: 0.25,
-    borderBottomWidth: 0.6,
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    height: '23%',
+    borderRadius: 10,
+    marginVertical: 5,
+  },
+  mealLeftContainer: {
+    display: 'flex',
+    width: '10%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mealRightContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '90%',
+    height: '100%',
   },
   MealTitle: {
     fontSize: 18,
@@ -301,30 +448,73 @@ const styles = StyleSheet.create({
   },
   CalorieTitle: {
     fontSize: 18,
-    fontWeight: 'bold', 
-    textAlign: 'right',
-    paddingRight: 10
+    color: '#EC6337',
+    fontWeight: '500',
   },
   MealHeader: {
+    display: 'flex',
     flexDirection: 'row',
-    height: 40,
-    alignItems: 'center',
-    borderBottomWidth: 0.6,
-    //backgroundColor: 'red'
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    height: '50%',
+  },
+  mealLeftHeader: {
+    display: 'flex',
+    borderRightWidth: 1,
+    borderRightColor: '#828282',
+    paddingRight: 5,
+  },
+  mealRightHeader: {
+    display: 'flex',
+    paddingLeft: 5,
+  },
+  arrayMapContainer: {
+    display: 'flex',
+    height: '50%',
   },
   mealDisplayContainer: {
+    display: 'flex',
     flexDirection: 'row',
-    height: 40,
     alignItems: 'center',
-    borderBottomWidth: 0.2,
+    paddingVertical: 2.5,
+  },
+  foodNameContainer: {
+    display: 'flex',
+    width: '75%',
+  },
+  innerFoodNameContainer: {
+    display: 'flex',
+    backgroundColor: '#F4F4F6',
+    borderRadius: 15,
+    width: '90%',
+  },
+  innerFoodCaloriesContainer: {
+    display: 'flex',
+    backgroundColor: '#F4F4F6',
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  foodCaloriesContainer: {
+    display: 'flex',
+    width: '25%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   mealDisplayTitle: {
-    fontSize: 16,
+    fontSize: 18,
     paddingLeft: 10,
+    color: '#828282',
   },
   calorieDisplayText: {
-    fontSize: 16,
-    textAlign: 'right',
-    paddingRight: 10
-  }
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#EC6337',
+    textAlign: 'center',
+    paddingHorizontal: 10,
+  },
+  addFoodText: {
+    fontSize: 20,
+    color: '#FFFFFF',
+  },
 });

@@ -1,8 +1,10 @@
 import React from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button, Image } from "react-native";
 import {firebaseApp, firebaseAuth} from '@/firebaseConfig'
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
+
+const logo = require('@/assets/images/Logo-Grey-Background.png');
 const app = firebaseApp
 const auth = firebaseAuth
 
@@ -27,24 +29,33 @@ export default function Login({navigation}) {
 
     return (
         <View style = {styles.container}>
+          <View style={styles.iconContainer}>
+            <Image resizeMode='contain' source={logo} style={styles.logo}/>
+          </View>
           <View style = {styles.innerContainer}>
-            <Text style = {styles.loginText}>Bites</Text>
+
+            <View style={styles.welcomeContainer}>
+              <Text style = {styles.welcomeText}>Welcome!</Text>
+              <Text style = {styles.signInText}>Sign in to continue</Text>
+            </View>
+
             <TextInput
               style={styles.input}
               onChangeText={onChangeEmail}
               value={email}
-              placeholder='email'
+              placeholder='Email'
             />
             <TextInput
               style={styles.input}
               onChangeText={onChangePassword}
               value={password}
-              placeholder='password'
+              placeholder='Password'
               secureTextEntry = {true}
             />
-            <View style = {{padding: 10}}>
-              <Button title = "Log in!" onPress = {signIn} color = '#EC6337' />
-            </View>
+
+            <TouchableOpacity style={styles.loginContainer} onPress={signIn}>
+                <Text style={styles.loginText}>LOGIN</Text>
+            </TouchableOpacity>
 
             <View style={styles.noAccountContainer}>
 
@@ -55,7 +66,7 @@ export default function Login({navigation}) {
               <View>
                 <TouchableOpacity>
                   <Text style = {{color: '#EC6337'}} 
-                  onPress = {() => navigation.navigate('Signup')}>Sign up here!
+                  onPress = {() => navigation.navigate('Signup')}>Sign up
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -76,40 +87,77 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F4F4F6',
   },
-  innerContainer: {
+  iconContainer: {
+    display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '20%',
+  },
+  logo: {
+    height: '50%',
+    width: '50%',
+  },
+  innerContainer: {
     alignItems: 'center',
     display: 'flex',
     width: '90%',
-    height: '70%',
+    height: '60%',
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
+    padding: 20,
   },
   noAccountContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '10%',
+    marginTop: 20,
+  },
+  welcomeContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '90%',
+    padding: 30,
   },
   totalText: {
     textAlign: 'center',
   },
-  loginText: {
+  welcomeText: {
     fontWeight: 'bold',
-    fontSize: 40,
-    margin: 10,
-    color: '#EC6337'
+    fontSize: 25,
+  },
+  signInText: {
+    fontSize: 18,
+    color: 'grey',
   },
   input: {
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: '#D4D4F6',
     margin: 5,
-    height: '8%',
-    width: "80%",
+    height: 40,
+    paddingLeft: 10,
+    width: '100%',
     borderRadius: 10,
-    backgroundColor: '#F4F4F6',
-    textAlign: 'center',
+    backgroundColor: '#FFFFFF',
   },
-
-})
+  loginContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#EC6337',
+    height: 40,
+    width: '100%',
+    borderRadius: 10,
+    paddingVertical: 10,
+    marginTop: 10,
+  },
+  loginText: {
+    textAlign: 'center',
+    color: '#FFFFFF',
+  },
+  signUpText: {
+    color: '#EC6337',
+  },
+});

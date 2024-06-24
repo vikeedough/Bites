@@ -4,7 +4,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MacroButton from '@/components/MacroButton.js';
 import { useRoute } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
 import { connectStorageEmulator } from 'firebase/storage';
@@ -198,14 +198,84 @@ export default function Food() {
             inputContainerStyle={styles.autoDropdownText}
             emptyResultText={'No such food found!'}
             textInputProps={{
-              placeholder: 'E.g. Chicken Rice'
+              placeholder: 'What are you looking for?'
             }}
           />
         </View>
 
-        <View style={styles.foodTitleContainer}>
-          <Text style={styles.foodTitleText}>{selectedFood ? `${selectedFood.food}` : ''}</Text>
+        <View style={styles.mainContainer}>
+          <View style={styles.foodTitleContainer}>
+            <Text style={styles.foodTitleText}>{selectedFood ? `${selectedFood.food}` : ''}</Text>
+          </View>
+
+          <View style={styles.numServingsContainer}>
+
+            <View style={styles.numServingsTextInputContainer}>
+              <TextInput style={styles.numberStyle}
+                editable={true} 
+                selectTextOnFocus={true}
+                keyboardType = "numeric"
+                value = {numOfServings}
+                placeholder={textInputFocus ? '' :'1'}
+                onFocus={() => setTextInputFocus(true)}
+                //onBlur={() => setTextInputFocus(false)}
+                onChangeText={handleNumOfServingsChange}/>
+            </View>
+
+            <View style={styles.numServingsTextContainer}>
+              <Text style={styles.servingsText}>Number of Servings</Text>
+            </View>
+
+          </View>
+
+          <View style={styles.mainBottomContainer}>
+            
+            <View style={styles.nutritionInfoContainer}>
+              <Text style={styles.nutritionInfoText}>Nutrition Information</Text>
+              <MaterialCommunityIcons 
+                name='pencil-outline' 
+                color='#EC6337'
+                size={18}
+                style={{paddingEnd: 0}}
+              />
+            </View>
+
+            <View style={styles.totalMacrosContainer}>
+
+              <View style={styles.macrosContainer}>
+                <TouchableOpacity style={styles.macroNumberContainer}>
+                  <Text style={styles.macroNumber}>{calories ? `${calories}` : 0}</Text>
+                </TouchableOpacity>
+                  <Text style={styles.macrosText}>Calories</Text>
+              </View>
+
+              <View style={styles.macrosContainer}>
+                <TouchableOpacity style={styles.macroNumberContainer}>
+                  <Text style={styles.macroNumber}>{carbs ? `${carbs}` : 0}g</Text>
+                </TouchableOpacity>
+                  <Text style={styles.macrosText}>Carbs</Text>
+              </View>
+
+              <View style={styles.macrosContainer}>
+                <TouchableOpacity style={styles.macroNumberContainer}>
+                  <Text style={styles.macroNumber}>{protein ? `${protein}` : 0}g</Text>
+                </TouchableOpacity>
+                  <Text style={styles.macrosText}>Protein</Text>
+              </View>
+
+              <View style={styles.macrosContainer}>
+                <TouchableOpacity style={styles.macroNumberContainer}>
+                  <Text style={styles.macroNumber}>{fat ? `${fat}` : 0}g</Text>
+                </TouchableOpacity>
+                  <Text style={styles.macrosText}>Fat</Text>
+              </View>
+
+            </View>
+
+            
+          </View>
         </View>
+        
 
         <View style={styles.mealTypeContainer}>
           <View style={styles.mealTypeTextContainer}>
@@ -230,63 +300,16 @@ export default function Food() {
           </View>
         </View>
 
-        <View style={styles.numServingsContainer}>
-          <View style={styles.numServingsTextContainer}>
-            <Text style={styles.mealTypeText}>Number of Servings</Text>
-          </View>
-          <View style={styles.numServingsTextInputContainer}>
-          <TextInput style={styles.numberStyle}
-            editable={true} 
-            selectTextOnFocus={true}
-            keyboardType = "numeric"
-            value = {numOfServings}
-            placeholder={textInputFocus ? '' :'1'}
-            onFocus={() => setTextInputFocus(true)}
-            //onBlur={() => setTextInputFocus(false)}
-            onChangeText={handleNumOfServingsChange}/>
-          </View>
-        </View>
-
-        <View style={styles.totalMacrosContainer}>
-          <View style={styles.macrosContainer}>
-            <TouchableOpacity>
-              <Text style={styles.macroNumber}>{calories ? `${calories}` : 0}</Text>
-            </TouchableOpacity>
-              <Text style={styles.macrosText}>Calories</Text>
-          </View>
-
-          <View style={styles.macrosContainer}>
-            <TouchableOpacity>
-              <Text style={styles.macroNumber}>{carbs ? `${carbs}` : 0}g</Text>
-            </TouchableOpacity>
-              <Text style={styles.macrosText}>Carbs</Text>
-          </View>
-
-          <View style={styles.macrosContainer}>
-            <TouchableOpacity>
-              <Text style={styles.macroNumber}>{protein ? `${protein}` : 0}g</Text>
-            </TouchableOpacity>
-              <Text style={styles.macrosText}>Protein</Text>
-          </View>
-
-          <View style={styles.macrosContainer}>
-            <TouchableOpacity>
-              <Text style={styles.macroNumber}>{fat ? `${fat}` : 0}g</Text>
-            </TouchableOpacity>
-              <Text style={styles.macrosText}>Fat</Text>
-          </View>
-        </View>
-
         <View style={styles.barGraphContainer}>
           {/* <Text>Bar Graph</Text> */}
         </View>
 
         <View style={styles.tickContainer}>
           <TouchableOpacity style={styles.tickButtonContainer} onPress={() => onTickButtonPress()}>
-            <AntDesign name="check" color={'white'} size={24} />
+            <Text style={styles.addToJournalText}>Add to Journal</Text>
           </TouchableOpacity>
         </View>
-     
+
       </View>
     </AutocompleteDropdownContextProvider>
     
@@ -296,18 +319,18 @@ export default function Food() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#ecf0f1',
+    display: 'flex',
+    backgroundColor: '#F4F4F6',
   },
   autoDropdownContainer: {
-    flex: 0.08,
+    display: 'flex',
+    height: '15%',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    //backgroundColor: 'red'
+    marginHorizontal: 15,
   },
   autoDropdownInputContainer: {
-    width: 380,
+    width: '100%',
   },
   autoDropdownText: {
     borderWidth: 0,
@@ -315,11 +338,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     textAlign: 'center',
   },
+  mainContainer: {
+    display: 'flex',
+    height: '45%',
+    marginHorizontal: 15,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+  },
   foodTitleContainer: {
-    flex: 0.12,
+    display: 'flex',
+    height: '40%',
     justifyContent: 'center',
-    borderBottomWidth: 0.5,
-    //backgroundColor: 'red'
+    alignItems: 'center',
   },
   foodTitleText: {
     fontSize: 35,
@@ -328,8 +358,8 @@ const styles = StyleSheet.create({
   },
   mealTypeContainer: {
     flexDirection: 'row',
-    flex: 0.12,
-    //backgroundColor: 'blue',
+    display: 'flex',
+    height: '15%',
     alignItems: 'center',
   },
   mealTypeTextContainer: {
@@ -343,25 +373,28 @@ const styles = StyleSheet.create({
     paddingRight: 25,
   },
   numServingsTextContainer: {
-    flex: 1, 
-    alignItems: 'flex-start',
-    paddingLeft: 25
+    alignItems: 'center',
+    display: 'flex',
+    width: '100%',
+    padding: 5,
   },
   numServingsTextInputContainer: {
-    flex: 1, 
-    alignItems: 'flex-end',
-    paddingRight: 25
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
   },
   numServingsContainer: {
-    flexDirection: 'row',
-    flex: 0.12,
-    //backgroundColor: 'green',
+    display: 'flex',
+    height: '20%',
     alignItems: 'center',
   },
+  servingsText: {
+    fontSize: 14,
+    color: '#828282',
+  },
   mealTypeText: {
-    fontSize: 20,
-    width: 100,
-    //backgroundColor: 'red',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   dropdown: {
     height: 40,
@@ -408,51 +441,81 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   numberStyle: {
-    width: 70,
-    height: 35,
-    borderWidth: 1,
-    borderRadius: 6,
+    width: '50%',
+    borderRadius: 10,
     fontSize: 20,
+    backgroundColor: '#F4F4F6',
     textAlign: 'center'
   },
-  totalMacrosContainer: {
-    flex: 0.15,
+  mainBottomContainer: {
+    display: 'flex',
+    height: '40%',
+  },
+  nutritionInfoContainer: {
+    display: 'flex',
     flexDirection: 'row',
-    //backgroundColor: 'yellow'
+    height: '35%',
+    borderTopWidth: 1,
+    borderTopColor: '#F4F4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    gap: 10,
+  },
+  nutritionInfoText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  totalMacrosContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    height: '65%',
+    padding: 10,
   },
   macrosContainer: {
     flex: 0.25,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  macroNumberContainer: {
+    backgroundColor: '#F4F4F6',
+    borderRadius: 15,
+    padding: 5,
+    paddingHorizontal: 15,
+  },
   macrosText: {
     fontSize: 12,
     paddingTop: 5,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: '#828282',
   },
   macroNumber: {
     fontSize: 20,
-    color: '#EC6337'
+    color: '#F5B09A'
   },
   barGraphContainer: {
-    flex: 0.15,
+    display: 'flex',
+    height: '10%',
     justifyContent: 'center',
     alignItems: 'center',
-    //backgroundColor: 'red'
   },
   tickContainer: {
-    flex: 0.25,
+    display: 'flex',
+    height: '15%',
     justifyContent: 'center',
     alignItems: 'center',
-    //backgroundColor: 'green'
   },
   tickButtonContainer: {
-    width: 75,
-    height: 30,
+    width: '80%',
+    height: '45%',
     backgroundColor: '#EC6337',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5
+    borderRadius: 10,
+  },
+  addToJournalText: {
+    fontSize: 20,
+    color: '#FFFFFF',
   }
 });
 

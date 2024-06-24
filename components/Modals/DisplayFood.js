@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'left',
-        height: '92%',
+        height: '100%',
     },
     flatList: {
         display: 'flex',
