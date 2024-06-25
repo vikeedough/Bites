@@ -39,7 +39,6 @@ export default function Journal({navigation}) {
       } else {
         checkAndCreateEntry(selectedDayID)
       }
-         
 
     }, [currentFoodEntry])
   );
@@ -204,114 +203,118 @@ export default function Journal({navigation}) {
       </View>
 
       <View style={styles.BodyContainer}>
-        <Text style={styles.foodDiaryText}>Food Diary</Text>
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
 
-          <View style ={styles.MealContainer}>
-            <View style={styles.mealLeftContainer}>
-              <MaterialCommunityIcons 
-                name='food-apple-outline' 
-                color='#EC6337'
-                size={20}
-                style={{paddingEnd: 0}}
-              />
-            </View>
-            <View style={styles.mealRightContainer}>
-              <View style={styles.MealHeader}>
-                <View style={styles.mealLeftHeader}>
-                  <Text style={styles.MealTitle}>Breakfast</Text>
-                </View>
-                <View style={styles.mealRightHeader}>
-                  <Text style={styles.CalorieTitle}>{breakfastArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
-                </View>
-              </View>
-              <View style={styles.arrayMapContainer}>
-                <ScrollView>
-                  {updateDisplay(breakfastArray)}
-                </ScrollView>
-              </View>
-            </View>
-          </View>
+        <View style={styles.foodDiaryContainer}>
+          <Text style={styles.foodDiaryText}>Food Diary</Text>
+        </View>
 
-          <View style ={styles.MealContainer}>
-            <View style={styles.mealLeftContainer}>
-              <MaterialCommunityIcons 
-                name='food-outline' 
-                color='#EC6337'
-                size={20}
-                style={{paddingEnd: 0}}
-              />
-            </View>
-            <View style={styles.mealRightContainer}>
-              <View style={styles.MealHeader}>
-                <View style={styles.mealLeftHeader}>
-                  <Text style={styles.MealTitle}>Lunch</Text>
-                </View>
-                <View style={styles.mealRightHeader}>
-                  <Text style={styles.CalorieTitle}>{lunchArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
-                </View>
-              </View>
-              <View style={styles.arrayMapContainer}>
-                <ScrollView>
-                  {updateDisplay(lunchArray)}
-                </ScrollView>
-              </View>
-            </View>
-          </View>
+        <View style={styles.scrollViewContainer}>
 
-          <View style ={styles.MealContainer}>
-            <View style={styles.mealLeftContainer}>
-              <MaterialCommunityIcons 
-                name='food-drumstick-outline' 
-                color='#EC6337'
-                size={20}
-                style={{paddingEnd: 0}}
-              />
-            </View>
-            <View style={styles.mealRightContainer}>
-              <View style={styles.MealHeader}>
-                <View style={styles.mealLeftHeader}>
-                  <Text style={styles.MealTitle}>Dinner</Text>
+            <View style ={styles.MealContainer}>
+              <View style={styles.mealLeftContainer}>
+                <MaterialCommunityIcons 
+                  name='food-apple-outline' 
+                  color='#EC6337'
+                  size={20}
+                  style={{paddingEnd: 0}}
+                />
+              </View>
+              <View style={styles.mealRightContainer}>
+                <View style={styles.MealHeader}>
+                  <View style={styles.mealLeftHeader}>
+                    <Text style={styles.MealTitle}>Breakfast</Text>
+                  </View>
+                  <View style={styles.mealRightHeader}>
+                    <Text style={styles.CalorieTitle}>{breakfastArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                  </View>
                 </View>
-                <View style={styles.mealRightHeader}>
-                  <Text style={styles.CalorieTitle}>{dinnerArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                <View style={styles.arrayMapContainer}>
+                  <ScrollView>
+                    {updateDisplay(breakfastArray)}
+                  </ScrollView>
                 </View>
               </View>
-              <View style={styles.arrayMapContainer}>
-                <ScrollView>
-                  {updateDisplay(dinnerArray)}
-                </ScrollView>
-              </View>
             </View>
-          </View>
 
-          <View style ={styles.MealContainer}>
-            <View style={styles.mealLeftContainer}>
-              <MaterialCommunityIcons 
-                name='food-hot-dog' 
-                color='#EC6337'
-                size={20}
-                style={{paddingEnd: 0}}
-              />
-            </View>
-            <View style={styles.mealRightContainer}>
-              <View style={styles.MealHeader}>
-                <View style={styles.mealLeftHeader}>
-                  <Text style={styles.MealTitle}>Others</Text>
+            <View style ={styles.MealContainer}>
+              <View style={styles.mealLeftContainer}>
+                <MaterialCommunityIcons 
+                  name='food-outline' 
+                  color='#EC6337'
+                  size={20}
+                  style={{paddingEnd: 0}}
+                />
+              </View>
+              <View style={styles.mealRightContainer}>
+                <View style={styles.MealHeader}>
+                  <View style={styles.mealLeftHeader}>
+                    <Text style={styles.MealTitle}>Lunch</Text>
+                  </View>
+                  <View style={styles.mealRightHeader}>
+                    <Text style={styles.CalorieTitle}>{lunchArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                  </View>
                 </View>
-                <View style={styles.mealRightHeader}>
-                  <Text style={styles.CalorieTitle}>{othersArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                <View style={styles.arrayMapContainer}>
+                  <ScrollView>
+                    {updateDisplay(lunchArray)}
+                  </ScrollView>
                 </View>
               </View>
-              <View style={styles.arrayMapContainer}>
-                <ScrollView>
-                  {updateDisplay(othersArray)}
-                </ScrollView>
+            </View>
+
+            <View style ={styles.MealContainer}>
+              <View style={styles.mealLeftContainer}>
+                <MaterialCommunityIcons 
+                  name='food-drumstick-outline' 
+                  color='#EC6337'
+                  size={20}
+                  style={{paddingEnd: 0}}
+                />
+              </View>
+              <View style={styles.mealRightContainer}>
+                <View style={styles.MealHeader}>
+                  <View style={styles.mealLeftHeader}>
+                    <Text style={styles.MealTitle}>Dinner</Text>
+                  </View>
+                  <View style={styles.mealRightHeader}>
+                    <Text style={styles.CalorieTitle}>{dinnerArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                  </View>
+                </View>
+                <View style={styles.arrayMapContainer}>
+                  <ScrollView>
+                    {updateDisplay(dinnerArray)}
+                  </ScrollView>
+                </View>
               </View>
             </View>
-          </View>
-          
-        </ScrollView>
+
+            <View style ={styles.MealContainer}>
+              <View style={styles.mealLeftContainer}>
+                <MaterialCommunityIcons 
+                  name='food-hot-dog' 
+                  color='#EC6337'
+                  size={20}
+                  style={{paddingEnd: 0}}
+                />
+              </View>
+              <View style={styles.mealRightContainer}>
+                <View style={styles.MealHeader}>
+                  <View style={styles.mealLeftHeader}>
+                    <Text style={styles.MealTitle}>Others</Text>
+                  </View>
+                  <View style={styles.mealRightHeader}>
+                    <Text style={styles.CalorieTitle}>{othersArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                  </View>
+                </View>
+                <View style={styles.arrayMapContainer}>
+                  <ScrollView>
+                    {updateDisplay(othersArray)}
+                  </ScrollView>
+                </View>
+              </View>
+            </View>
+        </View>
+        
       </View>
 
       <View style={styles.ButtonContainer}>
@@ -401,7 +404,17 @@ const styles = StyleSheet.create({
     display: 'flex',
     height: '62%',
     marginHorizontal: 15,
-    paddingTop: 5,
+    paddingVertical: 5,
+  },
+  foodDiaryContainer: {
+    display: 'flex',
+    height: '8%',
+    //backgroundColor: 'red',
+  },
+  scrollViewContainer: {
+    display: 'flex',
+    height: '92%',
+    padding: 0,
   },
   foodDiaryText: {
     fontWeight: 'bold',
@@ -456,7 +469,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
-    height: '50%',
+    height: '40%',
   },
   mealLeftHeader: {
     display: 'flex',
@@ -470,7 +483,7 @@ const styles = StyleSheet.create({
   },
   arrayMapContainer: {
     display: 'flex',
-    height: '50%',
+    height: '60%',
   },
   mealDisplayContainer: {
     display: 'flex',

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useEffect, useRef } from 'react';
 import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig';
@@ -81,7 +81,7 @@ export default function Post() {
 
     const addLocation = () => {
         if (locationInput === '') {
-            alert('Enter a location!');
+            Alert.alert('Add location failed', 'Please key in or select a location!', [{text: 'Understood'}]);
         }
         setSelectedLocation(locationInput);
     }
@@ -123,7 +123,7 @@ export default function Post() {
             setLocationInput('');
             setSelectedLocation('');
             setSelectedItem(null);
-            alert('Post successfully uploaded!')
+            Alert.alert('', 'Post successfully uploaded!', [{text: 'Understood'}]);
             setDisabled(false);
         });
     }

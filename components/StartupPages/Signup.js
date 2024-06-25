@@ -1,8 +1,9 @@
 import React from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button, Image } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button, Image, Alert } from "react-native";
 import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from "firebase/firestore";
+import AnimatedTextInput from '../AnimatedTextInput';
 
 const logo = require('@/assets/images/Logo-Grey-Background.png');
 const app = firebaseApp
@@ -15,6 +16,28 @@ export default function Signup() {
   const [password, onChangePassword] = React.useState('');
   const [confirmation, onChangeConfirmation] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+
+  const alertMessage = (error) => {
+    let message = '';
+    switch(error) {
+      case 'auth/invalid-email': 
+        message = 'Please enter a valid email!';
+        break;
+      case 'auth/missing-password':
+        message = 'Please enter your password!';
+        break;
+      case 'auth/wrong-password':
+        message = 'Invalid password!';
+        break;
+      case 'auth/user-not-found':
+        message = 'The email you keyed in is not a registered with us. Please create a new account!';
+        break;
+      default:
+        message = 'An unknown error occurred. Please try again later.';
+        console.log(error);
+    }
+    Alert.alert('Log in failed', message, [{text: 'Understood'}]);
+  };
 
   const signUp = async () => {
     setLoading(true)
@@ -31,20 +54,21 @@ export default function Signup() {
          },
          { merge: true }
         )
-        alert('Sign up successful!')
     } catch (error) {
         console.log(error)
-        alert('Sign up failed: ' + error.message)
+        alertMessage(error.code);
     } finally {
         setLoading(false)
     } 
   }
 
   const checkSamePassword = () => {
-    if(password === confirmation) {
+    if (username.length < 5) {
+      Alert.alert('Sign up failed', 'Please enter a username that is at least 5 characters long!', [{text: 'Understood'}]);
+    } else if (password === confirmation) {
       signUp();
     } else {
-      alert('Ensure that both passwords are the same!')
+      Alert.alert('Sign up failed', 'Please ensure that both passwords keyed in are the same!', [{text: 'Understood'}]);
     }
   }
 
@@ -60,35 +84,57 @@ export default function Signup() {
           <Text style = {styles.signInText}>Sign up to continue</Text>
         </View>
 
-        <TextInput
+        <AnimatedTextInput
+          style={styles.AnimatedInput}
+          onChangeText={onChangeUsername}
+          value={username}
+          label='Username'
+        />
+
+        {/* <TextInput
           style={styles.input}
           onChangeText={onChangeUsername}
           value={username}
           placeholder='username'
-          />
+          /> */}
 
-        <TextInput
+        <AnimatedTextInput
+          style={styles.AnimatedInput}
+          onChangeText={onChangeEmail}
+          value={email}
+          label='Email'
+        /> 
+
+        {/* <TextInput
           style={styles.input}
           onChangeText={onChangeEmail}
           value={email}
           placeholder='email'
-        />
+        /> */}
 
-        <TextInput
-          style={styles.input}
+        <AnimatedTextInput
+          style={styles.AnimatedInput}
           onChangeText={onChangePassword}
           value={password}
-          placeholder='password'
+          label='Password'
           secureTextEntry = {true}
         />
 
-        <TextInput
+        <AnimatedTextInput
+          style={styles.AnimatedInput}
+          onChangeText={onChangeConfirmation}
+          value={confirmation}
+          label='Re-enter your password'
+          secureTextEntry = {true}
+        />
+
+        {/* <TextInput
           style={styles.input}
           onChangeText={onChangeConfirmation}
           value={confirmation}
           placeholder='re-enter your password'
           secureTextEntry = {true}
-        />
+        /> */}
 
         <TouchableOpacity style={styles.loginContainer} onPress={checkSamePassword}>
             <Text style={styles.loginText}>SIGN UP</Text>
@@ -196,6 +242,11 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
+  },
+  AnimatedInput: {
+    height: 35,
+    width: '100%',
+    marginVertical: 10,
   },
   loginContainer: {
     display: 'flex',

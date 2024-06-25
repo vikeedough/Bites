@@ -25,6 +25,7 @@ const LoadingScreen = () => {
     <View style={styles.loadingContainer}>
       <Image 
         source={require('@/assets/images/new-splash.png')}
+        resizeMode='contain'
       />
     </View>
   )
@@ -41,8 +42,11 @@ function MyTabs() {
       tabBarActiveTintColor: 'black',  
       tabBarInactiveTintColor: 'white', 
     }}>
-      <Tab.Screen name = "Bites" component = {HomeScreen} options={
-        {headerShown: true,
+      <Tab.Screen 
+        name = "Bites" 
+        component = {HomeScreen} 
+        options={{
+          headerShown: true,
           headerTitleAlign: 'center',
           headerTitle: () => (
             <Image
@@ -55,7 +59,11 @@ function MyTabs() {
             backgroundColor: '#EC6337'
           },
           tabBarIcon: ({focused}) => (
-            <Ionicons name="home" color={focused ? "black" : 'white'} size={24} />
+
+            <View style={styles.iconContainer}>
+              <Ionicons name="home" color={focused ? "black" : 'white'} size={24} />
+            </View>
+            
         )
       }}/>
 
@@ -67,7 +75,11 @@ function MyTabs() {
             color: '#FFFFFF'
           },
           tabBarIcon: ({focused}) => (
-            <Ionicons name="map" color={focused ? "black" : 'white'} size={24} />
+            
+            <View style={styles.iconContainer}>
+              <Ionicons name="map" color={focused ? "black" : 'white'} size={24} />
+            </View>
+
           )
       }}/>
 
@@ -79,13 +91,21 @@ function MyTabs() {
             color: '#FFFFFF'
           },
           tabBarIcon: ({focused}) => (
-            <Ionicons name="add-circle-outline" color={focused ? "black" : 'white'} size={24} />
+
+            <View style={styles.iconContainer}>
+              <Ionicons name="add-circle-outline" color={focused ? "black" : 'white'} size={24} />
+            </View>
+
           )
       }}/>
 
       <Tab.Screen name = "FoodNavigator" component = {FoodNavigator} options={{
           tabBarIcon: ({focused}) => (
-            <Ionicons name="book" color={focused ? "black" : 'white'} size={24} />
+
+            <View style={styles.iconContainer}>
+              <Ionicons name="book" color={focused ? "black" : 'white'} size={24} />
+            </View>
+
           ),
           tabBarLabel: 'Journal',
           headerShown: false
@@ -93,7 +113,11 @@ function MyTabs() {
 
       <Tab.Screen name = "SettingsNavigator" component = {SettingsNavigator} options={{
           tabBarIcon: ({focused}) => (
-            <Ionicons name="settings" color={focused ? "black" : 'white'} size={24} />
+
+            <View style={styles.iconContainer}>
+              <Ionicons name="settings" color={focused ? "black" : 'white'} size={24} />
+            </View>
+
           ),
           tabBarLabel: 'Settings',
           headerShown: false
@@ -155,5 +179,8 @@ const styles = StyleSheet.create({
     fontSize: 35,
     color: '#EC6337',
     textAlign: 'center',
+  },
+  iconContainer: {
+    marginTop: 4,
   }
 });

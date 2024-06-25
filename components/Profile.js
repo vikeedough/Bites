@@ -57,7 +57,7 @@ export default function Profile({navigation}) {
     )
   }
   return (
-    <ScrollView style={{flexGrow: 1}}>
+    <ScrollView style={{flexGrow: 1, backgroundColor: '#F4F4F6'}}>
 
       <TouchableOpacity onPress={() => navigation.navigate('Change Username')}>
       <View style={styles.boxContainer}>
@@ -122,8 +122,10 @@ export default function Profile({navigation}) {
 const styles = StyleSheet.create({
   boxContainer: {
     flex: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: 'grey',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    marginHorizontal: 10,
+    marginVertical: 5,
     padding: 20,
     paddingVertical: 30,
     justifyContent: 'center',

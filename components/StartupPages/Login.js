@@ -1,7 +1,9 @@
 import React from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button, Image } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button, Image, Alert } from "react-native";
 import {firebaseApp, firebaseAuth} from '@/firebaseConfig'
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Fontisto, Feather } from '@expo/vector-icons';
+import AnimatedTextInput from '../AnimatedTextInput';
 
 
 const logo = require('@/assets/images/Logo-Grey-Background.png');
@@ -11,17 +13,36 @@ const auth = firebaseAuth
 export default function Login({navigation}) {
   const [email, onChangeEmail] = React.useState('');
   const [password, onChangePassword] = React.useState('');
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
+
+  const alertMessage = (error) => {
+    let message = '';
+    switch(error) {
+      case 'auth/invalid-email': 
+        message = 'Please enter a valid email!';
+        break;
+      case 'auth/missing-password':
+        message = 'Please enter your password!';
+        break;
+      case 'auth/wrong-password':
+        message = 'Invalid password!';
+        break;
+      case 'auth/user-not-found':
+        message = 'The email you keyed in is not a registered with us. Please create a new account!';
+        break;
+      default:
+        message = 'An unknown error occurred. Please try again later.';
+        console.log(error);
+    }
+    Alert.alert('Log in failed', message, [{text: 'Understood'}]);
+  };
 
   const signIn = async () => {
     setLoading(true)
     try {
         const response = await signInWithEmailAndPassword(auth, email, password)
-        console.log(response)
-        alert('Log in successful!')
     } catch (error) {
-        console.log(error)
-        alert('Log in failed: ' + error.message)
+        alertMessage(error.code);
     } finally {
         setLoading(false)
     }
@@ -39,19 +60,37 @@ export default function Login({navigation}) {
               <Text style = {styles.signInText}>Sign in to continue</Text>
             </View>
 
-            <TextInput
-              style={styles.input}
-              onChangeText={onChangeEmail}
-              value={email}
-              placeholder='Email'
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={onChangePassword}
-              value={password}
-              placeholder='Password'
-              secureTextEntry = {true}
-            />
+            <View style={styles.textInputContainer}>
+              <Fontisto
+                name="email"
+                color='#EC6337'
+                size={20}
+                style={{paddingEnd: 0, paddingTop: 8,}}
+              />
+              <AnimatedTextInput
+                style={styles.AnimatedInput}
+                label='Email'
+                value={email}
+                onChangeText={onChangeEmail}
+              />
+            </View>
+
+            <View style={styles.textInputContainer}>
+              <Feather
+                name="lock"
+                color='#EC6337'
+                size={20}
+                style={{paddingEnd: 0, paddingTop: 8}}
+              />
+              <AnimatedTextInput
+                style={styles.AnimatedInput}
+                onChangeText={onChangePassword}
+                value={password}
+                label='Password'
+                secureTextEntry = {true}
+              />
+            </View>
+            
 
             <TouchableOpacity style={styles.loginContainer} onPress={signIn}>
                 <Text style={styles.loginText}>LOGIN</Text>
@@ -132,15 +171,28 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'grey',
   },
+  textInputContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 40,
+    width: '100%',
+    marginVertical: 5,
+    gap: 10,
+  },
   input: {
     borderWidth: 1,
     borderColor: '#D4D4F6',
     margin: 5,
     height: 40,
     paddingLeft: 10,
-    width: '100%',
+    width: '91%',
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
+  },
+  AnimatedInput: {
+    height: 35,
+    width: '90%',
   },
   loginContainer: {
     display: 'flex',
