@@ -125,10 +125,14 @@ const Post = ({ id, user, time, image, caption, comments, likes, usersLiked, loc
         </View>
       </View>
 
-      <Image
-        style={styles.image}
-        source={{ uri: image }}
-      />
+      <View style={styles.imageContainer}>
+        <Image
+          resizeMode='contain'
+          style={styles.image}
+          source={{ uri: image }}
+        />
+      </View>
+      
 
       <View style={styles.likeCommentContainer}>
 
@@ -280,6 +284,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F4F4F6',
+    height: '100%',
   },
   headerContainer: {
     display: 'flex',
@@ -301,9 +306,15 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 20,
   },
+  imageContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF'
+  },
   image: {
-      width: 320,
       height: 320,
+      width: 320,
       padding: 10,
       justifyContent: 'center',
       alignItems: 'center',
@@ -319,7 +330,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: '100%',
+    height: '100%',
   },
   postHeaderContainer: {
     display: 'flex',

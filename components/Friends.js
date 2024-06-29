@@ -152,11 +152,13 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         backgroundColor: '#F4F4F6',
+        height: '100%',
     },
     topContainer: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-evenly',
+        height: '10%',
     },
     inputContainer: {
         padding: 15,
@@ -187,8 +189,9 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'stretch',
         paddingHorizontal: 15,
-        minHeight: '100%',
+        Height: '90%',
         paddingBottom: 25,
+        marginBottom: 35,
     },
     cardContainer: {
         borderRadius: 40,
