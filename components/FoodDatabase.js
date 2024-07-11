@@ -11,7 +11,7 @@ const flavoursFoodData = async () => {
 
     try {
         const foodData = await getDocs(collection(db, 'Flavours'));
-        foodData.forEach((doc) => flavoursArray.push(doc.data()))
+        foodData.forEach((doc) => flavoursArray.push({id: doc.id, ...doc.data()}))
     }
     catch (error) {
         console.error("Error occured when fetching data " + error)

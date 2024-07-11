@@ -5,14 +5,13 @@ import { firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
 import DisplayFood from '@/components/Modals/DisplayFood.js';
-import { useNavigation } from '@react-navigation/native';
+
 
 const auth = firebaseAuth;
 const db = firebaseDb;
 
 export default function Map() {
 
-  const navigation = useNavigation();
   const mapRef = useRef(null);
   const markerRef = useRef({});
 
@@ -195,13 +194,6 @@ export default function Map() {
               ref={(ref) => (markerRef.current[item.id] = ref)}
               onPress={() => {
                 openModal(item.foodArray, item.title);
-                mapRef.current.animateToRegion({
-                  latitude: item.coordinates.latitude - 0.0022,
-                  longitude: item.coordinates.longitude,
-                  latitudeDelta: 0.005,
-                  longitudeDelta: 0.005,
-                }, 1000);
-                markerRef.current[item.id].showCallout();
               }}
             />
           ))}
@@ -226,7 +218,7 @@ export default function Map() {
               }}
             />
           </View>
-          <DisplayFood isVisible={modalVisible} onClose={closeModal} foodArray={selectedArray} title={selectedTitle} navigation={navigation}/>
+          <DisplayFood isVisible={modalVisible} onClose={closeModal} foodArray={selectedArray} title={selectedTitle}/>
         </View>
       </AutocompleteDropdownContextProvider>
       );
