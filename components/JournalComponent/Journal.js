@@ -6,8 +6,10 @@ import CalendarModal from '@/components/JournalComponent/CalendarModal.js';
 import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
+import DeleteEntryModal from "@/components/JournalComponent/DeleteEntryModal.js";
 import { useFocusEffect } from '@react-navigation/native';
 import { ref } from 'firebase/storage';
+import { setEnabled } from 'react-native/Libraries/Performance/Systrace';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -21,29 +23,16 @@ export default function Journal({navigation}) {
   const [selectedDayID, setSelectedDayID] = useState('');
   const [currentFoodEntry, setCurrentFoodEntry] = useState('');
   const [dateLabel, setDateLabel] = useState('Today');
+  const [deleteEntryModal, setDeleteEntryModal] = useState(false);
 
-  const [breakfastArray, setBreakfastArray] = useState([]);
-  const [lunchArray, setLunchArray] = useState([]);
-  const [dinnerArray, setDinnerArray] = useState([]);
-  const [othersArray, setOthersArray] = useState([]);
-  // const [totalBreakfastCalories, setTotalBreakfastCalories] = useState(0);
-  // const [totalLunchCalories, setTotalLunchCalories] = useState(0);
-  // const [totalDinnerCalories, setTotalDinnerCalories] = useState(0);
-  // const [totalOthersCalories, setTotalOthersCalories] = useState(0);
-
-  useFocusEffect(
-    useCallback(() => {
-
-      if (!selectedDayID) {
-        checkAndCreateEntry(todayDateStringID); 
-      } else {
-        checkAndCreateEntry(selectedDayID)
-      }
-
-    }, [currentFoodEntry])
-  );
+  const [breakfast, setBreakfast] = useState([]);
+  const [lunch, setLunch] = useState([]);
+  const [dinner, setDinner] = useState([]);
+  const [others, setOthers] = useState([]);
 
   const checkAndCreateEntry = async (date) => {
+
+    console.log("In Check and Create!")
 
     try {
 
@@ -53,6 +42,8 @@ export default function Journal({navigation}) {
       const foodEntry = await getDoc(foodEntryDocRef);
 
       if (!foodEntry.exists()) {
+
+        console.log("Creating a new foodlog...")
 
         const newFoodEntry = { 
           date, 
@@ -68,15 +59,54 @@ export default function Journal({navigation}) {
 
         await setDoc(foodEntryDocRef, newFoodEntry)
         setCurrentFoodEntry(newFoodEntry)
+
+        console.log("Done creating new foodlog...")
       }
 
       else {
-        setCurrentFoodEntry(foodEntry.data());
+        setCurrentFoodEntry(foodEntry.data())
+      }
 
-        setBreakfastArray(foodEntry.data().breakfast);
-        setLunchArray(foodEntry.data().lunch);
-        setDinnerArray(foodEntry.data().dinner);
-        setOthersArray(foodEntry.data().others);
+    }
+
+    catch (error) {
+      console.error("Error occured when fetching data " + error)
+    }
+  };
+
+  
+  const deleteEntry = async (mealType, foodName) => {
+
+    const date = selectedDayID ? selectedDayID : todayDateStringID 
+    console.log("In Delete entry")
+    console.log(mealType)
+    console.log(foodName)
+
+    try {
+
+      const docRef = doc(db, 'users', auth.currentUser.uid);
+      const foodLogCollectionRef = collection(docRef, 'FoodLog');
+      const foodEntryDocRef = doc(foodLogCollectionRef, date);
+      const foodEntry = await getDoc(foodEntryDocRef);
+
+      if (foodEntry.exists()) {
+        const foodLogArray = foodEntry.data()[mealType];
+        const newFoodLogArray = [...foodLogArray];
+        //console.log(newFoodLogArray)
+        const foodToRemove = newFoodLogArray.findIndex(food => food.foodName === foodName);
+        //console.log(foodToRemove)
+
+        if (foodToRemove !== -1) {
+          newFoodLogArray.splice(foodToRemove, 1);
+        }
+
+        await updateDoc(foodEntryDocRef, {
+          [mealType] : newFoodLogArray
+        });
+      }
+
+      else {
+        console.log("Unable to find food Entry! In Food Page")
       }
 
     }
@@ -85,7 +115,58 @@ export default function Journal({navigation}) {
       console.error("Error occured when fetching data " + error)
     }
   }
-  
+
+  //When Journal page is first mounted
+  useEffect(() => {
+
+    console.log("In Use Effect when Journal mounts or when date selected changes")
+
+    const fetchData = async () => {
+
+      const date = selectedDayID ? selectedDayID : todayDateStringID  
+      //console.log(date);
+
+      await checkAndCreateEntry(date);
+
+      try {
+        const docRef = doc(db, 'users', auth.currentUser.uid);
+        const foodLogCollectionRef = collection(docRef, 'FoodLog');
+        const foodEntryDocRef = doc(foodLogCollectionRef, date);
+
+        //console.log(foodEntryDocRef);
+
+        const unsubscribe = onSnapshot(foodEntryDocRef, (doc) => {
+          const breakfast = doc.data().breakfast;
+          const lunch = doc.data().lunch;
+          const dinner = doc.data().dinner;
+          const others = doc.data().others;
+          
+          // console.log(breakfast)
+          // console.log(lunch)
+          // console.log(dinner)
+          // console.log(others)
+
+          setBreakfast(breakfast)
+          setLunch(lunch)
+          setDinner(dinner)
+          setOthers(others)
+
+        });
+
+        return () => {
+          unsubscribe();
+        };
+      }
+
+        catch (error) {
+          console.error("Error occured when fetching data " + error)
+        }
+    }
+
+    fetchData();
+
+  }, [selectedDayID])
+
   const openCalendarModal = () => {
     setCalendarModal(true);
   }
@@ -109,22 +190,31 @@ export default function Journal({navigation}) {
     } else {
       setDateLabel(String(newDay));
     }
-  }
+  }  
 
   const navigateToAddFood = () => {
-    console.log("In Journal Page " + currentFoodEntry);
+    //console.log("In Journal Page " + currentFoodEntry);
     navigation.navigate('Food', { currentFoodEntry });
   }
 
-  const updateDisplay = (foodArray) => {
+  const updateDisplay = (foodArray, mealType) => {
 
     return foodArray.map((food, index) => (
       <View key={index} style={styles.mealDisplayContainer}>
 
+        <DeleteEntryModal
+          deleteEntryModal={deleteEntryModal}
+          setDeleteEntryModal={setDeleteEntryModal}
+          deleteEntry={deleteEntry}
+          deleteEntryMealType={mealType}
+          deleteEntryFood={food.foodName} />
+
         <View style={styles.foodNameContainer}>
-          <View style={styles.innerFoodNameContainer}>
-            <Text style={styles.mealDisplayTitle}>{food.foodName}</Text>
-          </View>
+          <TouchableOpacity delayLongPress={500} onLongPress={() => setDeleteEntryModal(true)}>
+            <View style={styles.innerFoodNameContainer}>
+              <Text style={styles.mealDisplayTitle}>{food.foodName}</Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.foodCaloriesContainer}>
@@ -139,10 +229,10 @@ export default function Journal({navigation}) {
   }
 
   const calorieEquation = () => {
-    const totalBfastCalories = breakfastArray.reduce((total, item) => total + item.calories, 0);
-    const totalLunchCalories = lunchArray.reduce((total, item) => total + item.calories, 0);
-    const totalDinnerCalories = dinnerArray.reduce((total, item) => total + item.calories, 0);
-    const totalOthersCalories = othersArray.reduce((total, item) => total + item.calories, 0);
+    const totalBfastCalories = breakfast.reduce((total, item) => total + item.calories, 0);
+    const totalLunchCalories = lunch.reduce((total, item) => total + item.calories, 0);
+    const totalDinnerCalories = dinner.reduce((total, item) => total + item.calories, 0);
+    const totalOthersCalories = others.reduce((total, item) => total + item.calories, 0);
     const totalCalories = totalBfastCalories + totalLunchCalories + totalDinnerCalories + totalOthersCalories;
 
     return (
@@ -197,9 +287,6 @@ export default function Journal({navigation}) {
 
       <View style={styles.barGraphContainer}>
         {calorieEquation()}
-        {/* <Text>Today's Date: {todayDateStringID}</Text>
-        <Text>Selected Day: {selectedDayID ? selectedDayID : ''}</Text> */}
-        {/* <Text style={{fontSize: 20}}>Bar Graph</Text> */}
       </View>
 
       <View style={styles.BodyContainer}>
@@ -208,7 +295,7 @@ export default function Journal({navigation}) {
           <Text style={styles.foodDiaryText}>Food Diary</Text>
         </View>
 
-        <View style={styles.scrollViewContainer}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} style={styles.scrollViewContainer}>
 
             <View style ={styles.MealContainer}>
               <View style={styles.mealLeftContainer}>
@@ -225,12 +312,12 @@ export default function Journal({navigation}) {
                     <Text style={styles.MealTitle}>Breakfast</Text>
                   </View>
                   <View style={styles.mealRightHeader}>
-                    <Text style={styles.CalorieTitle}>{breakfastArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                    <Text style={styles.CalorieTitle}>{breakfast.reduce((total, item) => total + item.calories, 0)} Calories</Text>
                   </View>
                 </View>
                 <View style={styles.arrayMapContainer}>
                   <ScrollView>
-                    {updateDisplay(breakfastArray)}
+                    {updateDisplay(breakfast, 'breakfast')}
                   </ScrollView>
                 </View>
               </View>
@@ -251,12 +338,12 @@ export default function Journal({navigation}) {
                     <Text style={styles.MealTitle}>Lunch</Text>
                   </View>
                   <View style={styles.mealRightHeader}>
-                    <Text style={styles.CalorieTitle}>{lunchArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                    <Text style={styles.CalorieTitle}>{lunch.reduce((total, item) => total + item.calories, 0)} Calories</Text>
                   </View>
                 </View>
                 <View style={styles.arrayMapContainer}>
                   <ScrollView>
-                    {updateDisplay(lunchArray)}
+                    {updateDisplay(lunch, 'lunch')}
                   </ScrollView>
                 </View>
               </View>
@@ -277,12 +364,12 @@ export default function Journal({navigation}) {
                     <Text style={styles.MealTitle}>Dinner</Text>
                   </View>
                   <View style={styles.mealRightHeader}>
-                    <Text style={styles.CalorieTitle}>{dinnerArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                    <Text style={styles.CalorieTitle}>{dinner.reduce((total, item) => total + item.calories, 0)} Calories</Text>
                   </View>
                 </View>
                 <View style={styles.arrayMapContainer}>
                   <ScrollView>
-                    {updateDisplay(dinnerArray)}
+                    {updateDisplay(dinner, 'dinner')}
                   </ScrollView>
                 </View>
               </View>
@@ -303,17 +390,17 @@ export default function Journal({navigation}) {
                     <Text style={styles.MealTitle}>Others</Text>
                   </View>
                   <View style={styles.mealRightHeader}>
-                    <Text style={styles.CalorieTitle}>{othersArray.reduce((total, item) => total + item.calories, 0)} Calories</Text>
+                    <Text style={styles.CalorieTitle}>{others.reduce((total, item) => total + item.calories, 0)} Calories</Text>
                   </View>
                 </View>
                 <View style={styles.arrayMapContainer}>
                   <ScrollView>
-                    {updateDisplay(othersArray)}
+                    {updateDisplay(others, 'others')}
                   </ScrollView>
                 </View>
               </View>
             </View>
-        </View>
+        </ScrollView>
         
       </View>
 
@@ -330,6 +417,7 @@ export default function Journal({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     display: 'flex',
     backgroundColor: '#F4F4F6',
     height: '100%',
@@ -401,7 +489,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   BodyContainer: {
-    display: 'flex',
+    //display: 'flex',
+    flex: 1,
     height: '62%',
     marginHorizontal: 15,
     paddingVertical: 5,
@@ -415,6 +504,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     height: '92%',
     padding: 0,
+    flexGrow: 1
   },
   foodDiaryText: {
     fontWeight: 'bold',
@@ -435,24 +525,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#EC6337',
   },
   MealContainer: {
-    display: 'flex',
+    //display: 'flex',
     flexDirection: 'row',
     backgroundColor: 'white',
     height: '23%',
     borderRadius: 10,
     marginVertical: 5,
+    flexGrow: 1,
+    flexShrink: 1,
+    alignSelf: 'stretch'
   },
   mealLeftContainer: {
     display: 'flex',
     width: '10%',
     justifyContent: 'center',
     alignItems: 'center',
+    flexGrow: 1
   },
   mealRightContainer: {
     display: 'flex',
     flexDirection: 'column',
     width: '90%',
     height: '100%',
+    flexGrow: 1
   },
   MealTitle: {
     fontSize: 18,
@@ -484,6 +579,7 @@ const styles = StyleSheet.create({
   arrayMapContainer: {
     display: 'flex',
     height: '60%',
+    flexGrow: 1
   },
   mealDisplayContainer: {
     display: 'flex',
