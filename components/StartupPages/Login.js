@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button, Image, Alert } from "react-native";
-import {firebaseApp, firebaseAuth} from '@/firebaseConfig'
+import {firebaseApp, firebaseAuth} from '../../firebaseConfig'
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Fontisto, Feather } from '@expo/vector-icons';
 import AnimatedTextInput from '../AnimatedTextInput';
@@ -14,6 +14,8 @@ export default function Login({navigation}) {
   const [email, onChangeEmail] = React.useState('');
   const [password, onChangePassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const firstInput = React.useRef();
+  const secondInput = React.useRef();
 
   const alertMessage = (error) => {
     let message = '';
@@ -67,12 +69,26 @@ export default function Login({navigation}) {
                 size={20}
                 style={{paddingEnd: 0, paddingTop: 8,}}
               />
-              <AnimatedTextInput
+              <TextInput 
+                style={styles.input}
+                testID='emailInput'
+                placeholder='Email'
+                value={email}
+                onChangeText={onChangeEmail}
+                returnKeyType='Next'
+                onSubmitEditing={() => secondInput.current?.focus()}
+                blurOnSubmit={false}
+              />
+              {/* <AnimatedTextInput
                 style={styles.AnimatedInput}
+                testID='emailInput'
                 label='Email'
                 value={email}
                 onChangeText={onChangeEmail}
-              />
+                returnKeyType='Next'
+                blurOnSubmit={false}
+                ref={firstInput}
+              /> */}
             </View>
 
             <View style={styles.textInputContainer}>
@@ -82,13 +98,24 @@ export default function Login({navigation}) {
                 size={20}
                 style={{paddingEnd: 0, paddingTop: 8}}
               />
-              <AnimatedTextInput
+              <TextInput 
+                style={styles.input}
+                testID='passwordInput'
+                placeholder='Password'
+                value={password}
+                onChangeText={onChangePassword}
+                ref={secondInput}
+                secureTextEntry={true}
+              />
+              {/* <AnimatedTextInput
                 style={styles.AnimatedInput}
+                testID='passwordInput'
                 onChangeText={onChangePassword}
                 value={password}
                 label='Password'
                 secureTextEntry = {true}
-              />
+                ref={secondInput}
+              /> */}
             </View>
             
 
@@ -186,7 +213,7 @@ const styles = StyleSheet.create({
     margin: 5,
     height: 40,
     paddingLeft: 10,
-    width: '91%',
+    width: '87%',
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
   },

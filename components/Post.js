@@ -46,6 +46,8 @@ export default function Post() {
     const [picture, setPicture] = useState(null);
     const [disabled, setDisabled] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
     const user = auth.currentUser;
 
     const uriToBlob = async (uri) => {
@@ -92,12 +94,14 @@ export default function Post() {
         } else if (image === null) {
             alert('Please upload a picture for your post!');
         } else {
+            setIsLoading(true);
             sendPost();
         }
     }
 
     const sendPost = async () => {
         setDisabled(true);
+        console.log(isLoading);
         const blob = await uriToBlob(picture.assets[0].uri);
         let timeNow = Date.now();
         console.log(timeNow);
@@ -125,6 +129,7 @@ export default function Post() {
             setSelectedItem(null);
             Alert.alert('', 'Post successfully uploaded!', [{text: 'Understood'}]);
             setDisabled(false);
+            setIsLoading(false);
         });
     }
 
@@ -140,6 +145,15 @@ export default function Post() {
         <AutocompleteDropdownContextProvider>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.container}>
+
+            {
+                isLoading && (
+                    <View style={styles.overlay}>
+
+                    </View>
+                )
+
+            }
 
             <View style={styles.topContainer}>
                 <View style={styles.topInnerContainer}>
@@ -229,6 +243,8 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         alignItems: 'center',
+        height: '100%',
+        marginBottom: 35,
     },
     captionContainer: {
         display: 'flex',
@@ -353,5 +369,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         borderColor: 'rgba(224, 224, 224, 1)',
     },
-
+    loadingContainer: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000,
+    }
 });

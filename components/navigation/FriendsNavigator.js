@@ -11,12 +11,12 @@ export default function FriendsNavigator() {
             <Stack.Screen name="Friends" component={Friends} options={{
                 headerStyle: {
                     backgroundColor: '#EC6337'
-                  },
+            },
             }}/>
             <Stack.Screen name="Add Friends" component={AddFriends} options={{
                 headerStyle: {
                     backgroundColor: '#EC6337'
-                  },
+            },
             }}/>
         </Stack.Navigator>
     )

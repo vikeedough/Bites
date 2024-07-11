@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Text, View, StyleSheet, FlatList, Image, Button, RefreshControl } from "react-native";
+import { Text, View, StyleSheet, FlatList, Image, Button, RefreshControl, TouchableOpacity } from "react-native";
 import { Header } from 'react-native/Libraries/NewAppScreen';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import {firebaseApp, firebaseAuth, firebaseDb} from '../firebaseConfig'
@@ -8,6 +8,8 @@ import { collection, getDoc, onSnapshot, doc, updateDoc, increment, arrayUnion, 
 import Comments from '@/components/Modals/Comments.js';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
+import ViewProfile from './ViewProfile';
+import ViewLikes from './ViewLikes';
 
 TimeAgo.addDefaultLocale(en);
 
@@ -24,7 +26,7 @@ const EmptyList = () => {
   )
 }
 
-const Result = ({ userId, commentText }) => {
+const Result = ({ userId, commentText, navigation }) => {
 
   const [username, setUsername] = useState('');
 
@@ -38,14 +40,16 @@ const Result = ({ userId, commentText }) => {
     }, [userId]);
   
   return (
-      <Text>
+      <View style={{flexDirection: 'row'}}>
+        <TouchableOpacity onPress={() => navigation.navigate('ViewProfile', { user: userId })}>
           <Text style={styles.commentUsername}>{username}</Text>
+        </TouchableOpacity>
           <Text style={styles.commentText}> {commentText}</Text>
-      </Text>
+      </View>
   )
 }
 
-const Post = ({ id, user, time, image, caption, comments, likes, usersLiked, location }) => {
+const Post = ({ id, user, time, image, caption, comments, likes, usersLiked, location, navigation }) => {
   
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -64,8 +68,9 @@ const Post = ({ id, user, time, image, caption, comments, likes, usersLiked, loc
   const [username, setUsername] = useState('');
   const [userPic, setUserPic] = useState(null);
   const [currentLikes, setCurrentLikes] = useState(initialLikes);
-  console.log('initial likes is: ' + initialLikes);
-  console.log(currentUsers);
+  //console.log('initial likes is: ' + initialLikes);
+  //console.log(currentUsers);
+  //console.log(user);
   const toggleLike = async () => {
 
     setLike(previousState => !previousState)
@@ -106,7 +111,9 @@ const Post = ({ id, user, time, image, caption, comments, likes, usersLiked, loc
         <View style={styles.postHeaderLeftContainer}>
           <Image resizeMode='auto' source={userPic === null ? placeholder : {uri: userPic}} style={styles.profileImage}/>
           <View style={styles.postHeader}>
-            <Text style={styles.postText}>{username}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('ViewProfile', { user: user })}>
+              <Text style={styles.postText}>{username}</Text>
+            </TouchableOpacity>
             <Text style={styles.postTime}>{timeAgo.format(Date.now() - (Date.now() - time))}</Text>
           </View>
         </View>
@@ -136,19 +143,33 @@ const Post = ({ id, user, time, image, caption, comments, likes, usersLiked, loc
 
       <View style={styles.likeCommentContainer}>
 
-        <Text style={styles.likes}>
-          <Text>{usersLiked.length}</Text>
-          <Text>{usersLiked.length === 1 ? ' like' : ' likes'}</Text>
-        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('ViewLikes', {
+          usersLiked: JSON.stringify(usersLiked)
+        })}>
+          <Text style={styles.likes}>
+            <Text>{usersLiked.length}</Text>
+            <Text>{usersLiked.length === 1 ? ' like' : ' likes'}</Text>
+          </Text>
+        </TouchableOpacity>
 
-        <Text style={styles.usernameText}>
-          <Text style={styles.usernameWeight}>{username}</Text>
-          <Text> {caption}</Text>
-        </Text>
+        <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+          <TouchableOpacity onPress={() => navigation.navigate('ViewProfile', {
+            user: user
+          })}>
+              <Text style={styles.usernameWeight}>{username} </Text>
+            </TouchableOpacity>
+          <View>
+          <Text style={styles.usernameText}>
+              <Text>{caption}</Text>
+            </Text>
+          </View>
+            
+        </View>
+
         <View style={styles.commentsLeftIndent}>
           {comments.slice(0, 2).map( (item, id) => {
             return (
-              <Result userId={item.userId} commentText={item.commentText} />
+              <Result userId={item.userId} commentText={item.commentText} navigation={navigation} />
             )
           })}
         </View>
@@ -166,25 +187,19 @@ const Post = ({ id, user, time, image, caption, comments, likes, usersLiked, loc
         </AntDesign.Button>
       </View>
 
-      <Comments isVisible={modalVisible} onClose={closeComments} commentsContent={comments} postRef={postRef} />
+      <Comments isVisible={modalVisible} onClose={closeComments} commentsContent={comments} postRef={postRef} navigation={navigation} />
 
     </View>
   </View>
 )};
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
 
   const user = auth.currentUser.uid;
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [refresh, setRefresh] = useState(true);
   const [friends, setFriends] = useState([]);
-
-  const checkPost = () => {
-    console.log(posts);
-    console.log(friends);
-    console.log(filteredPosts);
-  };
 
   useEffect(() => {
     const postsRef = collection(db, "posts");
@@ -225,7 +240,7 @@ export default function HomeScreen() {
   const filterPosts = async () => {
 
     DATA = posts;
-    console.log(DATA);
+    //console.log(DATA);
     const cleanUnfollowing = DATA.filter((item) => 
       ((friends.includes(item.userId)) || (item.userId === user))
     );
@@ -237,8 +252,8 @@ export default function HomeScreen() {
 
     setFilteredPosts(sortedPosts);
     
-    console.log("my friends: " + friends);
-    console.log(sortedPosts);
+    //console.log("my friends: " + friends);
+    //console.log(sortedPosts);
     setRefresh(false);
   }
 
@@ -265,6 +280,7 @@ export default function HomeScreen() {
                   likes={item.likes}
                   usersLiked={item.usersLiked}
                   location={item.location}
+                  navigation={navigation}
                 />
               )}
               }
@@ -431,6 +447,7 @@ const styles = StyleSheet.create({
   },
   usernameWeight: {
     fontWeight: 'bold',
+    fontSize: 18,
   },
   commentsLeftIndent: {
     marginLeft: 10,

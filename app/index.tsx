@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, Image } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack'
-import HomeScreen from '@/components/HomeScreen.js';
+import FeedNavigator from '@/components/navigation/FeedNavigator.js';
 import Map from '@/components/Map.js';
 import Login from '@/components/StartupPages/Login';
 import Post from '@/components/Post.js';
@@ -44,9 +44,9 @@ function MyTabs() {
     }}>
       <Tab.Screen 
         name = "Bites" 
-        component = {HomeScreen} 
+        component = {FeedNavigator} 
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitleAlign: 'center',
           headerTitle: () => (
             <Image

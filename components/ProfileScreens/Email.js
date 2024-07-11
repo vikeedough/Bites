@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, TextInput, Button, TouchableOpacity, Alert } from 'react-native';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig'
 import { EmailAuthProvider, createUserWithEmailAndPassword, reauthenticateWithCredential, updateEmail } from 'firebase/auth';
 import { doc, setDoc } from "firebase/firestore";
@@ -13,6 +13,7 @@ export default function Email() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const secondInput = useRef();
 
   const updateNewEmail = async () => {
     const credential = EmailAuthProvider.credential(
@@ -44,6 +45,9 @@ export default function Email() {
             value={password}
             label='Enter your password'
             secureTextEntry={true}
+            returnKeyType='Next'
+            onSubmitEditing={() => secondInput.current?.focus()}
+            blurOnSubmit={false}
           />
 
           <AnimatedTextInput
@@ -51,6 +55,7 @@ export default function Email() {
             onChangeText={setEmail}
             value={email}
             label='New Email'
+            ref={secondInput}
           />
 
         </View>
