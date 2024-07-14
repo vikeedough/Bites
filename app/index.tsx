@@ -13,6 +13,7 @@ import FoodNavigator from "@/components/navigation/FoodNavigator.js";
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'
 import { onAuthStateChanged, User } from 'firebase/auth';
 import SettingsNavigator from '@/components/navigation/SettingsNavigator.js';
+import MainProfileNavigator from '@/components/navigation/MainProfileNavigator.js';
 //import MaptoFoodNavigator from '@/components/navigation/MapToFoodNavigator.js';
 
 const app = firebaseApp
@@ -111,15 +112,15 @@ function MyTabs() {
           headerShown: false
       }}/>
 
-      <Tab.Screen name = "SettingsNavigator" component = {SettingsNavigator} options={{
+      <Tab.Screen name = "MainProfileNavigator" component = {MainProfileNavigator} options={{
           tabBarIcon: ({focused}) => (
 
             <View style={styles.iconContainer}>
-              <Ionicons name="settings" color={focused ? "black" : 'white'} size={24} />
+              <Ionicons name="person-circle-outline" color={focused ? "black" : 'white'} size={24} />
             </View>
 
           ),
-          tabBarLabel: 'Settings',
+          tabBarLabel: 'Profile',
           headerShown: false
       }}/>
     </Tab.Navigator>

@@ -29,12 +29,14 @@ export default function FeedNavigator() {
                 headerStyle: {
                     backgroundColor: '#EC6337'
                 },
+                headerTintColor: '#FFFFFF'
             }}/>
             <Stack.Screen name="ViewLikes" component={ViewLikes} options={{
                 headerTitle: 'Likes',
                 headerStyle: {
                     backgroundColor: '#EC6337'
                 },
+                headerTintColor: '#FFFFFF'
             }}/>
         </Stack.Navigator>
     )

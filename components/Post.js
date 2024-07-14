@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
-import { updateProfile } from 'firebase/auth';
 import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
 
@@ -258,12 +257,14 @@ const styles = StyleSheet.create({
         display: 'flex',
         width: '100%',
         paddingHorizontal: 5,
+        height: '30%',
     },
     imageOuterContainer: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         width: '90%',
+        height: '57%',
         borderRadius: 20,
         paddingHorizontal: 5,
         backgroundColor: '#FFFFFF',
@@ -338,6 +339,7 @@ const styles = StyleSheet.create({
     postButton: {
         display: 'flex',
         width: '90%',
+        height: '7%',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,

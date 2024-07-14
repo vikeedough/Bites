@@ -1,10 +1,9 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Button, FlatList, Image, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Image, RefreshControl } from 'react-native';
 import { useState, useEffect } from 'react';
-import { firebaseAuth, firebaseApp, firebaseDb } from '@/firebaseConfig';
+import { firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { collection, doc, getDoc, arrayRemove, updateDoc, arrayUnion } from 'firebase/firestore';
 import { useIsFocused } from '@react-navigation/native';
 
-const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
 const userRef = collection(db, "users");
@@ -16,13 +15,13 @@ const EmptyList = () => {
         <View style={styles.emptyList}>
             <Text style={styles.emptyText}>No results to show.</Text>
         </View>
-    )
-}
+    );
+};
 
 export default function Friends({navigation}){
 
     const [search, setSearch] = useState('');
-    const [filtered, setFiltered] = useState([])
+    const [filtered, setFiltered] = useState([]);
     const [refreshing, setRefreshing] = useState(true);
     const isFocused = useIsFocused();
 
@@ -35,7 +34,7 @@ export default function Friends({navigation}){
             const friendDoc = await getDoc(doc(db, 'users', id));
             const item = friendDoc.data();
             usernames.push({id: friendDoc.id, name: item.username, uri: item.profilePic});
-        })
+        });
 
         await Promise.all(friendPromise);
         DATA = usernames;
@@ -45,15 +44,15 @@ export default function Friends({navigation}){
             const cleaned = DATA.filter((item) => 
                 item.name.toLowerCase().includes(search.toLowerCase()));
             const cleanedOwner = cleaned.filter((item) => 
-                item.id != auth.currentUser.uid)
+                item.id != auth.currentUser.uid);
             setFiltered(cleanedOwner);
             console.log(cleanedOwner);
         }
         setRefreshing(false);
-    }
+    };
 
     useEffect(() => {
-            fetchFriends();
+        fetchFriends();
     }, []);
 
     useEffect(() => {
@@ -65,7 +64,7 @@ export default function Friends({navigation}){
                 const cleaned = DATA.filter((item) => 
                     item.name.toLowerCase().includes(search.toLowerCase()));
                 const cleanedOwner = cleaned.filter((item) => 
-                    item.id != auth.currentUser.uid)
+                    item.id != auth.currentUser.uid);
                 setFiltered(cleanedOwner);
                 console.log(cleanedOwner);
             }
@@ -74,38 +73,49 @@ export default function Friends({navigation}){
 
     const Result = ({ id, image, username }) => {
         
-        const [following, setFollowing] = useState(true)
+        const [following, setFollowing] = useState(true);
+
+        const navigateProfile = (navigation, userId, userPic) => {
+            const state = navigation.getState();
+            const currentRoute = state.routes[state.index];
+    
+            if (currentRoute.name === 'ViewProfile' && currentRoute.params.user === userId) {
+                return;
+            }
+    
+            navigation.push('ViewProfile', {user: userId, userPic: userPic});
+        };
 
         const Follow = async () => {
             await updateDoc(doc(db, "users", auth.currentUser.uid),
-            { friends: arrayUnion(id)}
+            { friends: arrayUnion(id) }
             );
             setFollowing(true);
             console.log("Followed");
-        }
+        };
 
         const Unfollow = async () => {
             await updateDoc(doc(db, "users", auth.currentUser.uid),
-            { friends: arrayRemove(id)}
+            { friends: arrayRemove(id) }
             );
             setFollowing(false);
             console.log("Unfollowed");
-        }
+        };
 
         return (
-        <TouchableOpacity>
-            <View style={styles.cardContainer}>
-                <Image resizeMode='auto' source={image ? {uri: image} : placeholder} style={styles.imageContainer} />
-                <View style={styles.usernameContainer}>
-                    <Text style={styles.username}>
-                        {username}
-                    </Text>
+            <TouchableOpacity onPress={() => navigateProfile(navigation, id, image)}>
+                <View style={styles.cardContainer}>
+                    <Image resizeMode='auto' source={image ? {uri: image} : placeholder} style={styles.imageContainer} />
+                    <View style={styles.usernameContainer}>
+                        <Text style={styles.username}>
+                            {username}
+                        </Text>
+                    </View>
+                    <TouchableOpacity style={styles.buttonContainer} onPress={following ? Unfollow : Follow}>
+                        <Text style={styles.buttonText}>{following ? 'Following' : "Follow"}</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.buttonContainerr} onPress={following ? Unfollow : Follow}>
-                    <Text style={styles.buttonText}>{following ? 'Following' : "Follow"}</Text>
-                </TouchableOpacity>
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
         );
     };
 
@@ -113,6 +123,7 @@ export default function Friends({navigation}){
 
     return (
         <View style={styles.container}>
+
             <View style={styles.topContainer}>
                 <View style={styles.inputContainer}>
                     <TextInput
@@ -121,17 +132,9 @@ export default function Friends({navigation}){
                         value={search}
                     />
                 </View>
-
-                <TouchableOpacity onPress={() => navigation.navigate("Add Friends")}>
-                    <View style={styles.addFriendsContainer}>
-                        <Text style={styles.addFriendsButton}>Add Friends</Text>
-                    </View>
-                </TouchableOpacity>
-                
             </View>
 
             <View style={styles.bottomContainer}>
-                    
                 <FlatList 
                     data={filtered}
                     style={styles.flatList}
@@ -139,10 +142,15 @@ export default function Friends({navigation}){
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
                     refreshControl={
-                        <RefreshControl refreshing = {refreshing} onRefresh={fetchFriends} />
+                        <RefreshControl refreshing={refreshing} onRefresh={fetchFriends} />
                     }
                 />
-                    
+            </View>
+
+            <View>
+                <TouchableOpacity style={styles.addFriendsContainer} onPress={() => navigation.navigate("Add Friends")}>
+                    <Text style={styles.addFriendsButton}>Add Friends</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -150,55 +158,34 @@ export default function Friends({navigation}){
 
 const styles = StyleSheet.create({
     container: {
-        display: 'flex',
+        flex: 1,
         backgroundColor: '#F4F4F6',
-        height: '100%',
     },
     topContainer: {
-        display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         height: '10%',
     },
     inputContainer: {
         padding: 15,
-        display: 'flex',
-        width: '70%',
+        width: '90%',
     },
     input: {
         borderWidth: 1,
         borderColor: '#EC6337',
+        borderRadius: 10,
+        paddingHorizontal: 10,
         height: 35,
     },
-    buttonContainer: {
-        display: 'flex',
-        paddingVertical: 15,
-        paddingRight: 15,
-        backgroundColor: 'red',
-    },
-    addFriends: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 35,
-        borderRadius: 8,
-        backgroundColor: '#EC6337',
-    },
-    bottomContainer: 
-    {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
+    bottomContainer: {
+        flex: 1,
         paddingHorizontal: 15,
-        Height: '90%',
-        paddingBottom: 25,
-        marginBottom: 35,
     },
     cardContainer: {
         borderRadius: 40,
         backgroundColor: '#FFFFFF',
         padding: 22,
-        marginVertical: 10,
-        display: 'flex',
+        marginVertical: 5,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -217,15 +204,20 @@ const styles = StyleSheet.create({
         fontWeight: '400',
     },
     addFriendsContainer: {
-        display: 'flex',
         backgroundColor: '#EC6337',
         borderRadius: 40,
-        padding: 15,
-        marginTop: 10,
-        marginRight: 10,
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        margin: 15,
+        alignItems: 'center',
     },
-    buttonContainerr: {
-        display: 'flex',
+    addFriendsButton: {
+        color: '#FFFFFF',
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    buttonContainer: {
         backgroundColor: '#EC6337',
         borderRadius: 40,
         paddingVertical: 15,
@@ -238,7 +230,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     emptyList: {
-        display: 'flex',
         minHeight: '50%',
         justifyContent: 'center',
         alignContent: 'center',
@@ -249,10 +240,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     flatList: {
-        display: 'flex',
-    },
-    addFriendsButton: {
-        color: '#FFFFFF',
-        textAlign: 'center',
+        flex: 1,
     },
 });

@@ -8,6 +8,7 @@ import { collection, getDoc, onSnapshot, doc, updateDoc, increment, arrayUnion, 
 import Comments from '@/components/Modals/Comments.js';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
+import Card from '@/components/Card.js';
 import ViewProfile from './ViewProfile';
 import ViewLikes from './ViewLikes';
 
@@ -25,173 +26,6 @@ const EmptyList = () => {
     </View>
   )
 }
-
-const Result = ({ userId, commentText, navigation }) => {
-
-  const [username, setUsername] = useState('');
-
-  const findUsername = async () => {
-      const findUsername = (await getDoc(doc(db, 'users', userId))).data();
-      setUsername(findUsername.username);
-  }
-  
-  useEffect(() => {
-      findUsername();
-    }, [userId]);
-  
-  return (
-      <View style={{flexDirection: 'row'}}>
-        <TouchableOpacity onPress={() => navigation.navigate('ViewProfile', { user: userId })}>
-          <Text style={styles.commentUsername}>{username}</Text>
-        </TouchableOpacity>
-          <Text style={styles.commentText}> {commentText}</Text>
-      </View>
-  )
-}
-
-const Post = ({ id, user, time, image, caption, comments, likes, usersLiked, location, navigation }) => {
-  
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const openComments = () => {
-    setModalVisible(true);
-  }
-
-  const closeComments = () => {
-    setModalVisible(false);
-  }
-
-  const postRef = doc(db, 'posts', id);
-  let initialLikes = likes;
-  const currentUsers = usersLiked;
-  const [like, setLike] = useState(usersLiked.includes(auth.currentUser.uid));
-  const [username, setUsername] = useState('');
-  const [userPic, setUserPic] = useState(null);
-  const [currentLikes, setCurrentLikes] = useState(initialLikes);
-  //console.log('initial likes is: ' + initialLikes);
-  //console.log(currentUsers);
-  //console.log(user);
-  const toggleLike = async () => {
-
-    setLike(previousState => !previousState)
-    if (!usersLiked.includes(auth.currentUser.uid)) {
-      await updateDoc(postRef, {
-        likes: increment(1),
-        usersLiked: arrayUnion(auth.currentUser.uid)
-      }).then(console.log('added one like!'));
-      
-      setCurrentLikes(currentLikes + 1);
-    } else {
-      await updateDoc(postRef, {
-        likes: increment(-1),
-        usersLiked: arrayRemove(auth.currentUser.uid),
-      }).then(console.log('removed one like!'));
-      setCurrentLikes(currentLikes - 1);
-    }
-  };
-
-  const findUsername = async () => {
-    const findUsername = (await getDoc(doc(db, 'users', user))).data();
-    setUsername(findUsername.username);
-    if (findUsername.profilePic) {
-      setUserPic(findUsername.profilePic);
-    }
-  }
-
-  useEffect(() => {
-    findUsername();
-  }, [user]);
-
-  return (
-  <View style={styles.postContainer}>
-
-    <View style={styles.post}>
-
-      <View style={styles.postHeaderContainer}>
-        <View style={styles.postHeaderLeftContainer}>
-          <Image resizeMode='auto' source={userPic === null ? placeholder : {uri: userPic}} style={styles.profileImage}/>
-          <View style={styles.postHeader}>
-            <TouchableOpacity onPress={() => navigation.navigate('ViewProfile', { user: user })}>
-              <Text style={styles.postText}>{username}</Text>
-            </TouchableOpacity>
-            <Text style={styles.postTime}>{timeAgo.format(Date.now() - (Date.now() - time))}</Text>
-          </View>
-        </View>
-        <View style={styles.postHeaderRightContainer}>
-          {
-            location != '' 
-            ? <View style={styles.locationContainer}>
-            <AntDesign.Button name='enviromento' backgroundColor="#FFFFFF" 
-            color= '#EC6337' size = {18} activeOpacity = {1} style={{paddingEnd: 0, marginEnd: -8}}>
-            </AntDesign.Button>
-            <Text style={styles.locationText}>{location}</Text>
-          </View>
-            : <View></View>
-          }
-          
-        </View>
-      </View>
-
-      <View style={styles.imageContainer}>
-        <Image
-          resizeMode='contain'
-          style={styles.image}
-          source={{ uri: image }}
-        />
-      </View>
-      
-
-      <View style={styles.likeCommentContainer}>
-
-        <TouchableOpacity onPress={() => navigation.navigate('ViewLikes', {
-          usersLiked: JSON.stringify(usersLiked)
-        })}>
-          <Text style={styles.likes}>
-            <Text>{usersLiked.length}</Text>
-            <Text>{usersLiked.length === 1 ? ' like' : ' likes'}</Text>
-          </Text>
-        </TouchableOpacity>
-
-        <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-          <TouchableOpacity onPress={() => navigation.navigate('ViewProfile', {
-            user: user
-          })}>
-              <Text style={styles.usernameWeight}>{username} </Text>
-            </TouchableOpacity>
-          <View>
-          <Text style={styles.usernameText}>
-              <Text>{caption}</Text>
-            </Text>
-          </View>
-            
-        </View>
-
-        <View style={styles.commentsLeftIndent}>
-          {comments.slice(0, 2).map( (item, id) => {
-            return (
-              <Result userId={item.userId} commentText={item.commentText} navigation={navigation} />
-            )
-          })}
-        </View>
-      </View>
-
-      <View style={styles.postBottom}>
-        <AntDesign.Button name={like ? 'like1' : 'like2'} backgroundColor="#FFFFFF" 
-        color= '#EC6337' size = {30} onPress = {toggleLike} activeOpacity = {1} style={{paddingEnd: 0}}>
-        </AntDesign.Button>
-        <AntDesign.Button name="message1" backgroundColor="#FFFFFF" 
-        color= '#EC6337' size = {30} onPress={openComments} activeOpacity = {1} style={{paddingEnd: 0}}>
-        </AntDesign.Button>
-        <AntDesign.Button name="retweet" backgroundColor="#FFFFFF" 
-        color= '#EC6337' size = {30} activeOpacity = {1} style={{paddingEnd: 0}}>
-        </AntDesign.Button>
-      </View>
-
-      <Comments isVisible={modalVisible} onClose={closeComments} commentsContent={comments} postRef={postRef} navigation={navigation} />
-
-    </View>
-  </View>
-)};
 
 export default function HomeScreen({navigation}) {
 
@@ -270,7 +104,7 @@ export default function HomeScreen({navigation}) {
               contentContainerStyle={styles.flatListContainer}
               renderItem={({ item }) => {
                 return (
-                <Post
+                <Card
                   id={item.postId}
                   user={item.userId}
                   time={item.timestamp}
@@ -302,117 +136,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F4F6',
     height: '100%',
   },
-  headerContainer: {
-    display: 'flex',
-    width: '100%',
-    backgroundColor: '#EC6337',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  postContainer: {
-    display: 'flex',
-    backgroundColor: '#F4F4F6',
-  },
-  post: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignContent: 'center',
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 20,
-    marginVertical: 10,
-    borderRadius: 20,
-  },
-  imageContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF'
-  },
-  image: {
-      height: 320,
-      width: 320,
-      padding: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginVertical: 10,
-  },
-  headerText: {
-    marginTop: 5,
-    fontSize: 30,
-    fontWeight: 'bold',
-    textAlign: 'left',
-  },
   feed: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
-  },
-  postHeaderContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginTop: 15,
-    marginHorizontal: 15,
-  },
-  postHeaderLeftContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '70%',
-  },
-  postHeaderRightContainer: {
-    display: 'flex',
-    width: '30%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  locationContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-    borderColor: '#FFFFFF',
-  },
-  locationText: {
-    color: '#EC6337',
-    fontSize: 15,
-    textAlign: 'center',
-  },
-  profileImage: {
-    width: 40,
-    margin: 'auto 0',
-    aspectRatio: 1,
-    borderRadius: 999,
-  },
-  postHeader: {
-    display: 'flex',
-    paddingLeft: 5,
-  },
-  postText: {
-    marginLeft: 5,
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'left',
-  },
-  postTime: {
-    marginLeft: 5,
-    fontSize: 15,
-    fontStyle: 'italic',
-    textAlign: 'left',
-  },
-  likeCommentContainer: {
-    marginHorizontal: 10,
-    marginBottom: 10,
-  },
-  postBottom: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    borderTopColor: '#D4D4D6',
-    borderTopWidth: 1,
   },
   flatList: {
     display: 'flex',
@@ -431,25 +159,4 @@ const styles = StyleSheet.create({
   emptyText: {
     textAlign: 'center',
   },
-  likes: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  commentUsername: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  commentText: {
-      fontSize: 16,
-  },
-  usernameText: {
-    fontSize: 18,
-  },
-  usernameWeight: {
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  commentsLeftIndent: {
-    marginLeft: 10,
-  }
 });

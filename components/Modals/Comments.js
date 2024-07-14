@@ -1,8 +1,7 @@
-import { Modal, View, StyleSheet, Text, FlatList, TextInput, TouchableWithoutFeedback, TouchableOpacity, Image } from 'react-native'; 
+import { Modal, View, StyleSheet, Text, FlatList, TextInput, TouchableWithoutFeedback, TouchableOpacity, Image, Alert } from 'react-native'; 
 import { useState, useEffect } from 'react';
 import { firebaseAuth, firebaseDb} from '@/firebaseConfig';
 import { getDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
-import ViewProfile  from '../ViewProfile.js'; 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 const auth = firebaseAuth;
@@ -17,7 +16,7 @@ const EmptyList = () => {
     )
 }
 
-const Result = ({ userId, commentText, navigation }) => {
+const Result = ({ userId, commentText, navigation, commentId, deleteComment }) => {
 
     const [username, setUsername] = useState('');
     const [userPic, setUserPic] = useState(null);
@@ -44,28 +43,30 @@ const Result = ({ userId, commentText, navigation }) => {
     }
 
     return (
-    <View style={styles.commentContainer}>
+    <TouchableOpacity delayLongPress={500} onLongPress={() => deleteComment(commentId, userId)}>
+        <View style={styles.commentContainer}>
 
-        <Image resizeMode='auto' source={userPic ? {uri: userPic} : placeholder} style={styles.imageContainer} />
+            <Image resizeMode='auto' source={userPic ? {uri: userPic} : placeholder} style={styles.imageContainer} />
 
-        <View>
-            <TouchableOpacity onPress={() => navigation.navigate('ViewProfile', { user: userId })}>
-                <Text style={styles.commentUsername}>{username}</Text>
-            </TouchableOpacity>
+            <View>
+                <TouchableOpacity onPress={() => navigation.navigate('ViewProfile', { user: userId })}>
+                    <Text style={styles.commentUsername}>{username}</Text>
+                </TouchableOpacity>
+            </View>
+                
+            <View>
+                <Text style={styles.commentText}> {commentText}</Text>
+            </View>
+
         </View>
-            
-        <View>
-            <Text style={styles.commentText}> {commentText}</Text>
-        </View>
-
-    </View>
+    </TouchableOpacity>
     )
 }
 
 export default function Comments( {isVisible, commentsContent, onClose, postRef, navigation} ) {
 
     const [newComment, setNewComment] = useState('');
-    const renderItem = ({item}) => <Result userId={item.userId}  commentText={item.commentText} navigation={navigation} />
+    const renderItem = ({item}) => <Result userId={item.userId}  commentText={item.commentText} commentId={item.id} navigation={navigation} deleteComment={deleteComment} />
 
     const addComment = async () => {
         if (newComment !== '') {
@@ -82,6 +83,34 @@ export default function Comments( {isVisible, commentsContent, onClose, postRef,
             setNewComment('');
         }
     }  
+
+    const deleteComment = async (commentId, userId) => {
+
+        if(userId !== auth.currentUser.uid) {
+            return ;
+        }
+
+        Alert.alert(
+            "Delete comment",
+            "Are you sure you want to delete your comment?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Delete",
+                    onPress: async () => {
+                        const updatedComments = commentsContent.filter(comment => comment.id !== commentId);
+                        await updateDoc(postRef, {
+                            comments: updatedComments
+                        });
+                    },
+                    style: "destructive"
+                }
+            ]
+        )
+    }
 
     return (
         <Modal animationType='slide' transparent={true} visible={isVisible}>
