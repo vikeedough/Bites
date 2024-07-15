@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
-import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { arrayUnion, doc, setDoc, updateDoc, getDoc } from 'firebase/firestore';
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
 import { err } from 'react-native-svg';
 
@@ -89,14 +89,32 @@ export default function Post() {
     }
 
     const checkPost = async () => {
-        if (caption === '') {
-            alert('Please include a caption in your post!');
-        } else if (image === null) {
-            alert('Please upload a picture for your post!');
-        } else {
-            setIsLoading(true);
-            sendPost();
+
+        try {
+            if (caption === '') {
+                alert('Please include a caption in your post!');
+            } else if (image === null) {
+                alert('Please upload a picture for your post!');
+            } else {
+                setIsLoading(true);
+                await sendPost();
+    
+                const docRef = doc(db, 'users', auth.currentUser.uid);
+                const docSnapshot = await getDoc(docRef)
+
+                const totalPosts = docSnapshot.data().numberOfPosts;
+                const newTotalPosts = totalPosts + 1;
+
+                await updateDoc(docRef, {
+                    numberOfPosts : newTotalPosts
+                });
+            }
         }
+
+        catch (error) {
+            console.log("Error in Posting " + error)
+        }
+       
     }
 
     const sendPost = async () => {

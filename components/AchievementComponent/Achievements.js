@@ -33,7 +33,7 @@ export default function Achievements() {
 
                     await updateDoc(docRef, {
                         Achievements : newAchievements
-                      });
+                    });
                 } 
 
                 if (foodTest >= 14 && !copyOfAchievements.includes("Dedicated Logger")) {
@@ -41,7 +41,7 @@ export default function Achievements() {
 
                     await updateDoc(docRef, {
                         Achievements : newAchievements
-                      });
+                    });
                 }
 
                 if (foodTest >= 30 && !copyOfAchievements.includes("Logging Maestro")) {
@@ -49,7 +49,7 @@ export default function Achievements() {
 
                     await updateDoc(docRef, {
                         Achievements : newAchievements
-                      });
+                    });
                 }
 
               })
@@ -66,7 +66,7 @@ export default function Achievements() {
 
                     await updateDoc(docRef, {
                         Achievements : newAchievements
-                      });
+                    });
                 } 
 
                 if (postsTest >= 20 && !copyOfAchievements.includes("Meal Picasso")) {
@@ -74,7 +74,7 @@ export default function Achievements() {
 
                     await updateDoc(docRef, {
                         Achievements : newAchievements
-                      });
+                    });
                 }
 
                 if (postsTest >= 50 && !copyOfAchievements.includes("Influencer")) {
@@ -82,7 +82,7 @@ export default function Achievements() {
 
                     await updateDoc(docRef, {
                         Achievements : newAchievements
-                      });
+                    });
                 }
 
               })
