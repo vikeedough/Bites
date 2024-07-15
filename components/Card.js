@@ -122,12 +122,17 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
         }
     }
 
-    const shareImage = async () => {
-        await saveImage();
-        Sharing.shareAsync(imageUri, {
+    useEffect(() => {
+        if (imageUri) {
+            Sharing.shareAsync(imageUri, {
             mimeType: 'image/jpeg',
             dialogTitle: "Here is the message"
-        })
+        });
+        }
+    }, [imageUri]);
+
+    const shareImage = async () => {
+        await saveImage();
     }
 
     useEffect(() => {
