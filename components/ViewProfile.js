@@ -16,7 +16,7 @@ const EmptyList = () => {
     )
 }
 
-const HeaderCard = ( {userId, image, username} ) => {
+const HeaderCard = ( {userId, image, username, achievement} ) => {
 
     const [following, setFollowing] = useState(false);
     const [currFriends, setCurrFriends] = useState([]);
@@ -66,6 +66,16 @@ const HeaderCard = ( {userId, image, username} ) => {
             <View style={styles.headerCardRightContainer}>
                 <Text style={styles.headerText}>{username}</Text>
                 {
+                    achievement !== ''
+                    ?
+                    <View style={styles.achievementContainer}>
+                    <Text style={styles.achievementText}>{achievement}</Text>
+                    </View>
+                    :
+                    <View></View>
+
+                }
+                {
                 username === auth.currentUser.displayName 
                     ? 
                     <View></View>
@@ -73,7 +83,7 @@ const HeaderCard = ( {userId, image, username} ) => {
                     <TouchableOpacity style={styles.buttonContainerr} onPress={following ? Unfollow : Follow}>
                         <Text style={styles.buttonText}>{following ? 'Following' : "Follow"}</Text>
                     </TouchableOpacity>
-            }
+                }
             </View>
         </View>
     );
@@ -85,6 +95,7 @@ export default function ViewProfile({ route, navigation }) {
 
     const [username, setUsername] = useState('');
     const [userImage, setUserImage] = useState(null);
+    const [achievement, setAchievement] = useState('');
 
     const findUsername = async () => {
         try {
@@ -93,6 +104,7 @@ export default function ViewProfile({ route, navigation }) {
             console.log(userData.username);
             if (userData) {
                 setUsername(userData.username || '');
+                setAchievement(userData.selectedAchievement);
                 if(userData.profilePic) {
                     setUserImage(userData.profilePic);
                 }
@@ -162,7 +174,7 @@ export default function ViewProfile({ route, navigation }) {
             <FlatList
             style={styles.flatList}
             data={filteredPosts}
-            ListHeaderComponent={() => <HeaderCard userId={user} image={userImage} username={username} />}
+            ListHeaderComponent={() => <HeaderCard userId={user} image={userImage} username={username} achievement={achievement} />}
             ListEmptyComponent={EmptyList}
             contentContainerStyle={styles.flatListContainer}
             renderItem={({ item }) => {
@@ -268,5 +280,15 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontWeight: '400',
         textAlign: 'center',
+    },
+    achievementContainer: {
+        backgroundColor: '#F4F4F6',
+        borderRadius: 15,
+        padding: 5,
+        paddingHorizontal: 15,
+    },
+    achievementText: {
+        fontSize: 13,
+        color: '#EC6337'
     },
 })

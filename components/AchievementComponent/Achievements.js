@@ -13,6 +13,7 @@ export default function Achievements() {
 
     const [totalMealsLogged, setTotalMealsLogged] = useState(0);
     const [totalPosts, setTotalPosts] = useState(0);
+    const [achievement, setAchievement] = useState('');
 
     useEffect(() => {
 
@@ -20,6 +21,11 @@ export default function Achievements() {
     
             try {
               const docRef = doc(db, 'users', auth.currentUser.uid);
+
+              const unsubscribeAchievements = onSnapshot(docRef, async (doc) => {
+                const currAchievement = doc.data().selectedAchievement;
+                setAchievement(currAchievement);
+              })
     
               const unsubscribeMealLogs = onSnapshot(docRef, async (doc) => {
                 const foodTest = doc.data().numberOfFoodLogs;
@@ -85,13 +91,14 @@ export default function Achievements() {
                     });
                 }
 
-              })
+            })
 
-              return () => {
+            return () => {
                 unsubscribeMealLogs();
                 unsubscribePosts();
-              };
-              
+                unsubscribeAchievements();
+            };
+            
             }   catch (error) {
                 console.log("Unable to retrieve data " + error)
             }
@@ -114,21 +121,28 @@ export default function Achievements() {
                             description={"Log meals for 7 days!"}
                             progress={(totalMealsLogged / 7) > 1 ? 1 : Math.round(totalMealsLogged / 7 * 100) / 100}
                             detailedStat={`${totalMealsLogged > 7 ? 7 : totalMealsLogged} / 7`}
-                            trophyTitle={"Meal Rookie"}/>
+                            trophyTitle={"Meal Rookie"}
+                            onAchievementSelect={setAchievement}
+                            selectedAchievement={achievement}/>
+                            
 
                     <TrophyContainer 
                         trophyColor={"#C0C0C0"}
                         description={"Log meals for 14 days!"}
                         progress={(totalMealsLogged / 14) > 1 ? 1 : Math.round(totalMealsLogged / 14 * 100) / 100}
                         detailedStat={`${totalMealsLogged > 14 ? 14 : totalMealsLogged} / 14`}
-                        trophyTitle={"Dedicated Logger"}/>
+                        trophyTitle={"Dedicated Logger"}
+                        onAchievementSelect={setAchievement}
+                        selectedAchievement={achievement}/>
 
                     <TrophyContainer 
                         trophyColor={"#FFD700"}
                         description={"Log meals for 30 days!"}
                         progress={(totalMealsLogged / 30) > 1 ? 1 : Math.round(totalMealsLogged / 30 * 100) / 100}
                         detailedStat={`${totalMealsLogged > 30 ? 30 : totalMealsLogged} / 30`}
-                        trophyTitle={"Logging Maestro"}/>  
+                        trophyTitle={"Logging Maestro"}
+                        onAchievementSelect={setAchievement}
+                        selectedAchievement={achievement}/>  
                 </View>             
             </View>
 
@@ -143,21 +157,27 @@ export default function Achievements() {
                     description={"Post 10 meals!"}
                     progress={(totalPosts / 10) > 1 ? 1 : Math.round(totalPosts / 10 * 100) / 100}
                     detailedStat={`${totalPosts > 10 ? 10 : totalPosts} / 10`}
-                    trophyTitle={"Meal Poster"}/>
+                    trophyTitle={"Meal Poster"}
+                    onAchievementSelect={setAchievement}
+                    selectedAchievement={achievement}/>
 
                     <TrophyContainer 
                         trophyColor={"#C0C0C0"}
                         description={"Post 20 meals!"}
                         progress={(totalPosts / 20) > 1 ? 1 : Math.round(totalPosts / 20 * 100) / 100}
                         detailedStat={`${totalPosts > 20 ? 20 : totalPosts} / 20`}
-                        trophyTitle={"Meal Picasso"}/>
+                        trophyTitle={"Meal Picasso"}
+                        onAchievementSelect={setAchievement}
+                        selectedAchievement={achievement}/>
 
                     <TrophyContainer 
                         trophyColor={"#FFD700"}
                         description={"Post 50 meals!"}
                         progress={(totalPosts / 50) > 1 ? 1 : Math.round(totalPosts / 50 * 100) / 100}
                         detailedStat={`${totalPosts > 50 ? 50 : totalPosts} / 50`}
-                        trophyTitle={"Influencer"}/>
+                        trophyTitle={"Influencer"}
+                        onAchievementSelect={setAchievement}
+                        selectedAchievement={achievement}/>
                 </View>             
             </View>
         </ScrollView>

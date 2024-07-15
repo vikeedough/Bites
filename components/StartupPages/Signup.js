@@ -50,12 +50,13 @@ export default function Signup() {
           email: email, 
           friends: [],
           Achievements: [],
+          selectedAchievement: '',
           goals: ['', '', '', '', '', ''],
           macroGoals: [0, 0, 0, 0],
           numberOfPosts: 0,
           numberOfFoodLogs: 0
-         },
-         { merge: true }
+        },
+        { merge: true }
         )
     } catch (error) {
         console.log(error)

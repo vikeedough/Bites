@@ -7,7 +7,7 @@ const auth = firebaseAuth;
 const db = firebaseDb;
 const placeholder = require('@/assets/images/placeholder.png');
 
-const Result = ({ userId }) => {
+const Result = ({ userId, navigation }) => {
 
     const [username, setUsername] = useState('');
     const [userPic, setUserPic] = useState(null);
@@ -43,6 +43,17 @@ const Result = ({ userId }) => {
         console.log("Unfollowed");
     }
 
+    const navigateProfile = (navigation, userId, userPic) => {
+        const state = navigation.getState();
+        const currentRoute = state.routes[state.index];
+
+        if (currentRoute.name === 'ViewProfile' && currentRoute.params.user === userId) {
+            return;
+        }
+
+        navigation.push('ViewProfile', {user: userId, userPic: userPic});
+    };
+
     useEffect(() => {
         findUsername();
     }, [userId]);
@@ -60,7 +71,7 @@ const Result = ({ userId }) => {
     }
 
     return (
-        <View style={styles.cardContainer}>
+        <TouchableOpacity style={styles.cardContainer} onPress={() => navigateProfile(navigation, userId, userPic)}>
             <Image resizeMode='auto' source={userPic ? {uri: userPic} : placeholder} style={styles.imageContainer} />
             <View style={styles.usernameContainer}>
                 <Text style={styles.username}>
@@ -77,11 +88,11 @@ const Result = ({ userId }) => {
                     </TouchableOpacity>
             }
             
-        </View>
+        </TouchableOpacity>
     );
 }
 
-export default function ViewLikes({ route }) {
+export default function ViewLikes({ route, navigation }) {
 
     const { usersLiked } = route.params;
     const parsedUsers = JSON.parse(usersLiked);
@@ -93,6 +104,7 @@ export default function ViewLikes({ route }) {
             return (
             <Result
                 userId={item}
+                navigation={navigation}
             />
             )}
             }

@@ -1,11 +1,88 @@
-import React from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
+import React, { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, Alert} from "react-native";
 import ProgressBar from 'react-native-progress/Bar';
 import Icon from 'react-native-vector-icons/Entypo';
+import { firebaseAuth, firebaseDb } from '../../firebaseConfig';
+import { getDoc, doc, setDoc } from 'firebase/firestore';
 
-const TrophyContainer = ({trophyColor, description, progress, detailedStat, trophyTitle}) => {
+const auth = firebaseAuth;
+const db = firebaseDb;
+
+const TrophyContainer = ({trophyColor, description, progress, detailedStat, trophyTitle, onAchievementSelect, selectedAchievement}) => {
+
+    const [currAchievements, setCurrAchievements] = useState([]);
+    const [currDisplayed, setCurrDisplayed] = useState('');
+
+    const findAchievements = async () => {
+        const findUser = (await getDoc(doc(db, 'users', auth.currentUser.uid))).data();
+        setCurrAchievements(findUser.Achievements);
+        setCurrDisplayed(findUser.selectedAchievement);
+        console.log(currAchievements);
+    }
+
+    const selectAchievement = () => {
+        if (currAchievements.includes(trophyTitle)) {
+
+            if (trophyTitle === currDisplayed) {
+                Alert.alert(
+                    "Remove achievement",
+                    "Are you sure you want to stop displaying this achievement on your profile?",
+                    [
+                        {
+                            text: "No",
+                            style: "cancel"
+                        },
+                        {
+                            text: "Yes",
+                            onPress: async () => {
+                                await setDoc(doc(db, "users", auth.currentUser.uid), 
+                                    { selectedAchievement: '' }, { merge: true}
+                                )
+                                setCurrDisplayed('');
+                                onAchievementSelect('');
+                            },
+                            style: "destructive"
+                        }
+                    ]
+                );
+            } else {
+                Alert.alert(
+                    "Display achievement",
+                    "Do you want to display this achievement on your profile?",
+                    [
+                        {
+                            text: "No",
+                            style: "cancel"
+                        },
+                        {
+                            text: "Yes",
+                            onPress: async () => {
+                                await setDoc(doc(db, "users", auth.currentUser.uid), 
+                                    { selectedAchievement: trophyTitle }, { merge: true}
+                                )
+                                setCurrDisplayed(trophyTitle);
+                                onAchievementSelect(trophyTitle);
+                            },
+                            style: "destructive"
+                        }
+                    ]
+                );
+            }
+
+        }
+    }
+
+    const containerStyle = [
+        styles.containter,
+        { borderColor: selectedAchievement === trophyTitle ? 'green' : '#EC6337' }
+    ];
+
+    useEffect(() => {
+        findAchievements();
+    }, [selectedAchievement]);
+
     return (
-        <View style={styles.containter}>
+        <TouchableOpacity style={containerStyle} onPress={selectAchievement}>
             <View style={styles.iconContainer}>
                 <Icon name="trophy" size={55} color={trophyColor} />
                 <Text style={styles.trophyText}>{trophyTitle}</Text>
@@ -32,7 +109,7 @@ const TrophyContainer = ({trophyColor, description, progress, detailedStat, trop
                 </View>
                 
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

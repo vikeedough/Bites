@@ -75,18 +75,16 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
     }
 
     const postRef = doc(db, 'posts', id);
-    let initialLikes = likes;
     const currentUsers = usersLiked;
     const [like, setLike] = useState(usersLiked.includes(auth.currentUser.uid));
     const [username, setUsername] = useState('');
     const [userPic, setUserPic] = useState(null);
-    const [currentLikes, setCurrentLikes] = useState(initialLikes);
+    const [currentLikes, setCurrentLikes] = useState(likes);
     const [imageUri, setImageUri] = useState('');
     const imageRef = useRef();
 
     const toggleLike = async () => {
 
-    setLike(previousState => !previousState)
     if (!usersLiked.includes(auth.currentUser.uid)) {
         await updateDoc(postRef, {
             likes: increment(1),

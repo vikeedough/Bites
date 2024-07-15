@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, StyleSheet, FlatList, Image } from "react
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { firebaseApp, firebaseAuth, firebaseDb } from '../firebaseConfig';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { doc, setDoc, collection, onSnapshot } from "firebase/firestore";
+import { doc, setDoc, collection, onSnapshot, getDoc } from "firebase/firestore";
 import { updateProfile } from 'firebase/auth';
 import * as ImagePicker from 'expo-image-picker';
 import Card from './Card';
@@ -23,6 +23,12 @@ export default function MainProfile({navigation}) {
     const [image, setImage] = React.useState(user.photoURL === null ? null : user.photoURL);
     const [posts, setPosts] = useState([]);
     const [filteredPosts, setFilteredPosts] = useState([]);
+    const [currDisplayed, setCurrDisplayed] = useState('');
+
+    const findAchievements = async () => {
+        const findUser = (await getDoc(doc(db, 'users', auth.currentUser.uid))).data();
+        setCurrDisplayed(findUser.selectedAchievement);
+    }
 
     useEffect(() => {
         if (isFocused) {
@@ -31,7 +37,12 @@ export default function MainProfile({navigation}) {
     }, [isFocused]);
 
     useEffect(() => {
+        findAchievements();
+    }, []);
+
+    useEffect(() => {
         const postsRef = collection(db, "posts");
+        const achievementRef = doc(db, "users", auth.currentUser.uid);
     
         const unsubscribe = onSnapshot(postsRef, (snapshot) => {
         const updatePosts = snapshot.docs.map((doc) => {
@@ -50,8 +61,14 @@ export default function MainProfile({navigation}) {
         setPosts(updatePosts);
     });
 
+        const unsubscribe2 = onSnapshot(achievementRef, (doc) => {
+            const updateAchievement = doc.data().selectedAchievement;
+            setCurrDisplayed(updateAchievement);
+        });
+
     return () => {
         unsubscribe();
+        unsubscribe2();
     };
     }, []);
 
@@ -121,6 +138,17 @@ export default function MainProfile({navigation}) {
 
             <View style={styles.welcomeContainer}>
                 <Text style={styles.usernameText}> Welcome, {user.displayName}! </Text>
+                {
+                    currDisplayed !== ''
+                    ?
+                    <View style={styles.achievementContainer}>
+                    <Text style={styles.achievementText}>{currDisplayed}</Text>
+                    </View>
+                    :
+                    <View></View>
+
+                }
+                
             </View>
                 
             </View>
@@ -205,6 +233,7 @@ const styles = StyleSheet.create({
         width: '50%',
         justifyContent: 'center',
         alignItems: 'center',
+        gap: 5,
     },
     usernameText: {
         fontWeight: 'bold',
@@ -228,5 +257,15 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    achievementContainer: {
+        backgroundColor: '#F4F4F6',
+        borderRadius: 15,
+        padding: 5,
+        paddingHorizontal: 15,
+    },
+    achievementText: {
+        fontSize: 13,
+        color: '#EC6337'
     },
 })
