@@ -200,6 +200,10 @@ export default function Food() {
             textInputProps={{
               placeholder: 'What are you looking for?'
             }}
+            flatListProps={{
+              keyboardDismissMode: undefined,
+              onScrollBeginDrag: undefined,
+            }}
           />
         </View>
 

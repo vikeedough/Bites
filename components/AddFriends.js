@@ -10,7 +10,7 @@ const userRef = collection(db, "users");
 const placeholder = require('@/assets/images/placeholder.png');
 let DATA = [];
 
-export default function AddFriends(){
+export default function AddFriends({navigation}){
 
     const [search, setSearch] = useState('');
     const [filtered, setFiltered] = useState([])
@@ -74,8 +74,18 @@ export default function AddFriends(){
 
     const Result = ({ id, image, username }) => {
         
-        const [following, setFollowing] = useState(false)
+        const [following, setFollowing] = useState(false);
 
+        const navigateProfile = (navigation, userId, userPic) => {
+            const state = navigation.getState();
+            const currentRoute = state.routes[state.index];
+    
+            if (currentRoute.name === 'ViewProfile' && currentRoute.params.user === userId) {
+                return;
+            }
+    
+            navigation.push('ViewProfile', {user: userId, userPic: userPic});
+        }
 
         const Follow = async () => {
             await updateDoc(doc(db, "users", auth.currentUser.uid),
@@ -94,7 +104,7 @@ export default function AddFriends(){
         }
 
         return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigateProfile(navigation, id, image)}>
             <View style={styles.cardContainer}>
                 <Image resizeMode='auto' source={image ? {uri: image} : placeholder} style={styles.imageContainer} />
                 <View style={styles.usernameContainer}>
@@ -151,10 +161,13 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         padding: 15,
+        marginHorizontal: 15,
     },
     input: {
         borderWidth: 1,
         borderColor: '#EC6337',
+        borderRadius: 10,
+        paddingHorizontal: 10,
         height: 35,
     },
     bottomContainer: 
@@ -170,7 +183,7 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         backgroundColor: '#FFFFFF',
         padding: 22,
-        marginVertical: 10,
+        marginVertical: 5,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',

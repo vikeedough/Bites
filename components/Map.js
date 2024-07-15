@@ -212,6 +212,10 @@ export default function Map() {
               textInputProps={{
                 placeholder: 'E.g. Frontier'
               }}
+              flatListProps={{
+                keyboardDismissMode: undefined,
+                onScrollBeginDrag: undefined,
+              }}
             />
           </View>
           <DisplayFood isVisible={modalVisible} onClose={closeModal} foodArray={selectedArray} title={selectedTitle}/>

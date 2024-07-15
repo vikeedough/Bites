@@ -1,7 +1,7 @@
 // adapted from "Creating an Animated TextField with React Native"
 // https://bilir.me/blog/creating-an-animated-textfield-with-react-native
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { StyleSheet, TextInput, View, Text, Animated, Easing, TouchableWithoutFeedback } from 'react-native';
 
 type Props = React.ComponentProps<typeof TextInput> & {
@@ -9,7 +9,7 @@ type Props = React.ComponentProps<typeof TextInput> & {
     errorText?: string | null
 }
 
-const AnimatedTextInput: React.FC<Props> = (props) => {
+const AnimatedTextInput = forwardRef<TextInput, Props>(function AnimatedTextInput(props, ref) {
 
     const { 
         label, 
@@ -18,6 +18,7 @@ const AnimatedTextInput: React.FC<Props> = (props) => {
         value, 
         onBlur,
         onFocus,
+        returnKeyType,
         ...restOfProps
     } = props;
 
@@ -39,13 +40,23 @@ const AnimatedTextInput: React.FC<Props> = (props) => {
             useNativeDriver: true,
         }).start();
     }, [focusAnimation, isFocused, value]);
+
+    useEffect(() => {
+        if (ref) {
+            if (typeof ref === 'function') {
+                ref(inputRef.current);
+            } else {
+                ref.current = inputRef.current;
+            }
+        }
+    }, [ref]);
     
     return (
         <TouchableWithoutFeedback onPress={() => inputRef.current?.focus()}>
 
             <View style={style}>
 
-                <TextInput 
+                <TextInput
                     ref={inputRef}
                     style={[
                         styles.input,
@@ -54,6 +65,7 @@ const AnimatedTextInput: React.FC<Props> = (props) => {
                         }
                     ]}
                     {...restOfProps}
+                    returnKeyType={returnKeyType || 'done'}
                     onBlur={(event) => {
                         setIsFocused(false);
                         onBlur?.(event);
@@ -104,7 +116,7 @@ const AnimatedTextInput: React.FC<Props> = (props) => {
         </TouchableWithoutFeedback>
     )
 
-};
+});
 
 const styles = StyleSheet.create({
     input: {

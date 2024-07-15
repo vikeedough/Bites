@@ -4,8 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
-import { updateProfile } from 'firebase/auth';
-import { arrayUnion, doc, getDoc, getDocsFromCache, setDoc, updateDoc } from 'firebase/firestore';
+import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
 import { err } from 'react-native-svg';
 
@@ -47,6 +46,8 @@ export default function Post() {
     const [picture, setPicture] = useState(null);
     const [disabled, setDisabled] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
     const user = auth.currentUser;
 
     const uriToBlob = async (uri) => {
@@ -93,33 +94,14 @@ export default function Post() {
         } else if (image === null) {
             alert('Please upload a picture for your post!');
         } else {
-
-            try {
-
-                await sendPost();
-
-                const docRef = doc(db, 'users', auth.currentUser.uid);
-                const docSnapshot = await getDoc(docRef);
-
-                const numberOfPosts = docSnapshot.data().numberOfPosts;
-                const newNumberOfPosts = numberOfPosts + 1;
-
-                await updateDoc(docRef, {
-                    numberOfPosts : newNumberOfPosts
-                });
-    
-            }
-
-            catch (error) {
-                console.log("Unsucessful, " + error)
-            }
-           
-
+            setIsLoading(true);
+            sendPost();
         }
     }
 
     const sendPost = async () => {
         setDisabled(true);
+        console.log(isLoading);
         const blob = await uriToBlob(picture.assets[0].uri);
         let timeNow = Date.now();
         console.log(timeNow);
@@ -147,6 +129,7 @@ export default function Post() {
             setSelectedItem(null);
             Alert.alert('', 'Post successfully uploaded!', [{text: 'Understood'}]);
             setDisabled(false);
+            setIsLoading(false);
         });
     }
 
@@ -162,6 +145,15 @@ export default function Post() {
         <AutocompleteDropdownContextProvider>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.container}>
+
+            {
+                isLoading && (
+                    <View style={styles.overlay}>
+
+                    </View>
+                )
+
+            }
 
             <View style={styles.topContainer}>
                 <View style={styles.topInnerContainer}>
@@ -251,6 +243,8 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         alignItems: 'center',
+        height: '100%',
+        marginBottom: 35,
     },
     captionContainer: {
         display: 'flex',
@@ -264,12 +258,14 @@ const styles = StyleSheet.create({
         display: 'flex',
         width: '100%',
         paddingHorizontal: 5,
+        height: '30%',
     },
     imageOuterContainer: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         width: '90%',
+        height: '57%',
         borderRadius: 20,
         paddingHorizontal: 5,
         backgroundColor: '#FFFFFF',
@@ -344,6 +340,7 @@ const styles = StyleSheet.create({
     postButton: {
         display: 'flex',
         width: '90%',
+        height: '7%',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,
@@ -375,5 +372,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         borderColor: 'rgba(224, 224, 224, 1)',
     },
-
+    loadingContainer: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000,
+    }
 });

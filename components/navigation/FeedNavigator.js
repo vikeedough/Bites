@@ -1,19 +1,27 @@
 import React from "react";
+import { Image } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Friends from '@/components/Friends.js'
-import AddFriends from '@/components/AddFriends.js'
+import HomeScreen from '@/components/HomeScreen.js';
 import ViewProfile from "../ViewProfile";
+import ViewLikes from "../ViewLikes";
 
 const Stack = createNativeStackNavigator();
 
-export default function FriendsNavigator() {
+export default function FeedNavigator() {
     return(
         <Stack.Navigator>
-            <Stack.Screen name="Friends" component={Friends} options={{
+            <Stack.Screen name="Home" component={HomeScreen} options={{
+                headerTitleAlign: 'center',
+                headerTitle: () => (
+                    <Image
+                    source={require('@/assets/images/new-adaptive-icon.png')}
+                    style={{ width: 50, height: 50 }}
+                    resizeMode="contain"
+                    />
+                ),
                 headerStyle: {
                     backgroundColor: '#EC6337'
-                },
-                headerTintColor: '#FFFFFF',
+                }
             }}/>
             <Stack.Screen name="ViewProfile" component={ViewProfile} options={{
                 headerShown: true,
@@ -23,11 +31,12 @@ export default function FriendsNavigator() {
                 },
                 headerTintColor: '#FFFFFF'
             }}/>
-            <Stack.Screen name="Add Friends" component={AddFriends} options={{
+            <Stack.Screen name="ViewLikes" component={ViewLikes} options={{
+                headerTitle: 'Likes',
                 headerStyle: {
                     backgroundColor: '#EC6337'
                 },
-                headerTintColor: '#FFFFFF',
+                headerTintColor: '#FFFFFF'
             }}/>
         </Stack.Navigator>
     )

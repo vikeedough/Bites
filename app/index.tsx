@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, Image } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack'
-import HomeScreen from '@/components/HomeScreen.js';
+import FeedNavigator from '@/components/navigation/FeedNavigator.js';
 import Map from '@/components/Map.js';
 import Login from '@/components/StartupPages/Login';
 import Post from '@/components/Post.js';
@@ -13,6 +13,7 @@ import FoodNavigator from "@/components/navigation/FoodNavigator.js";
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'
 import { onAuthStateChanged, User } from 'firebase/auth';
 import SettingsNavigator from '@/components/navigation/SettingsNavigator.js';
+import MainProfileNavigator from '@/components/navigation/MainProfileNavigator.js';
 //import MaptoFoodNavigator from '@/components/navigation/MapToFoodNavigator.js';
 
 const app = firebaseApp
@@ -44,9 +45,9 @@ function MyTabs() {
     }}>
       <Tab.Screen 
         name = "Bites" 
-        component = {HomeScreen} 
+        component = {FeedNavigator} 
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitleAlign: 'center',
           headerTitle: () => (
             <Image
@@ -111,15 +112,15 @@ function MyTabs() {
           headerShown: false
       }}/>
 
-      <Tab.Screen name = "SettingsNavigator" component = {SettingsNavigator} options={{
+      <Tab.Screen name = "MainProfileNavigator" component = {MainProfileNavigator} options={{
           tabBarIcon: ({focused}) => (
 
             <View style={styles.iconContainer}>
-              <Ionicons name="settings" color={focused ? "black" : 'white'} size={24} />
+              <Ionicons name="person-circle-outline" color={focused ? "black" : 'white'} size={24} />
             </View>
 
           ),
-          tabBarLabel: 'Settings',
+          tabBarLabel: 'Profile',
           headerShown: false
       }}/>
     </Tab.Navigator>

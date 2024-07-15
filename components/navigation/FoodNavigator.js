@@ -20,6 +20,8 @@ export default function JournalToFoodNavigator() {
                 headerStyle: {
                     backgroundColor: '#EC6337'
                 },
+                headerTitle: 'Add Food Entry',
+                headerTintColor: '#FFFFFF'
             }}/>
         </Stack.Navigator>
     )

@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, TextInput, Button, TouchableOpacity, Alert } from 'react-native';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig'
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 import { doc, setDoc } from "firebase/firestore";
@@ -14,6 +14,8 @@ export default function ResetPassword() {
   const [oldPassword, setOldPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [newPassword2, setNewPassword2] = useState('')
+  const secondInput = useRef();
+  const thirdInput = useRef();
   
   const checkSamePassword = () => {
     if(newPassword === newPassword2) {
@@ -50,6 +52,9 @@ export default function ResetPassword() {
             value={oldPassword}
             label='Enter your current password'
             secureTextEntry={true}
+            returnKeyType='Next'
+            onSubmitEditing={() => secondInput.current?.focus()}
+            blurOnSubmit={false}
           />
 
           <AnimatedTextInput
@@ -58,6 +63,10 @@ export default function ResetPassword() {
             value={newPassword}
             label='Enter your new password'
             secureTextEntry={true}
+            ref={secondInput}
+            returnKeyType='Next'
+            onSubmitEditing={() => thirdInput.current?.focus()}
+            blurOnSubmit={false}
           />
 
           <AnimatedTextInput
@@ -66,6 +75,7 @@ export default function ResetPassword() {
             value={newPassword2}
             label='Enter your new password again'
             secureTextEntry={true}
+            ref={thirdInput}
           />
 
         </View>
