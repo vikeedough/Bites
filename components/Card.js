@@ -85,6 +85,7 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
 
     const toggleLike = async () => {
 
+    setLike(previousState => !previousState);
     if (!usersLiked.includes(auth.currentUser.uid)) {
         await updateDoc(postRef, {
             likes: increment(1),

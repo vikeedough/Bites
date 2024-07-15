@@ -16,6 +16,16 @@ const placeholder = require('@/assets/images/placeholder.png');
 
 const storage = getStorage();
 
+const EmptyList = () => {
+    return (
+        <View style={styles.emptyList}>
+                <Text style={styles.emptyText}>
+                    Upload some posts to see them on your profile!
+                </Text>
+        </View>
+    )
+}
+
 export default function MainProfile({navigation}) {
 
     const isFocused = useIsFocused();
@@ -163,9 +173,9 @@ export default function MainProfile({navigation}) {
         <FlatList
             style={styles.flatList}
             data={filteredPosts}
-            //ListEmptyComponent={EmptyList}
+            ListEmptyComponent={EmptyList}
             ListHeaderComponent={TopCard}
-            contentContainerStyle={styles.flatListContainer}
+            contentContainerStyle={styles.flatListContentContainer}
             renderItem={({ item }) => {
             return (
             <Card
@@ -253,8 +263,8 @@ const styles = StyleSheet.create({
     flatList: {
         display: 'flex',
     },
-    flatListContainer: {
-        display: 'flex',
+    flatListContentContainer: {
+        flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -267,5 +277,16 @@ const styles = StyleSheet.create({
     achievementText: {
         fontSize: 13,
         color: '#EC6337'
+    },
+    emptyList: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F4F4F6',
+        width: '100%',
+    },
+    emptyText: {
+        textAlign: 'center',
+        fontSize: 16,
     },
 })
