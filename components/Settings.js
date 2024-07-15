@@ -7,7 +7,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { updateProfile } from 'firebase/auth';
 import * as ImagePicker from 'expo-image-picker';
 import Goals from '@/components/GoalsComponent/Goals.js';
-import Progress from '@/components/Progress.js';
+import Achievements from '@/components/AchievementComponent/Achievements.js';
 import { useIsFocused } from '@react-navigation/native';
 
 const auth = firebaseAuth;
@@ -116,7 +116,7 @@ export default function Settings({navigation}) {
         
 
         
-          <TouchableOpacity onPress={()=> navigation.navigate(Progress)}>
+          <TouchableOpacity onPress={()=> navigation.navigate(Achievements)}>
             <View style={styles.ButtonContainer}>
                 <AntDesign.Button name="Trophy" backgroundColor="#FFFFFF" 
                 color= '#EC6337' size = {20} style={{paddingEnd: 0, paddingLeft: 15}}>

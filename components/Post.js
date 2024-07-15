@@ -5,8 +5,9 @@ import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 import { updateProfile } from 'firebase/auth';
-import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { arrayUnion, doc, getDoc, getDocsFromCache, setDoc, updateDoc } from 'firebase/firestore';
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
+import { err } from 'react-native-svg';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -86,13 +87,34 @@ export default function Post() {
         setSelectedLocation(locationInput);
     }
 
-    const checkPost = () => {
+    const checkPost = async () => {
         if (caption === '') {
             alert('Please include a caption in your post!');
         } else if (image === null) {
             alert('Please upload a picture for your post!');
         } else {
-            sendPost();
+
+            try {
+
+                await sendPost();
+
+                const docRef = doc(db, 'users', auth.currentUser.uid);
+                const docSnapshot = await getDoc(docRef);
+
+                const numberOfPosts = docSnapshot.data().numberOfPosts;
+                const newNumberOfPosts = numberOfPosts + 1;
+
+                await updateDoc(docRef, {
+                    numberOfPosts : newNumberOfPosts
+                });
+    
+            }
+
+            catch (error) {
+                console.log("Unsucessful, " + error)
+            }
+           
+
         }
     }
 

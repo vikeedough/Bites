@@ -7,9 +7,7 @@ import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
 import DeleteEntryModal from "@/components/JournalComponent/DeleteEntryModal.js";
-import { useFocusEffect } from '@react-navigation/native';
-import { ref } from 'firebase/storage';
-import { setEnabled } from 'react-native/Libraries/Performance/Systrace';
+import ProgressCircle from 'react-native-progress/Circle';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -47,6 +45,7 @@ export default function Journal({navigation}) {
 
         const newFoodEntry = { 
           date, 
+          achievement: false,
           breakfast: [],
           lunch: [],
           dinner: [],
@@ -116,6 +115,23 @@ export default function Journal({navigation}) {
     }
   }
 
+  const atLeastTwoMealsLogged = (breakfast, lunch, dinner, others) => {
+
+    let totalFoodLogs = 0
+
+    if (breakfast.length > 0) totalFoodLogs++;
+    if (lunch.length > 0) totalFoodLogs++;
+    if (dinner.length > 0) totalFoodLogs++;
+    if (others.length > 0) totalFoodLogs++;
+
+    if (totalFoodLogs >= 2) {
+      return true;
+    }
+
+    return false;
+
+  }
+
   //When Journal page is first mounted
   useEffect(() => {
 
@@ -135,21 +151,41 @@ export default function Journal({navigation}) {
 
         //console.log(foodEntryDocRef);
 
-        const unsubscribe = onSnapshot(foodEntryDocRef, (doc) => {
-          const breakfast = doc.data().breakfast;
-          const lunch = doc.data().lunch;
-          const dinner = doc.data().dinner;
-          const others = doc.data().others;
-          
-          // console.log(breakfast)
-          // console.log(lunch)
-          // console.log(dinner)
-          // console.log(others)
+        const unsubscribe = onSnapshot(foodEntryDocRef, async (doc) => {
+          const breakfastSnapshot = doc.data().breakfast;
+          const lunchSnapshot = doc.data().lunch;
+          const dinnerSnapshot = doc.data().dinner;
+          const othersSnapshot = doc.data().others;
+          const achievement = doc.data().achievement;
 
-          setBreakfast(breakfast)
-          setLunch(lunch)
-          setDinner(dinner)
-          setOthers(others)
+          setBreakfast(breakfastSnapshot)
+          setLunch(lunchSnapshot)
+          setDinner(dinnerSnapshot)
+          setOthers(othersSnapshot)
+
+          if (!achievement) {
+
+            const mealsLogged = atLeastTwoMealsLogged(breakfastSnapshot, lunchSnapshot, dinnerSnapshot, othersSnapshot)
+
+            if (mealsLogged) {
+
+              const docSnapshot = await getDoc(docRef)
+              const numberOfFoodLogs = docSnapshot.data().numberOfFoodLogs
+
+              //console.log(numberOfFoodLogs)
+              const newNumberOfFoodLogs = numberOfFoodLogs + 1;
+              //console.log(newNumberOfFoodLogs)
+
+              await updateDoc(docRef, {
+                numberOfFoodLogs : newNumberOfFoodLogs
+              });
+  
+              await updateDoc(foodEntryDocRef, {
+                achievement : true
+              });
+  
+            }
+          }
 
         });
 
@@ -158,9 +194,9 @@ export default function Journal({navigation}) {
         };
       }
 
-        catch (error) {
-          console.error("Error occured when fetching data " + error)
-        }
+      catch (error) {
+        console.error("Error occured when fetching data " + error)
+      }
     }
 
     fetchData();
@@ -210,7 +246,7 @@ export default function Journal({navigation}) {
           deleteEntryFood={food.foodName} />
 
         <View style={styles.foodNameContainer}>
-          <TouchableOpacity delayLongPress={500} onLongPress={() => setDeleteEntryModal(true)}>
+          <TouchableOpacity delayLongPress={500} onLongPress={() => setDeleteEntryAModal(true)}>
             <View style={styles.innerFoodNameContainer}>
               <Text style={styles.mealDisplayTitle}>{food.foodName}</Text>
             </View>
@@ -238,8 +274,20 @@ export default function Journal({navigation}) {
     return (
       <View style={styles.calorieEquationContainer}>
         <View style={styles.totalCaloriesContainer}>
-          <Text style={styles.calculatedCaloriesText}>{totalCalories}</Text>
-          <Text style={styles.mealCaloriesText}>Total Calories</Text>
+          <View style={{alignContent:'flex-end', backgroundColor: 'green', marginRight: 20}}>
+            <Text style={styles.calculatedCaloriesText}>{totalCalories}</Text>
+            <Text style={styles.mealCaloriesText}>Total Calories</Text>
+          </View>
+          <View style={{ alignContent:'flex-start', marginLeft: 20}}>
+            <ProgressCircle
+              percent={0.}
+              radius={100}
+              borderWidth={8}
+              color="#3399FF"
+              shadowColor="#999"
+              bgColor="#fff" />
+          </View>
+        
         </View>
         <View style={styles.addedMacrosContainer}>
           
@@ -452,12 +500,14 @@ const styles = StyleSheet.create({
   },
   totalCaloriesContainer: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     height: '60%',
     width: '100%',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
+    backgroundColor: 'red',
+    flexDirection: 'row'
   },
   calculatedCaloriesText: {
     color: '#EC6337',

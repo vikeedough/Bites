@@ -51,6 +51,8 @@ export default function Signup() {
           friends: [], 
           goals: ['', '', '', '', '', ''],
           macroGoals: [0, 0, 0, 0],
+          numberOfPosts: 0,
+          numberOfFoodLogs: 0
          },
          { merge: true }
         )
