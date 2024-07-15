@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { Text, View, StyleSheet, FlatList, Image, Button, RefreshControl, TouchableOpacity } from "react-native";
 import { Header } from 'react-native/Libraries/NewAppScreen';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Ionicons } from '@expo/vector-icons';
 import {firebaseApp, firebaseAuth, firebaseDb} from '../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDoc, onSnapshot, doc, updateDoc, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
@@ -9,8 +9,7 @@ import Comments from '@/components/Modals/Comments.js';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import Card from '@/components/Card.js';
-import ViewProfile from './ViewProfile';
-import ViewLikes from './ViewLikes';
+import HomeScreenInfo from '@/components/Modals/HomeScreenInfo';
 
 TimeAgo.addDefaultLocale(en);
 
@@ -34,6 +33,15 @@ export default function HomeScreen({navigation}) {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [refresh, setRefresh] = useState(true);
   const [friends, setFriends] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const openInfo = () => {
+    setModalVisible(true);
+  }
+
+  const closeInfo = () => {
+      setModalVisible(false);
+  }
 
   useEffect(() => {
     const postsRef = collection(db, "posts");
@@ -66,6 +74,19 @@ export default function HomeScreen({navigation}) {
       unsubscribe2();
     };
   }, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Ionicons
+          name="help-circle-outline"
+          color={'white'}
+          size={24}
+          onPress={() => setModalVisible(true)}
+        />
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
     filterPosts();
@@ -124,6 +145,7 @@ export default function HomeScreen({navigation}) {
               }
             />
           </View>
+          <HomeScreenInfo isVisible={modalVisible} onClose={closeInfo}/>
     </View>
   );
 }

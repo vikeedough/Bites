@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from '@/components/HomeScreen.js';
 import ViewProfile from "../ViewProfile";
 import ViewLikes from "../ViewLikes";
+import { Ionicons } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,7 +22,7 @@ export default function FeedNavigator() {
                 ),
                 headerStyle: {
                     backgroundColor: '#EC6337'
-                }
+                },
             }}/>
             <Stack.Screen name="ViewProfile" component={ViewProfile} options={{
                 headerShown: true,
