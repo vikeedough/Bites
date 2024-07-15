@@ -6,6 +6,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
+import { err } from 'react-native-svg';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -87,7 +88,7 @@ export default function Post() {
         setSelectedLocation(locationInput);
     }
 
-    const checkPost = () => {
+    const checkPost = async () => {
         if (caption === '') {
             alert('Please include a caption in your post!');
         } else if (image === null) {

@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { firebaseAuth } from '../firebaseConfig';
 import Goals from '@/components/GoalsComponent/Goals.js';
-import Progress from '@/components/Progress.js';
+import Achievements from '@/components/AchievementComponent/Achievements.js';
 import { useIsFocused } from '@react-navigation/native';
 
 const auth = firebaseAuth;
@@ -78,7 +78,7 @@ export default function Settings({navigation}) {
         
 
         
-          <TouchableOpacity onPress={()=> navigation.navigate(Progress)}>
+          <TouchableOpacity onPress={()=> navigation.navigate(Achievements)}>
             <View style={styles.ButtonContainer}>
                 <AntDesign.Button name="Trophy" backgroundColor="#FFFFFF" 
                 color= '#EC6337' size = {20} style={{paddingEnd: 0, paddingLeft: 15}}>

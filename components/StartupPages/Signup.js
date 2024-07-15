@@ -16,9 +16,6 @@ export default function Signup() {
   const [password, onChangePassword] = React.useState('');
   const [confirmation, onChangeConfirmation] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const secondInput = React.useRef();
-  const thirdInput = React.useRef();
-  const fourthInput = React.useRef();
 
   const alertMessage = (error) => {
     let message = '';
@@ -51,11 +48,14 @@ export default function Signup() {
         { username: username, 
           vegetarian: false, 
           email: email, 
-          friends: [], 
+          friends: [],
+          Achievements: [],
           goals: ['', '', '', '', '', ''],
           macroGoals: [0, 0, 0, 0],
-        },
-        { merge: true }
+          numberOfPosts: 0,
+          numberOfFoodLogs: 0
+         },
+         { merge: true }
         )
     } catch (error) {
         console.log(error)
@@ -87,89 +87,57 @@ export default function Signup() {
           <Text style = {styles.signInText}>Sign up to continue</Text>
         </View>
 
-        {/* <AnimatedTextInput
+        <AnimatedTextInput
           style={styles.AnimatedInput}
           onChangeText={onChangeUsername}
           value={username}
           label='Username'
-          returnKeyType='Next'
-          onSubmitEditing={() => secondInput.current?.focus()}
-          blurOnSubmit={false}
-        /> */}
+        />
 
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           onChangeText={onChangeUsername}
           value={username}
-          placeholder='Username'
-          returnKeyType='Next'
-          onSubmitEditing={() => secondInput.current?.focus()}
-          blurOnSubmit={false}
-          />
+          placeholder='username'
+          /> */}
 
-        {/* <AnimatedTextInput
+        <AnimatedTextInput
           style={styles.AnimatedInput}
           onChangeText={onChangeEmail}
           value={email}
           label='Email'
-          ref={secondInput}
-          returnKeyType='Next'
-          onSubmitEditing={() => thirdInput.current?.focus()}
-          blurOnSubmit={false}
-        />  */}
+        /> 
 
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           onChangeText={onChangeEmail}
           value={email}
-          placeholder='Email'
-          ref={secondInput}
-          returnKeyType='Next'
-          onSubmitEditing={() => thirdInput.current?.focus()}
-          blurOnSubmit={false}
-        />
+          placeholder='email'
+        /> */}
 
-        {/* <AnimatedTextInput
+        <AnimatedTextInput
           style={styles.AnimatedInput}
           onChangeText={onChangePassword}
           value={password}
           label='Password'
           secureTextEntry = {true}
-          ref={thirdInput}
-          returnKeyType='Next'
-          onSubmitEditing={() => fourthInput.current?.focus()}
-          blurOnSubmit={false}
-        /> */}
-
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangePassword}
-          value={password}
-          placeholder='Password'
-          secureTextEntry = {true}
-          ref={thirdInput}
-          returnKeyType='Next'
-          onSubmitEditing={() => fourthInput.current?.focus()}
-          blurOnSubmit={false}
         />
 
-        {/* <AnimatedTextInput
+        <AnimatedTextInput
           style={styles.AnimatedInput}
           onChangeText={onChangeConfirmation}
           value={confirmation}
           label='Re-enter your password'
           secureTextEntry = {true}
-          ref={fourthInput}
-        /> */}
+        />
 
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           onChangeText={onChangeConfirmation}
           value={confirmation}
-          placeholder='Re-enter your password'
+          placeholder='re-enter your password'
           secureTextEntry = {true}
-          ref={fourthInput}
-        />
+        /> */}
 
         <TouchableOpacity style={styles.loginContainer} onPress={checkSamePassword}>
             <Text style={styles.loginText}>SIGN UP</Text>
@@ -178,7 +146,40 @@ export default function Signup() {
         
       </View>
     </View>
-);
+
+        // <View style = {styles.container}>
+        //   <Text style = {styles.loginText}>Signup</Text>
+        //   <TextInput
+        //     style={styles.input}
+        //     onChangeText={onChangeUsername}
+        //     value={username}
+        //     placeholder='username'
+        //   />
+        //   <TextInput
+        //     style={styles.input}
+        //     onChangeText={onChangeEmail}
+        //     value={email}
+        //     placeholder='email'
+        //   />
+        //   <TextInput
+        //     style={styles.input}
+        //     onChangeText={onChangePassword}
+        //     value={password}
+        //     placeholder='password'
+        //     secureTextEntry = {true}
+        //   />
+        //   <TextInput
+        //     style={styles.input}
+        //     onChangeText={onChangeConfirmation}
+        //     value={confirmation}
+        //     placeholder='re-enter your password'
+        //     secureTextEntry = {true}
+        //   />
+        //   <View style = {{padding: 10}}>
+        //     <Button title = "Sign up!" onPress = {checkSamePassword} color="#EC6337"/>
+        //   </View>
+        // </View>
+      );
 }
 
 const styles = StyleSheet.create({

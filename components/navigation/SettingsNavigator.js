@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Settings from '@/components/Settings.js';
 import Goals from '@/components/GoalsComponent/Goals.js';
-import Progress from '@/components/Progress.js';
+import Achievements from "@/components/AchievementComponent/Achievements.js";
 import ProfileNavigator from "./ProfileNavigator";
 import FriendsNavigator from"./FriendsNavigator";
 
@@ -29,7 +29,7 @@ export default function SettingsNavigator() {
                 },
                 headerTintColor: '#FFFFFF'
             }}/>
-            <Stack.Screen name="Progress" component={Progress} options={{
+            <Stack.Screen name="Achievements" component={Achievements} options={{
                 headerStyle: {
                     backgroundColor: '#EC6337'
                 },
