@@ -7,7 +7,7 @@ import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
 import DeleteEntryModal from "@/components/JournalComponent/DeleteEntryModal.js";
-import ProgressCircle from 'react-native-progress/Circle';
+import * as Progress from 'react-native-progress'
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -23,6 +23,7 @@ export default function Journal({navigation}) {
   const [dateLabel, setDateLabel] = useState('Today');
   const [deleteEntryModal, setDeleteEntryModal] = useState(false);
 
+  //const [userTotalCalories, setUserTotalCalories] = useState(0);
   const [breakfast, setBreakfast] = useState([]);
   const [lunch, setLunch] = useState([]);
   const [dinner, setDinner] = useState([]);
@@ -149,8 +150,6 @@ export default function Journal({navigation}) {
         const foodLogCollectionRef = collection(docRef, 'FoodLog');
         const foodEntryDocRef = doc(foodLogCollectionRef, date);
 
-        //console.log(foodEntryDocRef);
-
         const unsubscribe = onSnapshot(foodEntryDocRef, async (doc) => {
           const breakfastSnapshot = doc.data().breakfast;
           const lunchSnapshot = doc.data().lunch;
@@ -246,7 +245,7 @@ export default function Journal({navigation}) {
           deleteEntryFood={food.foodName} />
 
         <View style={styles.foodNameContainer}>
-          <TouchableOpacity delayLongPress={500} onLongPress={() => setDeleteEntryAModal(true)}>
+          <TouchableOpacity delayLongPress={500} onLongPress={() => setDeleteEntryModal(true)}>
             <View style={styles.innerFoodNameContainer}>
               <Text style={styles.mealDisplayTitle}>{food.foodName}</Text>
             </View>
@@ -264,28 +263,54 @@ export default function Journal({navigation}) {
 
   }
 
+  // const fetchUserCalories = async () => { 
+
+  //   console.log("In fetching calorie data")
+
+  //   try {
+
+  //     const docRef = doc(db, 'users', auth.currentUser.uid);
+  //     const docSnapshot = await getDoc(docRef);
+  //     const userGoalsArray = docSnapshot.data().macroGoals;
+  //     const userCalories = userGoalsArray[0] || 0;
+  //     console.log(userCalories)
+  //     setUserTotalCalories(userCalories);
+
+  //   } catch (error) {
+  //     console.log("Unsuccessful in fetching user calories " + error)
+  //   }
+  // }
+
   const calorieEquation = () => {
+    //console.log("In calorie Equation")
+    // const userTotalCalories = await fetchUserCalories();
     const totalBfastCalories = breakfast.reduce((total, item) => total + item.calories, 0);
     const totalLunchCalories = lunch.reduce((total, item) => total + item.calories, 0);
     const totalDinnerCalories = dinner.reduce((total, item) => total + item.calories, 0);
     const totalOthersCalories = others.reduce((total, item) => total + item.calories, 0);
     const totalCalories = totalBfastCalories + totalLunchCalories + totalDinnerCalories + totalOthersCalories;
+    // const progress = (totalCalories / userTotalCalories) > 1 ? 1 : Math.round(totalCalories / userTotalCalories * 100) / 100;
+    // const progressText = Math.round(totalCalories / userTotalCalories * 100);
 
     return (
       <View style={styles.calorieEquationContainer}>
         <View style={styles.totalCaloriesContainer}>
-          <View style={{alignContent:'flex-end', backgroundColor: 'green', marginRight: 20}}>
+          <View>
             <Text style={styles.calculatedCaloriesText}>{totalCalories}</Text>
             <Text style={styles.mealCaloriesText}>Total Calories</Text>
           </View>
-          <View style={{ alignContent:'flex-start', marginLeft: 20}}>
-            <ProgressCircle
-              percent={0.}
-              radius={100}
-              borderWidth={8}
-              color="#3399FF"
-              shadowColor="#999"
-              bgColor="#fff" />
+          <View>
+            {/* <Progress.Circle
+              progress={progress}
+              showsText
+              size={70}
+              thickness={8}
+              color='#EC6337'
+              borderWidth={0}
+              textStyle={{fontSize: 14, fontWeight: 'bold'}}
+              animated
+              formatText={() => `${progressText}%`} 
+              /> */}
           </View>
         
         </View>
@@ -320,6 +345,10 @@ export default function Journal({navigation}) {
 
   return (
     <View style={styles.container}>
+
+      <View>
+        
+      </View>
 
       <CalendarModal
         calendarModal={calendarModal}
@@ -506,7 +535,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    backgroundColor: 'red',
+    //backgroundColor: 'red',
     flexDirection: 'row'
   },
   calculatedCaloriesText: {
