@@ -14,6 +14,7 @@ import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
 import FoodDatabase from "@/components/FoodDatabase.js";
 import flavoursFoodData from '@/components/FoodDatabase.js';
+import CreateOwnFoodModal from "@/components/JournalComponent/CreateOwnFoodModal.js";
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -24,16 +25,25 @@ export default function Food() {
   const route = useRoute();
   const { currentFoodEntry } = route.params || {};
   const navigation = useNavigation();
-  // console.log("In the Food Page aSDAd")
-  // console.log(currentFoodEntry)
 
   const [selectedFood, setSelectedFood] = useState(null);
   const [mealType, setMealType] = useState(null);
   const [numOfServings, setNumOfServings] = useState(1);
-  const [textInputFocus, setTextInputFocus] = useState(false);
   const [alertModal, setAlertModal] = useState(false);
   const [alertType, setAlertType] = useState('');
   const [flavoursArray, setFlavoursArray] = useState([]);
+  const [createOwnFoodModalVisible, setCreateOwnFoodModalVisible] = useState(false)
+  // const [adjustMacro, setAdjustMacro] = useState("Test")
+  const [numServingsTextInputFocus, setNumServingsTextInputFocus] = useState(false);
+  const [caloriesTextInputFocus, setCaloriesTextInputFocus] = useState(false);
+  const [carbsTextInputFocus, setCarbsTextInputFocus] = useState(false);
+  const [proteinTextInputFocus, setProteinTextInputFocus] = useState(false);
+  const [fatTextInputFocus, setFatTextInputFocus] = useState(false);
+
+  const [newUserCalories, setNewUserCalories] = useState(null);
+  const [newUserCarbs, setNewUserCarbs] = useState(null);
+  const [newUserProtein, setNewUserProtein] = useState(null);
+  const [newUserFat, setNewUserFat] = useState(null);
 
   const [calories, setCalories] = useState(0);
   const [carbs, setCarbs] = useState(0);
@@ -51,15 +61,6 @@ export default function Food() {
     const test = await flavoursFoodData();
     setFlavoursArray(test);
   }
-  
-  //flavours();
-
-  // const testMealData = [
-  //   {id: 0, title: "Chicken Rice", value: "Chicken Rice", calories: 600, carbs: 100, protein: 25, fat: 20},
-  //   {id: 1, title: "Fried Rice", value: "Fried Rice" , calories: 700, carbs: 150, protein: 20, fat: 30},
-  //   {id: 2, title: "Noodles", value: "Noodles" , calories: 450, carbs: 70, protein: 15, fat: 10},
-  //   {id: 3, title: "Pancakes", value: "Pancakes" , calories: 200, carbs: 40, protein: 5, fat: 30}
-  // ]
 
   const onDropdownChange = (item) => {
     setMealType(item.value);
@@ -78,7 +79,12 @@ export default function Food() {
     setNumOfServings(Number(text));
 
     if (selectedFood) {
-      updateMarcoValues(selectedFood, Number(text));
+      const finalCalories = newUserCalories || selectedFood.calories;
+      const finalCarbs = newUserCarbs || selectedFood.carbohydrates;
+      const finalProtein = newUserProtein || selectedFood.proteins;
+      const finalFat = newUserFat || selectedFood.fats;
+
+      updateMarcoValues(finalCalories, finalCarbs, finalProtein, finalFat, Number(text));
     }
     
   }
@@ -87,40 +93,35 @@ export default function Food() {
     flavours();
   }, [])
 
-  // console.log("Logging Flavours Array...")
-  // console.log(flavoursArray);
 
   useEffect(() => {
-    // console.log("Meal type data: " + mealType)
-    // console.log("Num of Servings: " + numOfServings)
-    // console.log("Text Input enabled: " + textInputEnabled)
-    // [mealType, numOfServings, textInputEnabled]DS
 
     if (selectedFood) {
-      updateMarcoValues(selectedFood, numOfServings);
+      const currCalories = selectedFood.calories;
+      const currCarbo = selectedFood.carbohydrates;
+      const currProtein = selectedFood.proteins;
+      const currFat = selectedFood.fats
+      updateMarcoValues(currCalories, currCarbo, currProtein, currFat, numOfServings);
     }
 
-    // console.log("In useEffect!")
-    // console.log(calories);
-    // console.log(carbs);
-    // console.log(protein);
-    // console.log(fat);
-    // console.log(mealType);
-    
-  }, [selectedFood, numOfServings, mealType])
+  }, [selectedFood])
 
   const onSelectAutoDropdownItem = (food) => {
     if (food) {
-      setSelectedFood(food)
-      updateMarcoValues(food, numOfServings);
+      setSelectedFood(food);
+      const currCalories = food.calories;
+      const currCarbo = food.carbohydrates;
+      const currProtein = food.proteins;
+      const currFat = food.fats
+      updateMarcoValues(currCalories, currCarbo, currProtein, currFat, numOfServings);
     }
   }
 
-  const updateMarcoValues = (food, servings) => {
-    setCalories(food.calories * servings);
-    setCarbs(food.carbohydrates * servings);
-    setProtein(food.proteins * servings);
-    setFat(food.fats * servings);
+  const updateMarcoValues = (foodCalories, foodCarbo, foodProtein, foodFat, servings) => {
+    setCalories(foodCalories * servings);
+    setCarbs(foodCarbo * servings);
+    setProtein(foodProtein * servings);
+    setFat(foodFat * servings);
   }
 
   const logMealEntry = async () => {
@@ -163,8 +164,32 @@ export default function Food() {
 
   }
 
+  const onCreateOwnFoodButtonPress = () => {
+    setCreateOwnFoodModalVisible(true);
+  }
+
+  const handleMacroNumberChange = (text, setNewBaseMacro, setMacro) => {
+    setNewBaseMacro(Number(text));
+    setMacro(Number(text));
+  }
+
+  // const handleMacroNumberSubmit = (setMacro) => {
+  //   const parsedNumber = parseInt(adjustNumber, 10); 
+  //   if (!isNaN(parsedNumber)) {
+  //     setMacro(parsedNumber);
+  //     setAdjustNumber('')
+  //     setTextInputFocus(false);
+  //   }
+  //   //console.log('Confirm Button for Number Input reached');
+  // };
+
   const onTickButtonPress = () => {
     if (selectedFood !== null && mealType !== null) {
+      setNewUserCalories(null);
+      setNewUserCarbs(null);
+      setNewUserProtein(null);
+      setNewUserFat(null);
+
       logMealEntry();
       navigation.goBack();
     } else if (!selectedFood) {
@@ -179,6 +204,10 @@ export default function Food() {
   return (
     <AutocompleteDropdownContextProvider>
       <View style={styles.container}>
+
+        <CreateOwnFoodModal
+          createOwnFoodModalVisible={createOwnFoodModalVisible}
+          setCreateOwnFoodModalVisible={setCreateOwnFoodModalVisible}/>
 
         <AlertModal 
           alertModal={alertModal}
@@ -207,6 +236,12 @@ export default function Food() {
           />
         </View>
 
+        <View style={styles.createOwnFoodContainer}>
+          <TouchableOpacity style={styles.createOwnFoodButtonContainer} onPress={() => onCreateOwnFoodButtonPress()}>
+            <Text style={styles.createOwnFoodText}> Create Own Food! </Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.mainContainer}>
           <View style={styles.foodTitleContainer}>
             <Text style={styles.foodTitleText}>{selectedFood ? `${selectedFood.food}` : ''}</Text>
@@ -220,10 +255,11 @@ export default function Food() {
                 selectTextOnFocus={true}
                 keyboardType = "numeric"
                 value = {numOfServings}
-                placeholder={textInputFocus ? '' :'1'}
-                onFocus={() => setTextInputFocus(true)}
+                placeholder={numServingsTextInputFocus ? '' : `${numOfServings}`}
+                onFocus={() => setNumServingsTextInputFocus(true)}
                 //onBlur={() => setTextInputFocus(false)}
-                onChangeText={handleNumOfServingsChange}/>
+                onChangeText={handleNumOfServingsChange}
+                onSubmitEditing={() => setNumServingsTextInputFocus(false)}/>
             </View>
 
             <View style={styles.numServingsTextContainer}>
@@ -247,31 +283,67 @@ export default function Food() {
             <View style={styles.totalMacrosContainer}>
 
               <View style={styles.macrosContainer}>
-                <TouchableOpacity style={styles.macroNumberContainer}>
-                  <Text style={styles.macroNumber}>{calories ? `${calories}` : 0}</Text>
-                </TouchableOpacity>
-                  <Text style={styles.macrosText}>Calories</Text>
+                <TextInput 
+                  style={styles.numberMacroStyle}
+                  editable={true} 
+                  selectTextOnFocus={true}
+                  keyboardType = "numeric"
+                  value = {calories}
+                  onChangeText={text => handleMacroNumberChange(text, setNewUserCalories, setCalories)}
+                  onFocus={() => setCaloriesTextInputFocus(true)}
+                  placeholder={caloriesTextInputFocus ? '' : `${Math.round(calories)}`}
+                  placeholderTextColor={'#EC6337'}
+                  onSubmitEditing={() => setCaloriesTextInputFocus(false)}
+                  />
+                  <Text style={styles.macrosText}>Calories (g)</Text>
               </View>
 
               <View style={styles.macrosContainer}>
-                <TouchableOpacity style={styles.macroNumberContainer}>
-                  <Text style={styles.macroNumber}>{carbs ? `${carbs}` : 0}g</Text>
-                </TouchableOpacity>
-                  <Text style={styles.macrosText}>Carbs</Text>
+                <TextInput 
+                  style={styles.numberMacroStyle}
+                  editable={true} 
+                  selectTextOnFocus={true}
+                  keyboardType = "numeric"
+                  value = {carbs}
+                  onChangeText={text => handleMacroNumberChange(text, setNewUserCarbs, setCarbs)}
+                  onFocus={() => setCarbsTextInputFocus(true)}
+                  placeholder={carbsTextInputFocus ? '' : `${Math.round(carbs)}`}
+                  placeholderTextColor={'#EC6337'}
+                  onSubmitEditing={() => setCarbsTextInputFocus(false)}
+                  />
+                  <Text style={styles.macrosText}>Carbs (g)</Text>
               </View>
 
               <View style={styles.macrosContainer}>
-                <TouchableOpacity style={styles.macroNumberContainer}>
-                  <Text style={styles.macroNumber}>{protein ? `${protein}` : 0}g</Text>
-                </TouchableOpacity>
-                  <Text style={styles.macrosText}>Protein</Text>
+                <TextInput 
+                  style={styles.numberMacroStyle}
+                  editable={true} 
+                  selectTextOnFocus={true}
+                  keyboardType = "numeric"
+                  value = {protein}
+                  onChangeText={text => handleMacroNumberChange(text, setNewUserProtein, setProtein)}
+                  onFocus={() => setProteinTextInputFocus(true)}
+                  placeholder={proteinTextInputFocus ? '' : `${Math.round(protein)}`}
+                  placeholderTextColor={'#EC6337'}
+                  onSubmitEditing={() => setProteinTextInputFocus(false)}
+                  />
+                  <Text style={styles.macrosText}>Protein (g)</Text>
               </View>
 
               <View style={styles.macrosContainer}>
-                <TouchableOpacity style={styles.macroNumberContainer}>
-                  <Text style={styles.macroNumber}>{fat ? `${fat}` : 0}g</Text>
-                </TouchableOpacity>
-                  <Text style={styles.macrosText}>Fat</Text>
+                <TextInput 
+                  style={styles.numberMacroStyle}
+                  editable={true} 
+                  selectTextOnFocus={true}
+                  keyboardType = "numeric"
+                  value = {fat}
+                  onChangeText={text => handleMacroNumberChange(text, setNewUserFat, setFat)}
+                  onFocus={() => setFatTextInputFocus(true)}
+                  placeholder={fatTextInputFocus ? '' : `${Math.round(fat)}`}
+                  placeholderTextColor={'#EC6337'}
+                  onSubmitEditing={() => setFatTextInputFocus(false)}
+                  />
+                  <Text style={styles.macrosText}>Fat (g)</Text>
               </View>
 
             </View>
@@ -286,27 +358,27 @@ export default function Food() {
             <Text style={styles.mealTypeText}>Meal Type</Text>
           </View>
           <View style={styles.mealTypeDropdownContainer}>
-          <Dropdown
-            style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            data={mealTypeData}
-            maxHeight={300}
-            labelField="label"
-            valueField="value"
-            placeholder="Meal Type"
-            value={mealType}
-            onChange={onDropdownChange}
-            renderItem={renderDropdownItem}
-            />
+            <Dropdown
+              style={styles.dropdown}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={mealTypeData}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Meal Type"
+              value={mealType}
+              onChange={onDropdownChange}
+              renderItem={renderDropdownItem}
+              />
           </View>
         </View>
 
-        <View style={styles.barGraphContainer}>
-          {/* <Text>Bar Graph</Text> */}
-        </View>
+        {/* <View style={styles.barGraphContainer}>
+          <Text>Bar Graph</Text>
+        </View> */}
 
         <View style={styles.tickContainer}>
           <TouchableOpacity style={styles.tickButtonContainer} onPress={() => onTickButtonPress()}>
@@ -332,6 +404,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 15,
+    //backgroundColor: 'red'
   },
   autoDropdownInputContainer: {
     width: '100%',
@@ -348,6 +421,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
+    //backgroundColor: 'green'
   },
   foodTitleContainer: {
     display: 'flex',
@@ -365,6 +439,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     height: '15%',
     alignItems: 'center',
+    //backgroundColor: 'yellow'
   },
   mealTypeTextContainer: {
     flex: 1, 
@@ -502,12 +577,14 @@ const styles = StyleSheet.create({
     height: '10%',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'blue'
   },
   tickContainer: {
     display: 'flex',
     height: '15%',
     justifyContent: 'center',
     alignItems: 'center',
+    //backgroundColor: 'red'
   },
   tickButtonContainer: {
     width: '80%',
@@ -519,6 +596,34 @@ const styles = StyleSheet.create({
   },
   addToJournalText: {
     fontSize: 20,
+    color: '#FFFFFF',
+  },
+  numberMacroStyle: {
+    width: 'auto',
+    height: 36,
+    textAlign: 'center',
+    justifyContent:'center',
+    fontSize: 15,
+    backgroundColor: '#F4F4F6',
+    borderRadius: 15,
+    padding: 5,
+    paddingHorizontal: 15,
+    color: '#EC6337'
+  },
+  createOwnFoodContainer: {
+    height: '10%',
+    alignItems: 'center',
+  },
+  createOwnFoodButtonContainer: {
+    width: '50%',
+    height: '55%',
+    backgroundColor: '#EC6337',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  createOwnFoodText: {
+    fontSize: 18,
     color: '#FFFFFF',
   }
 });
