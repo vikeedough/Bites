@@ -78,6 +78,7 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
     const currentUsers = usersLiked;
     const [like, setLike] = useState(usersLiked.includes(auth.currentUser.uid));
     const [username, setUsername] = useState('');
+    const [achievement, setAchievement] = useState('');
     const [userPic, setUserPic] = useState(null);
     const [currentLikes, setCurrentLikes] = useState(likes);
     const [imageUri, setImageUri] = useState('');
@@ -102,13 +103,22 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
     }
     };
 
-    const findUsername = async () => {
-        const findUsername = (await getDoc(doc(db, 'users', user))).data();
-        setUsername(findUsername.username);
-        if (findUsername.profilePic) {
-        setUserPic(findUsername.profilePic);
-        }
-    }
+    useEffect(() => {
+        const userRef = doc(db, "users", user);
+        const unsubscribe = onSnapshot(userRef, (doc) => {
+            const findAchievement = doc.data().selectedAchievement;
+            const findUsername = doc.data().username;
+            setAchievement(findAchievement);
+            setUsername(findUsername);
+            if (doc.data().profilePic) {
+                setUserPic(doc.data().profilePic);
+            }
+        });
+
+        return () => {
+            unsubscribe();
+        };
+    }, []);
 
     const saveImage = async () => {
         try {
@@ -134,10 +144,6 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
         await saveImage();
     }
 
-    useEffect(() => {
-        findUsername();
-    }, [user]);
-
     return (
     <View style={styles.postContainer} ref={imageRef} collapsable={false}>
 
@@ -148,9 +154,21 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
             <View style={styles.postHeaderLeftContainer}>
             <Image resizeMode='auto' source={userPic === null ? placeholder : {uri: userPic}} style={styles.profileImage}/>
             <View style={styles.postHeader}>
-                <TouchableOpacity onPress={() => navigateProfile(navigation, user, userPic)}>
-                <Text style={styles.postText}>{username}</Text>
-                </TouchableOpacity>
+                <View style={styles.postNameContainer}>
+                    <TouchableOpacity onPress={() => navigateProfile(navigation, user, userPic)}>
+                    <Text style={styles.postText}>{username}</Text>
+                    </TouchableOpacity>
+                    {
+                        achievement !== ''
+                        ?
+                        <View style={styles.achievementContainer}>
+                        <Text style={styles.achievementText}>{achievement}</Text>
+                        </View>
+                        :
+                        <View></View>
+                    }
+                </View>
+                
                 <Text style={styles.postTime}>{timeAgo.format(Date.now() - (Date.now() - time))}</Text>
             </View>
             </View>
@@ -302,6 +320,20 @@ postHeaderLeftContainer: {
     display: 'flex',
     flexDirection: 'row',
     width: '85%',
+},
+postNameContainer: {
+    flexDirection: 'row',
+    gap: 5,
+}, 
+achievementContainer: {
+    backgroundColor: '#F4F4F6',
+    borderRadius: 15,
+    padding: 5,
+    paddingHorizontal: 10,
+},
+achievementText: {
+    fontSize: 11,
+    color: '#EC6337'
 },
 postHeaderRightContainer: {
     display: 'flex',

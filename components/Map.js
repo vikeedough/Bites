@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps'
 import { Text, View, StyleSheet, TextInput } from "react-native";
 import { firebaseAuth, firebaseDb } from '@/firebaseConfig';
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, onSnapshot } from "firebase/firestore";
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
 import DisplayFood from '@/components/Modals/DisplayFood.js';
 
@@ -24,13 +24,19 @@ export default function Map() {
   const [flavoursArray, setFlavoursArray] = useState([]);
   const [selectedArray, setSelectedArray] = useState([]);
   const [selectedTitle, setSelectedTitle] = useState('');
+  const [isVege, setIsVege] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
   const openModal = (foodArray, title) => {
     if (mapLoaded) {
-      setSelectedArray(foodArray);
+      if (isVege) {
+        const vegeArray = foodArray.filter((item) => item.vegetarian);
+        setSelectedArray(vegeArray);
+      } else {
+        setSelectedArray(foodArray);
+      }
       setSelectedTitle(title);
       setModalVisible(true);
     }
@@ -39,6 +45,16 @@ export default function Map() {
   const closeModal = () => {
     setModalVisible(false);
   }
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, 'users', auth.currentUser.uid), (snapshot) => {
+        setIsVege(snapshot.data().vegetarian);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
 
@@ -59,8 +75,9 @@ export default function Map() {
       const terraceSnapshot = await getDocs(collection(db, 'Terrace'));
       const fineFoodsSnapshot = await getDocs(collection(db, 'Fine Foods'));
       const flavoursSnapshot = await getDocs(collection(db, 'Flavours'));
+      const userSnap = await getDoc(doc(db, 'users', auth.currentUser.uid));
       
-      Promise.all(frontierSnapshot, pgpSnapshot, technoSnapshot, deckSnapshot, terraceSnapshot, fineFoodsSnapshot, flavoursSnapshot);
+      Promise.all(frontierSnapshot, pgpSnapshot, technoSnapshot, deckSnapshot, terraceSnapshot, fineFoodsSnapshot, flavoursSnapshot, userSnap);
 
       frontierSnapshot.forEach((doc) => {
         updateFrontier.push(doc.data());
@@ -97,12 +114,13 @@ export default function Map() {
       setTerraceArray(updateTerrace);
       setFineFoodsArray(updateFineFoods);
       setFlavoursArray(updateFlavours);
+      setIsVege(userSnap.data().vegetarian);
 
     }
 
     fetchData();
 
-  }, []);
+  }, [isVege]);
 
   useEffect(() => {
     if(selectedItem != null) {

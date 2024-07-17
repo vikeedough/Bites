@@ -6,10 +6,21 @@ import { firebaseAuth, firebaseDb } from "@/firebaseConfig";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import ShortcutToFood from "@/components/Modals/ShortcutToFood.js"
 import { onLog } from "firebase/app";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Tab = createMaterialTopTabNavigator();
 const auth = firebaseAuth;
 const db = firebaseDb;
+
+const EmptyList = () => {
+    return (
+        <View style={styles.emptyList}>
+                <Text style={styles.emptyText}>
+                    No items to show.
+                </Text>
+        </View>
+    )
+}
 
 const Recommended = ({ route }) => {
     const user = auth.currentUser.uid;
@@ -51,6 +62,7 @@ const Recommended = ({ route }) => {
             carbs={item.carbohydrates}
             proteins={item.proteins}
             fats={item.fats}
+            vegetarian={item.vegetarian}
         />
 
     const filteredFoodArray = foodArray.filter((item) => {
@@ -63,6 +75,7 @@ const Recommended = ({ route }) => {
         <View>
             <View style={styles.flatListContainer}>
                 <FlatList
+                    ListEmptyComponent={EmptyList}
                     data={filteredFoodArray}
                     style={styles.flatList}
                     renderItem={renderItem}
@@ -84,12 +97,14 @@ const AllFood = ({ route }) => {
             carbs={item.carbohydrates}
             proteins={item.proteins}
             fats={item.fats}
+            vegetarian={item.vegetarian}
         />
 
     return (
         <View>
             <View style={styles.flatListContainer}>
                 <FlatList
+                    ListEmptyComponent={EmptyList}
                     data={foodArray}
                     style={styles.flatList}
                     renderItem={renderItem}
@@ -100,7 +115,7 @@ const AllFood = ({ route }) => {
     );
 }
 
-const Result = ({ stallName, foodName, calories, carbs, proteins, fats}) => {
+const Result = ({ stallName, foodName, calories, carbs, proteins, fats, vegetarian}) => {
     
     const [shortcutModal, setShortcutModal] = useState(false);
 
@@ -127,7 +142,21 @@ const Result = ({ stallName, foodName, calories, carbs, proteins, fats}) => {
 
             <View style={styles.headerContainer}>
                 <View style={styles.headerTextContainer}>
-                    <Text style={styles.foodName}>{foodName}</Text>
+                    <View style={styles.foodNameContainer}>
+                        <Text style={styles.foodName}>{foodName}</Text>
+                        {
+                            vegetarian
+                            ?
+                            <MaterialCommunityIcons 
+                                name='leaf-circle-outline' 
+                                color='green'
+                                size={20}
+                                style={{paddingEnd: 0}}
+                            />
+                            :
+                            <View></View>
+                        }
+                    </View>
                     <Text style={styles.stallName}>{stallName}</Text>
                 </View>
                 <View style={styles.logFoodContainer}>
@@ -297,5 +326,21 @@ const styles = StyleSheet.create({
     stallName: {
         fontStyle: 'italic',
         fontSize: 18,
-    }
+    },
+    foodNameContainer: {
+        flexDirection: 'row',
+        gap: 5,
+        flexWrap: 'wrap',
+    },
+emptyList: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F4F4F6',
+        width: '100%',
+    },
+    emptyText: {
+        textAlign: 'center',
+        fontSize: 16,
+    },
 });

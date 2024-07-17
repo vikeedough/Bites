@@ -6,7 +6,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 import { arrayUnion, doc, setDoc, updateDoc, getDoc } from 'firebase/firestore';
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
-import { err } from 'react-native-svg';
+import * as Progress from 'react-native-progress';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -50,6 +50,10 @@ export default function Post() {
     const [isLoading, setIsLoading] = useState(false);
     const user = auth.currentUser;
 
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     const uriToBlob = async (uri) => {
         const response = await fetch(uri);
         const blob = await response.blob();
@@ -76,6 +80,10 @@ export default function Post() {
             setLocationInput('');
         }
     }, [selectedItem]);
+
+    useEffect(() => {
+        
+    }, [isLoading]);
 
     const clearLocation = () => {
         setSelectedLocation('');
@@ -113,8 +121,11 @@ export default function Post() {
 
         catch (error) {
             console.log("Error in Posting " + error)
+        } 
+
+        finally {
+            setIsLoading(false);
         }
-       
     }
 
     const sendPost = async () => {
@@ -147,7 +158,6 @@ export default function Post() {
             setSelectedItem(null);
             Alert.alert('', 'Post successfully uploaded!', [{text: 'Understood'}]);
             setDisabled(false);
-            setIsLoading(false);
         });
     }
 
@@ -166,8 +176,8 @@ export default function Post() {
 
             {
                 isLoading && (
-                    <View style={styles.overlay}>
-
+                    <View style={styles.loadingContainer}>
+                        <Progress.Circle size={50} indeterminate={true} color={'#EC6337'} borderWidth={4}/>
                     </View>
                 )
 

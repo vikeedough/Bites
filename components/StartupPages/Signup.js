@@ -4,6 +4,7 @@ import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from "firebase/firestore";
 import AnimatedTextInput from '../AnimatedTextInput';
+import * as Progress from 'react-native-progress';
 
 const logo = require('@/assets/images/Logo-Grey-Background.png');
 const app = firebaseApp
@@ -16,6 +17,7 @@ export default function Signup() {
   const [password, onChangePassword] = React.useState('');
   const [confirmation, onChangeConfirmation] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [disabled, setDisabled] = React.useState(false);
 
   const alertMessage = (error) => {
     let message = '';
@@ -40,6 +42,7 @@ export default function Signup() {
   };
 
   const signUp = async () => {
+    setDisabled(true);
     setLoading(true)
     try {
         const response = await createUserWithEmailAndPassword(auth, email, password)
@@ -62,7 +65,8 @@ export default function Signup() {
         console.log(error)
         alertMessage(error.code);
     } finally {
-        setLoading(false)
+        setLoading(false);
+        setDisabled(false);
     } 
   }
 
@@ -78,6 +82,16 @@ export default function Signup() {
 
     return (
       <View style = {styles.container}>
+
+        {
+            loading && (
+                <View style={styles.loadingContainer}>
+                    <Progress.Circle size={50} indeterminate={true} color={'#EC6337'} borderWidth={4}/>
+                </View>
+            )
+
+        }
+
       <View style={styles.iconContainer}>
         <Image resizeMode='contain' source={logo} style={styles.logo}/>
       </View>
@@ -140,7 +154,7 @@ export default function Signup() {
           secureTextEntry = {true}
         /> */}
 
-        <TouchableOpacity style={styles.loginContainer} onPress={checkSamePassword}>
+        <TouchableOpacity style={styles.loginContainer} onPress={checkSamePassword} disabled={disabled}>
             <Text style={styles.loginText}>SIGN UP</Text>
         </TouchableOpacity>
 
@@ -269,5 +283,12 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     color: '#EC6337',
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
   },
 });
