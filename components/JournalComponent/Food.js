@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { Text, StyleSheet, View, TextInput, TouchableOpacity, FlatListComponent, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import MacroButton from '@/components/MacroButton.js';
+import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
-import { connectStorageEmulator } from 'firebase/storage';
-import { set } from 'date-fns';
 import AlertModal from "@/components/JournalComponent/AlertModal.js"
 import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
 import FoodDatabase from "@/components/FoodDatabase.js";
 import flavoursFoodData from '@/components/FoodDatabase.js';
 import CreateOwnFoodModal from "@/components/JournalComponent/CreateOwnFoodModal.js";
+import FoodEntryInfo from '../Modals/FoodEntryInfo';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -32,7 +30,8 @@ export default function Food() {
   const [alertModal, setAlertModal] = useState(false);
   const [alertType, setAlertType] = useState('');
   const [flavoursArray, setFlavoursArray] = useState([]);
-  const [createOwnFoodModalVisible, setCreateOwnFoodModalVisible] = useState(false)
+  const [createOwnFoodModalVisible, setCreateOwnFoodModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   // const [adjustMacro, setAdjustMacro] = useState("Test")
   const [numServingsTextInputFocus, setNumServingsTextInputFocus] = useState(false);
   const [caloriesTextInputFocus, setCaloriesTextInputFocus] = useState(false);
@@ -56,6 +55,10 @@ export default function Food() {
     {label: "Dinner", value: "dinner"},
     {label: "Others", value: "others"}
   ]
+
+  const closeInfo = () => {
+      setModalVisible(false);
+  }
 
   const flavours = async () => {
     const test = await flavoursFoodData();
@@ -92,6 +95,19 @@ export default function Food() {
   useEffect(() => {
     flavours();
   }, [])
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Ionicons
+          name="help-circle-outline"
+          color={'white'}
+          size={24}
+          onPress={() => setModalVisible(true)}
+        />
+      ),
+    });
+  }, [navigation]);
 
 
   useEffect(() => {
@@ -385,6 +401,8 @@ export default function Food() {
             <Text style={styles.addToJournalText}>Add to Journal</Text>
           </TouchableOpacity>
         </View>
+
+        <FoodEntryInfo isVisible={modalVisible} onClose={closeInfo}/>
 
       </View>
     </AutocompleteDropdownContextProvider>

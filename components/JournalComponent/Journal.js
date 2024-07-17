@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
 import Food from "@/components/JournalComponent/Food.js"
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -7,7 +7,8 @@ import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
 import DeleteEntryModal from "@/components/JournalComponent/DeleteEntryModal.js";
-import * as Progress from 'react-native-progress'
+import * as Progress from 'react-native-progress';
+import JournalInfo from '../Modals/JournalInfo';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -22,12 +23,34 @@ export default function Journal({navigation}) {
   const [currentFoodEntry, setCurrentFoodEntry] = useState('');
   const [dateLabel, setDateLabel] = useState('Today');
   const [deleteEntryModal, setDeleteEntryModal] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  //const [userTotalCalories, setUserTotalCalories] = useState(0);
+  const [userTotalCalories, setUserTotalCalories] = useState(0);
   const [breakfast, setBreakfast] = useState([]);
   const [lunch, setLunch] = useState([]);
   const [dinner, setDinner] = useState([]);
   const [others, setOthers] = useState([]);
+
+  const openInfo = () => {
+    setModalVisible(true);
+  }
+
+  const closeInfo = () => {
+      setModalVisible(false);
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Ionicons
+          name="help-circle-outline"
+          color={'white'}
+          size={24}
+          onPress={() => setModalVisible(true)}
+        />
+      ),
+    });
+  }, [navigation]);
 
   const checkAndCreateEntry = async (date) => {
 
@@ -263,34 +286,59 @@ export default function Journal({navigation}) {
 
   }
 
-  // const fetchUserCalories = async () => { 
+  const fetchUserCalories = async () => { 
 
-  //   console.log("In fetching calorie data")
+    console.log("In fetching calorie data")
 
-  //   try {
+    try {
 
-  //     const docRef = doc(db, 'users', auth.currentUser.uid);
-  //     const docSnapshot = await getDoc(docRef);
-  //     const userGoalsArray = docSnapshot.data().macroGoals;
-  //     const userCalories = userGoalsArray[0] || 0;
-  //     console.log(userCalories)
-  //     setUserTotalCalories(userCalories);
+      const docRef = doc(db, 'users', auth.currentUser.uid);
+      const docSnapshot = await getDoc(docRef);
+      const userGoalsArray = docSnapshot.data().macroGoals;
+      console.log('found Goals array');
+      const userCalories = userGoalsArray[0] || 0;
+      console.log(userCalories)
+      setUserTotalCalories(userCalories);
 
-  //   } catch (error) {
-  //     console.log("Unsuccessful in fetching user calories " + error)
-  //   }
-  // }
+    } catch (error) {
+      console.log("Unsuccessful in fetching user calories " + error)
+    }
+  }
 
   const calorieEquation = () => {
-    //console.log("In calorie Equation")
-    // const userTotalCalories = await fetchUserCalories();
-    const totalBfastCalories = breakfast.reduce((total, item) => total + item.calories, 0);
-    const totalLunchCalories = lunch.reduce((total, item) => total + item.calories, 0);
-    const totalDinnerCalories = dinner.reduce((total, item) => total + item.calories, 0);
-    const totalOthersCalories = others.reduce((total, item) => total + item.calories, 0);
-    const totalCalories = totalBfastCalories + totalLunchCalories + totalDinnerCalories + totalOthersCalories;
-    // const progress = (totalCalories / userTotalCalories) > 1 ? 1 : Math.round(totalCalories / userTotalCalories * 100) / 100;
-    // const progressText = Math.round(totalCalories / userTotalCalories * 100);
+    console.log("In calorie Equation")
+
+    const [totalCalories, setTotalCalories] = useState(0);
+    const [totalBfastCalories, setTotalBfastCalories] = useState(0);
+    const [totalLunchCalories, setTotalLunchCalories] = useState(0);
+    const [totalDinnerCalories, setTotalDinnerCalories] = useState(0);
+    const [totalOthersCalories, setTotalOthersCalories] = useState(0);
+    const [progress, setProgress] = useState(0);
+    const [progressText, setProgressText] = useState('');
+    
+
+    // update the totals when any meal is added
+    useEffect(() => {
+      fetchUserCalories().then(() => {
+        setTotalBfastCalories(breakfast.reduce((total, item) => total + item.calories, 0));
+        setTotalLunchCalories(lunch.reduce((total, item) => total + item.calories, 0));
+        setTotalDinnerCalories(dinner.reduce((total, item) => total + item.calories, 0));
+        setTotalOthersCalories(others.reduce((total, item) => total + item.calories, 0));
+      }).catch(error => {
+        console.error("Error in fetchUserCalories:", error);
+      });
+    }, [breakfast, lunch, dinner, others]); 
+  
+    // update progress circle when the totals are updated
+    useEffect(() => {
+      const totalCaloriesSum = totalBfastCalories + totalLunchCalories + totalDinnerCalories + totalOthersCalories;
+      const calculatedProgress = userTotalCalories > 0 ? totalCaloriesSum / userTotalCalories : 0;
+      const progressPercentage = Math.round(calculatedProgress * 100);
+  
+      setTotalCalories(totalCaloriesSum);
+      setProgress(calculatedProgress > 1 ? 1 : calculatedProgress);
+      setProgressText(progressPercentage);
+    }, [totalBfastCalories, totalLunchCalories, totalDinnerCalories, totalOthersCalories, userTotalCalories]);
 
     return (
       <View style={styles.calorieEquationContainer}>
@@ -300,17 +348,17 @@ export default function Journal({navigation}) {
             <Text style={styles.mealCaloriesText}>Total Calories</Text>
           </View>
           <View>
-            {/* <Progress.Circle
+            <Progress.Circle
               progress={progress}
               showsText
-              size={70}
+              size={60}
               thickness={8}
               color='#EC6337'
               borderWidth={0}
               textStyle={{fontSize: 14, fontWeight: 'bold'}}
               animated
               formatText={() => `${progressText}%`} 
-              /> */}
+              />
           </View>
         
         </View>
@@ -349,7 +397,7 @@ export default function Journal({navigation}) {
       <View>
         
       </View>
-
+      
       <CalendarModal
         calendarModal={calendarModal}
         setCalendarModal={setCalendarModal}
@@ -358,7 +406,7 @@ export default function Journal({navigation}) {
       <View style={styles.todayContainer}>
           <Text style={styles.todayText}>{dateLabel}</Text>
           <TouchableOpacity style={styles.calendarIcon} onPress={() => openCalendarModal()}>
-            <Ionicons name="calendar" color={'#EC6337'} size={24} />
+            <Ionicons name="calendar" color={'#EC6337'} size={24} style={{paddingEnd: 0,}} />
           </TouchableOpacity>
       </View>
 
@@ -487,6 +535,8 @@ export default function Journal({navigation}) {
         </TouchableOpacity>
       </View>
       
+      <JournalInfo isVisible={modalVisible} onClose={closeInfo}/>
+
     </View>
 
   )  
@@ -504,7 +554,12 @@ const styles = StyleSheet.create({
     height: '8%',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    backgroundColor: '#FFFFFF',
+    width: '25%',
+    paddingHorizontal: 5,
+    marginHorizontal: 15,
+    marginVertical: 3,
+    borderRadius: 10,
   },
   todayText: {
     fontSize: 18, 
