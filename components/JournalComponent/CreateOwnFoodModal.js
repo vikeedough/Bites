@@ -43,11 +43,9 @@ export default function createOwnFood ({createOwnFoodModalVisible, setCreateOwnF
                     food: newFoodName,
                     title: newFoodName
                 }
-    
-                console.log(newFood);
 
                 await uploadNewFood(newFood);
-    
+                
                 setNewFoodName(null);
                 setNewCalories(null);
                 setNewCarbs(null);
@@ -82,7 +80,6 @@ export default function createOwnFood ({createOwnFoodModalVisible, setCreateOwnF
             console.log(error);
         }
     }
-
 
     return (
         <Modal
@@ -263,7 +260,7 @@ const styles = StyleSheet.create({
     textInputStyle: {
         width: 'auto',
         minWidth: 100,
-        maxWidth: 150,
+        maxWidth: 130,
         height: 30,
         textAlign: 'center',
         justifyContent:'center',

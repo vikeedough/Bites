@@ -72,7 +72,11 @@ export default function Food() {
       const personalisedFoodDocRef = await getDocs(personalisedFoodCollectionRef);
 
       const initialFoodData = [... foodDataArray];
-      personalisedFoodDocRef.forEach((doc) => initialFoodData.push(doc.data()));
+      personalisedFoodDocRef.forEach((doc) => {
+        initialFoodData.push({
+          id: doc.id,
+          ...doc.data()})
+      });
       setFoodDataArray(initialFoodData);
     }
   
@@ -144,6 +148,8 @@ export default function Food() {
 
 
   useEffect(() => {
+
+    console.log("In Selected Food Use Effect")
 
     if (selectedFood) {
       const currCalories = selectedFood.calories;
@@ -256,8 +262,7 @@ export default function Food() {
 
         <CreateOwnFoodModal
           createOwnFoodModalVisible={createOwnFoodModalVisible}
-          setCreateOwnFoodModalVisible={setCreateOwnFoodModalVisible}
-          setSelectedFood={setSelectedFood}/>
+          setCreateOwnFoodModalVisible={setCreateOwnFoodModalVisible}/>
 
         <AlertModal 
           alertModal={alertModal}
