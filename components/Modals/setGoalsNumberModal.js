@@ -17,6 +17,7 @@ const SetGoalsNumberModal = ({ goalsNumberModalVisible, setGoalsNumberModalVisib
         console.log('Confirm Button for Number Input reached');
         updateGoalsFunction(detailType, number);
         setGoalsNumberModalVisible(false);
+        setNumber('');
     };
 
     function getDetailLabel() {
@@ -48,10 +49,10 @@ const SetGoalsNumberModal = ({ goalsNumberModalVisible, setGoalsNumberModalVisib
                             </View>
                             <View style={styles.detailInputContainer}>
                                 <View style={{alignItems: 'flex-end'}}>
-                                <TextInput style={styles.numberStyle}
-                                    keyboardType = "numeric"
-                                    value = {number}
-                                    onChangeText={handleNumberChange}/>
+                                    <TextInput style={styles.numberStyle}
+                                        keyboardType = "numeric"
+                                        value = {number}
+                                        onChangeText={handleNumberChange}/>
                                 </View>
                                 <View style={{flex: 1, paddingLeft: 10}}>
                                     <Text style={{fontSize: 18}}>{getDetailLabel()}</Text>

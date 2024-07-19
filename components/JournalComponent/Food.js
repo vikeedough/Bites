@@ -1,18 +1,20 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, View, TextInput, TouchableOpacity, FlatListComponent, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { Ionicons } from '@expo/vector-icons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import MacroButton from '@/components/MacroButton.js';
 import { useRoute } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
+import { connectStorageEmulator } from 'firebase/storage';
+import { set } from 'date-fns';
 import AlertModal from "@/components/JournalComponent/AlertModal.js"
 import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
-import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
+import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc,  } from 'firebase/firestore';
 import FoodDatabase from "@/components/FoodDatabase.js";
 import flavoursFoodData from '@/components/FoodDatabase.js';
 import CreateOwnFoodModal from "@/components/JournalComponent/CreateOwnFoodModal.js";
-import FoodEntryInfo from '../Modals/FoodEntryInfo';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -29,10 +31,11 @@ export default function Food() {
   const [numOfServings, setNumOfServings] = useState(1);
   const [alertModal, setAlertModal] = useState(false);
   const [alertType, setAlertType] = useState('');
-  const [flavoursArray, setFlavoursArray] = useState([]);
-  const [createOwnFoodModalVisible, setCreateOwnFoodModalVisible] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  // const [adjustMacro, setAdjustMacro] = useState("Test")
+  const [foodDataArray, setFoodDataArray] = useState([]);
+  // const [flavoursArray, setFlavoursArray] = useState([]);
+  // const [personalisedFoodArray, setPersonalisedFoodArray] = useState([]);
+  const [createOwnFoodModalVisible, setCreateOwnFoodModalVisible] = useState(false)
+
   const [numServingsTextInputFocus, setNumServingsTextInputFocus] = useState(false);
   const [caloriesTextInputFocus, setCaloriesTextInputFocus] = useState(false);
   const [carbsTextInputFocus, setCarbsTextInputFocus] = useState(false);
@@ -56,14 +59,29 @@ export default function Food() {
     {label: "Others", value: "others"}
   ]
 
-  const closeInfo = () => {
-      setModalVisible(false);
-  }
+  useEffect(() => {
 
-  const flavours = async () => {
-    const test = await flavoursFoodData();
-    setFlavoursArray(test);
-  }
+    const flavours = async () => {
+      const test = await flavoursFoodData();
+      setFoodDataArray(test);
+    }
+
+    const fetchInitialPersonalisedFoodData = async () => {
+      const docRef = doc(db, 'users', auth.currentUser.uid);
+      const personalisedFoodCollectionRef = collection(docRef, 'Personalised Food');
+      const personalisedFoodDocRef = await getDocs(personalisedFoodCollectionRef);
+
+      const initialFoodData = [... foodDataArray];
+      personalisedFoodDocRef.forEach((doc) => initialFoodData.push(doc.data()));
+      setFoodDataArray(initialFoodData);
+    }
+  
+    flavours();
+    fetchInitialPersonalisedFoodData();
+
+  }, [])
+      
+  
 
   const onDropdownChange = (item) => {
     setMealType(item.value);
@@ -93,21 +111,36 @@ export default function Food() {
   }
 
   useEffect(() => {
-    flavours();
+
+    const fetchPersonalisedFoodData = async () => {
+
+      try {
+        const docRef = doc(db, 'users', auth.currentUser.uid);
+        const personalisedFoodCollectionRef = collection(docRef, 'Personalised Food');
+        const personalisedFoodDocRef = await getDocs(personalisedFoodCollectionRef);
+
+        const unsubscribePersonalisedFood = onSnapshot(personalisedFoodCollectionRef, async (doc) => {
+          doc.docChanges().forEach((change) => {
+            if (change.type === 'added') {
+              setFoodDataArray((prevDoc) => [...prevDoc, change.doc.data()]);
+            }
+          })
+        })
+
+        return () => {
+          unsubscribePersonalisedFood();
+        };
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchPersonalisedFoodData();
+
   }, [])
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <Ionicons
-          name="help-circle-outline"
-          color={'white'}
-          size={24}
-          onPress={() => setModalVisible(true)}
-        />
-      ),
-    });
-  }, [navigation]);
+
 
 
   useEffect(() => {
@@ -223,7 +256,8 @@ export default function Food() {
 
         <CreateOwnFoodModal
           createOwnFoodModalVisible={createOwnFoodModalVisible}
-          setCreateOwnFoodModalVisible={setCreateOwnFoodModalVisible}/>
+          setCreateOwnFoodModalVisible={setCreateOwnFoodModalVisible}
+          setSelectedFood={setSelectedFood}/>
 
         <AlertModal 
           alertModal={alertModal}
@@ -236,7 +270,7 @@ export default function Food() {
             closeOnBlur={true}
             closeOnSubmit={false}
             onSelectItem={onSelectAutoDropdownItem}
-            dataSet={flavoursArray}
+            dataSet={foodDataArray}
             
             containerStyle={styles.autoDropdownInputContainer}
             // suggestionsListContainerStyle={styles.suggestionsListContainer}
@@ -401,8 +435,6 @@ export default function Food() {
             <Text style={styles.addToJournalText}>Add to Journal</Text>
           </TouchableOpacity>
         </View>
-
-        <FoodEntryInfo isVisible={modalVisible} onClose={closeInfo}/>
 
       </View>
     </AutocompleteDropdownContextProvider>
