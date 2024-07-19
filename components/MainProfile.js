@@ -66,6 +66,7 @@ export default function MainProfile({navigation}) {
             likes: doc.data().likes,
             usersLiked: doc.data().usersLiked,
             location: doc.data().location,
+            tags: doc.data().tags || [],
         }
         });
         setPosts(updatePosts);
@@ -188,6 +189,7 @@ export default function MainProfile({navigation}) {
                 likes={item.likes}
                 usersLiked={item.usersLiked}
                 location={item.location}
+                tags={item.tags}
                 navigation={navigation}
             />
             )}

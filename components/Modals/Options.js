@@ -8,7 +8,7 @@ export default function Options({ isVisible, onClose, postId }) {
 
     const deletePost = async () => {
         Alert.alert(
-            "Delete comment",
+            "Delete post",
             "Are you sure you want to delete your post?",
             [
                 {

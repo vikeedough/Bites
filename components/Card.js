@@ -42,7 +42,7 @@ const Result = ({ userId, commentText, navigation, navigateProfile, userPic }) =
     )
 }
 
-export default function Card ({ id, user, time, image, caption, comments, likes, usersLiked, location, navigation }) {
+export default function Card ({ id, user, time, image, caption, comments, likes, usersLiked, location, tags, navigation }) {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [optionsModalVisible, setOptionsModalVisible] = useState(false);
@@ -186,6 +186,7 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
             </View>
         </View>
 
+        <View style={styles.locationTagsContainer}>
         {
                 location != '' 
                 ? 
@@ -198,6 +199,34 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
                 : <View></View>
         }
 
+        {
+                tags.length > 0 
+                ?   
+                        <View style={styles.locationContainer}>
+                        <AntDesign.Button name='team' backgroundColor="#FFA973" 
+                        color= '#FFFFFF' size = {15} activeOpacity = {1} style={{paddingEnd: 0, marginEnd: -10, marginStart: -10, marginVertical: -5,}}>
+                        </AntDesign.Button>
+                        <TouchableOpacity onPress={() => navigation.navigate('ViewTags', {
+                            usersLiked: JSON.stringify(tags)
+                        })}>
+                        {
+                                    tags.length === 0
+                                    ?
+                                    <Text style={styles.locationText}>Tag Friends</Text>
+                                    :
+                                    tags.length === 1
+                                    ?
+                                    <Text style={styles.locationText}>1 friend tagged</Text>
+                                    :
+                                    <Text style={styles.locationText}>{tags.length} friends tagged</Text>
+
+                        }
+                        </TouchableOpacity>
+                        </View>
+                : <View></View>
+        }
+        </View>
+        
         <View style={styles.imageContainer}>
             <Image
             resizeMode='contain'
@@ -340,6 +369,9 @@ postHeaderRightContainer: {
     width: '15%',
     justifyContent: 'center',
     alignItems: 'center',
+},
+locationTagsContainer: {
+    flexDirection: 'row',
 },
 locationContainer: {
     flexDirection: 'row',

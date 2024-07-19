@@ -14,6 +14,7 @@ import {firebaseApp, firebaseAuth} from '../firebaseConfig'
 import { onAuthStateChanged, User } from 'firebase/auth';
 import SettingsNavigator from '@/components/navigation/SettingsNavigator.js';
 import MainProfileNavigator from '@/components/navigation/MainProfileNavigator.js';
+import PostNavigator from '../components/navigation/PostNavigator.js';
 //import MaptoFoodNavigator from '@/components/navigation/MapToFoodNavigator.js';
 
 const app = firebaseApp
@@ -84,8 +85,9 @@ function MyTabs() {
           )
       }}/>
 
-      <Tab.Screen name = "Post" component = {Post} options={
-        { headerStyle: {
+      <Tab.Screen name = "Post" component = {PostNavigator} options={
+        { headerShown: false,
+          headerStyle: {
           backgroundColor: '#EC6337'
           },
           headerTitleStyle: {

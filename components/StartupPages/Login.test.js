@@ -1,5 +1,5 @@
 import React from 'react';
-import Login from './StartupPages/Login.js';
+import Login from './Login.js';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 

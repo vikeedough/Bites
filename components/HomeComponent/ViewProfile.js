@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {StyleSheet, View, FlatList, RefreshControl, Text, Image, TouchableOpacity} from 'react-native';
-import { firebaseAuth, firebaseDb } from '../firebaseConfig';
+import { firebaseAuth, firebaseDb } from '../../firebaseConfig';
 import { collection, getDoc, onSnapshot, doc, arrayUnion, arrayRemove,updateDoc } from 'firebase/firestore';
 import Card from '@/components/Card.js';
 
@@ -133,6 +133,7 @@ export default function ViewProfile({ route, navigation }) {
             likes: doc.data().likes,
             usersLiked: doc.data().usersLiked,
             location: doc.data().location,
+            tags: doc.data().tags || [],
         }
         });
         setPosts(updatePosts);
@@ -189,6 +190,7 @@ export default function ViewProfile({ route, navigation }) {
                 likes={item.likes}
                 usersLiked={item.usersLiked}
                 location={item.location}
+                tags={item.tags}
                 navigation={navigation}
             />
             )}

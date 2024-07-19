@@ -2,7 +2,7 @@ import { useState, useEffect, useLayoutEffect } from 'react';
 import { Text, View, StyleSheet, FlatList, Image, Button, RefreshControl, TouchableOpacity } from "react-native";
 import { Header } from 'react-native/Libraries/NewAppScreen';
 import { Ionicons } from '@expo/vector-icons';
-import {firebaseApp, firebaseAuth, firebaseDb} from '../firebaseConfig'
+import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDoc, onSnapshot, doc, updateDoc, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
 import Comments from '@/components/Modals/Comments.js';
@@ -59,6 +59,7 @@ export default function HomeScreen({navigation}) {
           likes: doc.data().likes,
           usersLiked: doc.data().usersLiked,
           location: doc.data().location,
+          tags: doc.data().tags || [],
         }
       });
       setPosts(updatePosts);
@@ -135,6 +136,7 @@ export default function HomeScreen({navigation}) {
                   likes={item.likes}
                   usersLiked={item.usersLiked}
                   location={item.location}
+                  tags={item.tags}
                   navigation={navigation}
                 />
               )}
