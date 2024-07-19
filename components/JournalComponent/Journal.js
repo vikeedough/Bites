@@ -6,7 +6,6 @@ import CalendarModal from '@/components/JournalComponent/CalendarModal.js';
 import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
-//import DeleteEntryModal from "@/components/JournalComponent/DeleteEntryModal.js";
 import UpdateDisplayComponent from '@/components/JournalComponent/UpdateDisplayComponent.js';
 import * as Progress from 'react-native-progress';
 import JournalInfo from '../Modals/JournalInfo';
@@ -23,7 +22,6 @@ export default function Journal({navigation}) {
   const [selectedDayID, setSelectedDayID] = useState(null);
   const [currentFoodEntry, setCurrentFoodEntry] = useState('');
   const [dateLabel, setDateLabel] = useState('Today');
-  //const [deleteEntryModal, setDeleteEntryModal] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   const [userTotalCalories, setUserTotalCalories] = useState(0);
@@ -98,47 +96,6 @@ export default function Journal({navigation}) {
     }
   };
 
-  
-  // const deleteEntry = async (mealType, foodName) => {
-
-  //   const date = selectedDayID ? selectedDayID : todayDateStringID 
-  //   console.log("In Delete entry")
-  //   console.log(mealType)
-  //   console.log(foodName)
-
-  //   try {
-
-  //     const docRef = doc(db, 'users', auth.currentUser.uid);
-  //     const foodLogCollectionRef = collection(docRef, 'FoodLog');
-  //     const foodEntryDocRef = doc(foodLogCollectionRef, date);
-  //     const foodEntry = await getDoc(foodEntryDocRef);
-
-  //     if (foodEntry.exists()) {
-  //       const foodLogArray = foodEntry.data()[mealType];
-  //       const newFoodLogArray = [...foodLogArray];
-  //       //console.log(newFoodLogArray)
-  //       const foodToRemove = newFoodLogArray.findIndex(food => food.foodName === foodName);
-  //       //console.log(foodToRemove)
-
-  //       if (foodToRemove !== -1) {
-  //         newFoodLogArray.splice(foodToRemove, 1);
-  //       }
-
-  //       await updateDoc(foodEntryDocRef, {
-  //         [mealType] : newFoodLogArray
-  //       });
-  //     }
-
-  //     else {
-  //       console.log("Unable to find food Entry! In Food Page")
-  //     }
-
-  //   }
-
-  //   catch (error) {
-  //     console.error("Error occured when fetching data " + error)
-  //   }
-  // }
 
   const atLeastTwoMealsLogged = (breakfast, lunch, dinner, others) => {
 
@@ -255,37 +212,6 @@ export default function Journal({navigation}) {
     //console.log("In Journal Page " + currentFoodEntry);
     navigation.navigate('Food', { currentFoodEntry });
   }
-
-  // const updateDisplay = (foodArray, mealType) => {
-
-  //   return foodArray.map((food, index) => (
-  //     <View key={index} style={styles.mealDisplayContainer}>
-
-  //       <DeleteEntryModal
-  //         deleteEntryModal={deleteEntryModal}
-  //         setDeleteEntryModal={setDeleteEntryModal}
-  //         deleteEntry={deleteEntry}
-  //         deleteEntryMealType={mealType}
-  //         deleteEntryFood={food.foodName} />
-
-  //       <View style={styles.foodNameContainer}>
-  //         <TouchableOpacity delayLongPress={500} onLongPress={() => setDeleteEntryModal(true)}>
-  //           <View style={styles.innerFoodNameContainer}>
-  //             <Text style={styles.mealDisplayTitle}>{food.foodName}</Text>
-  //           </View>
-  //         </TouchableOpacity>
-  //       </View>
-
-  //       <View style={styles.foodCaloriesContainer}>
-  //         <View style={styles.innerFoodCaloriesContainer}>
-  //           <Text style={styles.calorieDisplayText}>{food.calories}</Text>
-  //         </View>
-  //       </View>
-
-  //     </View>
-  //   ))
-
-  // }
 
   const fetchUserCalories = async () => { 
 

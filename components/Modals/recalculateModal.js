@@ -45,7 +45,7 @@ const RecalculateModal = ( { recalVisible, setRecalVisible, goalsNumberModalVisi
                         <TouchableWithoutFeedback>
                             <View style={styles.modalContent}>
                                 <View style={styles.modalContentTextContainer}>
-                                <Text style={styles.modalContentText}>Are you sure? Changing this will cause your macros to be recalculated.</Text>
+                                    <Text style={styles.modalContentText}>Are you sure? Changing this will require your macros to be recalculated.</Text>
                                 </View>
                                 <View style={styles.modalButtonContainer}>
                                 <View style={styles.modalCancelButtonContainer}>
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     },
     modalContent: {
     width: 300,
-    height: 125,
+    height: 150,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',

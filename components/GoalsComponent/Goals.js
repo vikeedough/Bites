@@ -7,6 +7,8 @@ import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc } from 'firebas
 import { ref } from 'firebase/storage';
 import { ForceTouchGestureHandler } from 'react-native-gesture-handler';
 import MacroCalculator from '@/components/GoalsComponent/MacroCalculator.js';
+//import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -334,6 +336,73 @@ export default function Goals() {
           modalType={modalType}
           updateGoalsFunction={updateGoalsFunction}/>
 
+        <View style={styles.calculatedMarcoContainer}>
+
+          <View style={styles.calculatedMacroTitleContainer}> 
+            <Text style={styles.calculatedMacroTitleText}>Recommended Intake</Text>
+          </View>
+
+          <View style={styles.calculatedMacroContentContainer}>
+            <View style={styles.macroDetailContainer}>
+              <View style={styles.macroDetailTextContainer}>
+                <View style={styles.iconContainer}>
+                  <FontAwesome6 name="fire-flame-curved" color={'#EC6337'} size={25} style={styles.iconStyle} />
+                </View>
+                <View style={styles.macroTypeContainer}>
+                  <Text style={styles.macroDetailText}>Calories: </Text>
+                </View>
+              </View>
+              <View>
+                <Text style={styles.macroDetailValue}>{calories}</Text>
+              </View>
+            </View>
+
+            <View style={styles.macroDetailContainer}>
+              <View style={styles.macroDetailTextContainer}>
+                <View style={styles.iconContainer}>
+                  <FontAwesome6 name="plate-wheat" color={'#EC6337'} size={25} style={styles.iconStyle} />
+                </View>
+                <View style={styles.macroTypeContainer}>
+                  <Text style={styles.macroDetailText}>Carbohydrates: </Text>
+                </View>
+              </View>
+              <View>
+                <Text style={styles.macroDetailValue}>{carbohydrates}</Text>
+              </View>
+            </View>
+
+            <View style={styles.macroDetailContainer}>
+              <View style={styles.macroDetailTextContainer}>
+                <View style={styles.iconContainer}>
+                  <FontAwesome6 name="drumstick-bite" color={'#EC6337'} size={25} style={styles.iconStyle} />
+                </View>
+                <View style={styles.macroTypeContainer}>
+                  <Text style={styles.macroDetailText}>Proteins: </Text>
+                </View>
+              </View>
+              <View>
+                <Text style={styles.macroDetailValue}>{protein}</Text>
+              </View>
+            </View>
+
+            <View style={styles.macroDetailContainer}>
+              <View style={styles.macroDetailTextContainer}>
+                <View style={styles.iconContainer}>
+                  <MaterialCommunityIcons name="food-croissant" color={'#EC6337'} size={25} style={styles.iconStyle} />
+                </View>
+                <View style={styles.macroTypeContainer}>
+                  <Text style={styles.macroDetailText}>Fats: </Text>
+                </View>
+              </View>
+              <View>
+                <Text style={styles.macroDetailValue}>{fat}</Text>
+              </View>
+            </View>
+
+          </View>
+
+        </View>
+
         <View style={styles.detailContainer}>
           <View style={styles.textContainer}>
             <Text style={styles.textLayout}>Gender</Text>
@@ -406,24 +475,6 @@ export default function Goals() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.calculatedMarcoContainer}>
-          <View style={styles.macroDetailContainer}>
-            <Text style={styles.macroDetailText}>Recommended Calorie intake: {calories}</Text>
-          </View>
-
-          <View style={styles.macroDetailContainer}>
-            <Text style={styles.macroDetailText}>Recommended Carbohydrates intake: {carbohydrates}g</Text>
-          </View>
-
-          <View style={styles.macroDetailContainer}>
-            <Text style={styles.macroDetailText}>Recommended Protein intake: {protein}g</Text>
-          </View>
-
-          <View style={styles.macroDetailContainer}> 
-            <Text style={styles.macroDetailText}>Recommended Fat intake: {fat}g</Text>
-          </View>
-
-        </View>
     </ScrollView>
   );
 }
@@ -434,7 +485,7 @@ const styles = StyleSheet.create({
     //backgroundColor: 'red'
   },
   detailContainer: {
-    flex: 0.1,
+    flex: 0.07,
     flexDirection: 'row',
     padding: 20,
     justifyContent: 'center',
@@ -478,7 +529,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   }, 
   calMacroButtonContainer: {
-    flex: 0.1,
+    flex: 0.12,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
@@ -494,21 +545,62 @@ const styles = StyleSheet.create({
   calMacroText: {
     fontSize: 16,
     fontWeight: 'bold',
-    
   },
-
-
-
-
-
   calculatedMarcoContainer: {
-    flex: 0.4,
-    padding: 15,
+    flex: 0.46,
+    borderBottomWidth: 0.5,
+    justifyContent: 'center',
   },
   macroDetailContainer: {
     flex: 0.25,
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  macroDetailTextContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    marginLeft: 20,
   },
   macroDetailText: {
     fontSize: 18,
+    flex: 1,
+    fontStyle: 'italic'
+  },
+  macroDetailValue: {
+    flex: 1,
+    fontSize: 18,
+    alignItems: 'flex-end',
+    marginRight: 20,
+    color: '#EC6337'
+  },
+  calculatedMacroTitleContainer: {
+    flex: 0.15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 5
+  },
+  calculatedMacroTitleText: {
+    fontSize: 20,
+    color: '#EC6337',
+    fontWeight: 'bold',
+    fontStyle: 'italic'
+  },
+  calculatedMacroContentContainer: {
+    flex: 0.85,
+    justifyContent: 'center',
+    paddingTop: 10
+  },
+  iconContainer: {
+    flex: 0.12,
+    alignItems: 'flex-start'
+  }, 
+  macroTypeContainer: {
+    flex: 0.88,
+    alignItems: 'flex-start'
+  },
+  iconStyle: {
+    marginRight: 15,
+    alignItems: 'center'
   }
 });
