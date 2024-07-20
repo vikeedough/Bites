@@ -84,6 +84,7 @@ export default function Login({navigation}) {
                 value={email}
                 onChangeText={onChangeEmail}
                 returnKeyType='Next'
+                onSubmitEditing={() => secondInput.current?.focus()}
                 blurOnSubmit={false}
                 ref={firstInput}
               />

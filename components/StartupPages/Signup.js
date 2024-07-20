@@ -17,6 +17,10 @@ export default function Signup() {
   const [confirmation, onChangeConfirmation] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [disabled, setDisabled] = React.useState(false);
+  const firstInput = React.useRef();
+  const secondInput = React.useRef();
+  const thirdInput = React.useRef();
+  const fourthInput = React.useRef();
 
   const alertMessage = (error) => {
     let message = '';
@@ -106,6 +110,10 @@ export default function Signup() {
           onChangeText={onChangeUsername}
           value={username}
           label='Username'
+          returnKeyType='Next'
+          onSubmitEditing={() => secondInput.current?.focus()}
+          blurOnSubmit={false}
+          ref={firstInput}
         />
 
         {/* <TextInput
@@ -120,6 +128,10 @@ export default function Signup() {
           onChangeText={onChangeEmail}
           value={email}
           label='Email'
+          returnKeyType='Next'
+          onSubmitEditing={() => thirdInput.current?.focus()}
+          blurOnSubmit={false}
+          ref={secondInput}
         /> 
 
         {/* <TextInput
@@ -135,6 +147,10 @@ export default function Signup() {
           value={password}
           label='Password'
           secureTextEntry = {true}
+          returnKeyType='Next'
+          onSubmitEditing={() => fourthInput.current?.focus()}
+          blurOnSubmit={false}
+          ref={thirdInput}
         />
 
         <AnimatedTextInput
@@ -143,6 +159,7 @@ export default function Signup() {
           value={confirmation}
           label='Re-enter your password'
           secureTextEntry = {true}
+          ref={fourthInput}
         />
 
         {/* <TextInput
