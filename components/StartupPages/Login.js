@@ -1,13 +1,11 @@
-import React, { useEffect } from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button, Image, Alert } from "react-native";
-import {firebaseApp, firebaseAuth} from '../../firebaseConfig'
+import React from 'react';
+import { Text, View, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
+import { firebaseAuth } from '../../firebaseConfig'
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Fontisto, Feather } from '@expo/vector-icons';
 import AnimatedTextInput from '../AnimatedTextInput';
 
-
 const logo = require('@/assets/images/Logo-Grey-Background.png');
-const app = firebaseApp
 const auth = firebaseAuth
 
 export default function Login({navigation}) {
@@ -69,7 +67,7 @@ export default function Login({navigation}) {
                 size={20}
                 style={{paddingEnd: 0, paddingTop: 8,}}
               />
-              <TextInput 
+              {/* <TextInput 
                 style={styles.input}
                 testID='emailInput'
                 placeholder='Email'
@@ -78,8 +76,8 @@ export default function Login({navigation}) {
                 returnKeyType='Next'
                 onSubmitEditing={() => secondInput.current?.focus()}
                 blurOnSubmit={false}
-              />
-              {/* <AnimatedTextInput
+              /> */}
+              <AnimatedTextInput
                 style={styles.AnimatedInput}
                 testID='emailInput'
                 label='Email'
@@ -88,7 +86,7 @@ export default function Login({navigation}) {
                 returnKeyType='Next'
                 blurOnSubmit={false}
                 ref={firstInput}
-              /> */}
+              />
             </View>
 
             <View style={styles.textInputContainer}>
@@ -98,7 +96,7 @@ export default function Login({navigation}) {
                 size={20}
                 style={{paddingEnd: 0, paddingTop: 8}}
               />
-              <TextInput 
+              {/* <TextInput 
                 style={styles.input}
                 testID='passwordInput'
                 placeholder='Password'
@@ -106,8 +104,8 @@ export default function Login({navigation}) {
                 onChangeText={onChangePassword}
                 ref={secondInput}
                 secureTextEntry={true}
-              />
-              {/* <AnimatedTextInput
+              /> */}
+              <AnimatedTextInput
                 style={styles.AnimatedInput}
                 testID='passwordInput'
                 onChangeText={onChangePassword}
@@ -115,11 +113,11 @@ export default function Login({navigation}) {
                 label='Password'
                 secureTextEntry = {true}
                 ref={secondInput}
-              /> */}
+              />
             </View>
             
 
-            <TouchableOpacity style={styles.loginContainer} onPress={signIn}>
+            <TouchableOpacity style={styles.loginContainer} testID='loginButton' onPress={signIn}>
                 <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
 

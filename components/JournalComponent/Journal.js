@@ -1,16 +1,13 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import { useEffect, useState, useLayoutEffect } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
-import Food from "@/components/JournalComponent/Food.js"
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import CalendarModal from '@/components/JournalComponent/CalendarModal.js';
-import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
+import { firebaseAuth, firebaseDb } from '../../firebaseConfig'
+import { collection, getDoc, onSnapshot, doc, updateDoc, setDoc } from 'firebase/firestore';
 import UpdateDisplayComponent from '@/components/JournalComponent/UpdateDisplayComponent.js';
 import * as Progress from 'react-native-progress';
 import JournalInfo from '../Modals/JournalInfo';
 
-const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
 

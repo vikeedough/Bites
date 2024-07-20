@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Alert} from "react-native";
 import ProgressBar from 'react-native-progress/Bar';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -72,34 +72,40 @@ const TrophyContainer = ({trophyColor, description, progress, detailedStat, trop
         }
     }
 
-    const containerStyle = [
-        styles.containter,
-        { borderColor: selectedAchievement === trophyTitle ? 'green' : '#EC6337' }
-    ];
-
     useEffect(() => {
         findAchievements();
     }, [selectedAchievement]);
 
     return (
-        <TouchableOpacity style={containerStyle} onPress={selectAchievement}>
+        <TouchableOpacity style={styles.containerStyle} onPress={selectAchievement}>
             <View style={styles.iconContainer}>
-                <Icon name="trophy" size={55} color={trophyColor} />
-                <Text style={styles.trophyText}>{trophyTitle}</Text>
+                <Icon name="trophy" size={50} color={trophyColor} />
             </View>
 
             <View style={styles.descriptionContainer}>
                 <View style={styles.descriptionTitleContainer}>
+                    <View style={styles.trophyTitleContainer}>
+                        <Text style={styles.trophyText}>{trophyTitle}</Text>
+                        {
+                            selectedAchievement === trophyTitle
+                            ?
+                            <View style={styles.selectionContainer}>
+                                <Text style={styles.selectedText}>Selected</Text>
+                            </View>
+                            :
+                            <View></View>
+                        }
+                    </View>
                     <Text style={styles.descriptionText}>{description}</Text>
                 </View>
                 <View style={styles.statsContainer}>
                     <View style={styles.progressBarContainer}>
                         <ProgressBar
                             progress={progress} 
-                            width={125}
-                            height={12}
+                            width={160}
+                            height={15}
                             borderRadius={10}
-                            color={'#1E90FF'}
+                            color={'#F6B19B'}
                             animated={true}
                         />
                     </View>
@@ -114,68 +120,72 @@ const TrophyContainer = ({trophyColor, description, progress, detailedStat, trop
 }
 
 const styles = StyleSheet.create({
-    containter: {
-        width: '95%',
+    containerStyle: {
+        width: '100%',
         maxWidth: 600,
-        height: 100,
+        height: 90,
         padding: 10,
         backgroundColor: 'white',
-        borderWidth: 2, 
-        borderColor: '#EC6337', 
-        borderRadius: 10, 
-        shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2, 
-        shadowRadius: 2, 
-        elevation: 5, 
+        borderTopWidth: 1, 
+        borderColor: '#F4F4F6',  
         flexDirection: 'row',
         marginBottom: 10
     },
     iconContainer: {
-        flex: 0.3,
+        flex: 0.25,
         alignItems: 'center',
         justifyContent: 'center',
-        //backgroundColor: 'red'
     },
     descriptionContainer: {
-        flex: 0.7,
-        alignItems: 'center',
-        //justifyContent: 'center',
-        //backgroundColor: 'blue'
+        flex: 0.75,
+        gap: 20,
+    },
+    trophyTitleContainer: {
+        flexDirection: 'row',
+        gap: 5,
     },
     descriptionText: {
-        fontSize: 18
+        fontSize: 14,
+        color: '#828282',
     },
     descriptionTitleContainer: {
         flex: 0.5,
-        //backgroundColor: 'yellow',
-        alignContent: 'center',
-        justifyContent: 'center'
+        marginTop: 10,
     },
     statsContainer: {
         flex: 0.5,
-        alignContent: 'center',
-        justifyContent: 'center',
-        //backgroundColor: 'red',
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     progressBarContainer: {
         alignContent: 'flex-start',
         justifyContent: 'center'
     },
     detailedStatContainer: {
-        alignContent: 'flex-end',
         justifyContent: 'center',
-        marginLeft: 10
+        marginLeft: 5
     },
     detailedStateText: {
         fontSize: 14 ,
-        fontStyle: 'italic'
+        color: '#828282'
     },
     trophyText: {
-        fontSize: 10,
-        marginTop: 4,
-        fontStyle: 'italic'
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
+    selectionContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 4,
+        paddingRight: 10,
+        paddingLeft: 10,
+        borderRadius: 20,
+        backgroundColor: '#FFA973',
+    },
+    selectedText: {
+        fontSize: 12,
+        color: 'white',
+        alignSelf: 'center'
     }
 
 })

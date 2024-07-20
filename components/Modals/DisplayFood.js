@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { Button, Modal, StyleSheet, View, Text, FlatList, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import { Modal, StyleSheet, View, Text, FlatList, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { getDoc, doc } from 'firebase/firestore';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { firebaseAuth, firebaseDb } from "@/firebaseConfig";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import ShortcutToFood from "@/components/Modals/ShortcutToFood.js"
-import { onLog } from "firebase/app";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Tab = createMaterialTopTabNavigator();

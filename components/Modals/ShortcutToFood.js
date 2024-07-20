@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback} from "react-native";
+import { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Modal, TouchableWithoutFeedback } from "react-native";
 import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig';
-import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
+import { collection, getDoc, doc, updateDoc } from 'firebase/firestore';
 import AlertModal from '@/components/JournalComponent/AlertModal.js';
-import { Dropdown, SelectCountry } from 'react-native-element-dropdown';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { Dropdown } from 'react-native-element-dropdown';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { setWeek } from 'date-fns';
 
 const app = firebaseApp;
 const auth = firebaseAuth;

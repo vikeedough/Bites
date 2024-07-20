@@ -1,7 +1,6 @@
-import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Friends from '@/components/Friends.js'
-import AddFriends from '@/components/AddFriends.js'
+import Friends from '../ProfileComponent/Friends.js';
+import AddFriends from '../ProfileComponent/AddFriends.js';
 import ViewProfile from "../HomeComponent/ViewProfile";
 
 const Stack = createNativeStackNavigator();

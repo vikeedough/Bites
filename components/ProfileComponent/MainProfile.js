@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, FlatList, Image } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { firebaseApp, firebaseAuth, firebaseDb } from '../firebaseConfig';
+import { firebaseAuth, firebaseDb } from '../../firebaseConfig';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, collection, onSnapshot, getDoc } from "firebase/firestore";
 import { updateProfile } from 'firebase/auth';
 import * as ImagePicker from 'expo-image-picker';
-import Card from './Card';
+import Card from '../Card';
 import { useIsFocused } from '@react-navigation/native';
 
 
@@ -148,7 +148,7 @@ export default function MainProfile({navigation}) {
             </View>
 
             <View style={styles.welcomeContainer}>
-                <Text style={styles.usernameText}> Welcome, {user.displayName}! </Text>
+                <Text style={styles.usernameText}>{user.displayName}</Text>
                 {
                     currDisplayed !== ''
                     ?

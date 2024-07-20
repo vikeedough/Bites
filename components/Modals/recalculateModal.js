@@ -1,8 +1,6 @@
-import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import SetGoalsNumberModal from '@/components/Modals/setGoalsNumberModal.js';
 import SetGoalsDropdownModal from '@/components/Modals/setGoalsDropdownModal.js';
-import { unloadAllAsync } from 'expo-font';
 
 const RecalculateModal = ( { recalVisible, setRecalVisible, goalsNumberModalVisible, setGoalsNumberModalVisible, goalsDropdownModalVisible, setGoalsDropdownModalVisible, 
     updateDetail, detailType, modalType, updateGoalsFunction } ) => {

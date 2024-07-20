@@ -1,16 +1,10 @@
 import React, { useState, useEffect} from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, TextInput, Modal, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import RecalculateModal from '@/components/Modals/recalculateModal.js';
 import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc } from 'firebase/firestore';
-import { ref } from 'firebase/storage';
-import { ForceTouchGestureHandler } from 'react-native-gesture-handler';
-import MacroCalculator from '@/components/GoalsComponent/MacroCalculator.js';
-//import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 
-const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
 
@@ -34,7 +28,7 @@ export default function Goals() {
   const [currentDetail, setCurrentDetail] = useState('');
   const [modalType, setModalType] = useState('');
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(()=> {
 
@@ -471,7 +465,7 @@ export default function Goals() {
           {/* //age, height, weight, activeness, setCalories, setProtein, setCarbohydrates, setFat, weightGoal */}
         <View style={styles.calMacroButtonContainer}>
           <TouchableOpacity style={styles.calMacroButton} onPress={() => MacroCalculator()}>
-            <Text style={styles.calMacroText}> Calculate Macros! </Text>
+            <Text style={styles.calMacroText}> Calculate Macros </Text>
           </TouchableOpacity>
         </View>
 
@@ -482,15 +476,17 @@ export default function Goals() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: 'red'
+    backgroundColor: '#F4F4F6',
+    gap: 5,
   },
   detailContainer: {
     flex: 0.07,
     flexDirection: 'row',
     padding: 20,
+    marginHorizontal: 10,
+    borderRadius: 15,
     justifyContent: 'center',
-    borderBottomWidth: 0.5
-    //backgroundColor: 'red'
+    backgroundColor: '#FFFFFF'
   },
   textContainer: {
     flex: 1,
@@ -498,9 +494,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   buttonContainer: {
-    flex: 1,
     alignItems: 'flex-end',
     justifyContent: 'center',
+    backgroundColor: '#F4F4F6',
+    paddingHorizontal: 10,
+    borderRadius: 10,
   },
   textInput: {
     padding: 10,
@@ -544,12 +542,15 @@ const styles = StyleSheet.create({
   },
   calMacroText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
   calculatedMarcoContainer: {
     flex: 0.46,
-    borderBottomWidth: 0.5,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
+    marginHorizontal: 10,
+    marginTop: 5,
+    borderRadius: 10,
   },
   macroDetailContainer: {
     flex: 0.25,
@@ -600,7 +601,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start'
   },
   iconStyle: {
-    marginRight: 15,
-    alignItems: 'center'
+    alignItems: 'center',
   }
 });

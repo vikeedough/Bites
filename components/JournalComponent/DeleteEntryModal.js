@@ -1,6 +1,4 @@
-import React, { useState, useEffect }from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
-import { Calendar } from 'react-native-calendars';
 
 export default function DeleteEntry({ deleteEntryModal, setDeleteEntryModal, deleteEntry, deleteEntryMealType, deleteEntryFood }) {
 

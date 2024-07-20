@@ -1,5 +1,4 @@
-import React, { useState, useEffect }from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 
 export default function CalendarModal({ calendarModal, setCalendarModal, onDayPress }) {
@@ -20,7 +19,6 @@ export default function CalendarModal({ calendarModal, setCalendarModal, onDayPr
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
-  
             </TouchableWithoutFeedback>
 
         </Modal>

@@ -39,6 +39,10 @@ export default function HomeScreenInfo({ isVisible, onClose }) {
                             <Text style={styles.subTitle}>Viewing likes</Text>
                             <Text style={styles.mainBody}>Press on the number of likes a post has to 
                                 look at who liked the post!</Text>
+
+                            <Text style={styles.subTitle}>Viewing tags</Text>
+                            <Text style={styles.mainBody}>Press on the number of tagged friends a post has to 
+                                look at who was tagged in the post!</Text>
                         </View>
                     </View>
                 </View>

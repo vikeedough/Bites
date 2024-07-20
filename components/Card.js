@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, Share } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { firebaseAuth, firebaseDb } from '../firebaseConfig';
-import { collection, getDoc, onSnapshot, doc, updateDoc, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { getDoc, onSnapshot, doc, updateDoc, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
 import Comments from '@/components/Modals/Comments.js';
 import Options from '@/components/Modals/Options.js';
 import TimeAgo from 'javascript-time-ago';

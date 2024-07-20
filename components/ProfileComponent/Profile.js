@@ -1,10 +1,9 @@
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { firebaseAuth, firebaseApp, firebaseDb } from '@/firebaseConfig';
+import { firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { useIsFocused } from '@react-navigation/native';
 
-const app = firebaseApp
 const auth = firebaseAuth
 const db = firebaseDb
 

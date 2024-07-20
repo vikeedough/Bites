@@ -1,6 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MainProfile from "../MainProfile";
+import MainProfile from "../ProfileComponent/MainProfile";
 import SettingsNavigator from "./SettingsNavigator";
+import ViewProfile from "../HomeComponent/ViewProfile";
+import ViewLikes from "../HomeComponent/ViewLikes";
+import ViewTags from "../HomeComponent/ViewTags";
 import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator();
@@ -22,6 +25,28 @@ export default function MainProfileNavigator({navigation}) {
             }}/>
             <Stack.Screen name="SettingsNavigator" component={SettingsNavigator} options={{
                 headerShown: false,
+            }}/>
+            <Stack.Screen name="ViewProfile" component={ViewProfile} options={{
+                headerShown: true,
+                headerTitle: 'Profile',
+                headerStyle: {
+                    backgroundColor: '#EC6337'
+                },
+                headerTintColor: '#FFFFFF'
+            }}/>
+            <Stack.Screen name="ViewLikes" component={ViewLikes} options={{
+                headerTitle: 'Likes',
+                headerStyle: {
+                    backgroundColor: '#EC6337'
+                },
+                headerTintColor: '#FFFFFF'
+            }}/>
+            <Stack.Screen name="ViewTags" component={ViewTags} options={{
+                headerTitle: 'Tags',
+                headerStyle: {
+                    backgroundColor: '#EC6337'
+                },
+                headerTintColor: '#FFFFFF'
             }}/>
         </Stack.Navigator>
     )

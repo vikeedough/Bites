@@ -1,11 +1,8 @@
-import React, { useState, useEffect }from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
-import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
-import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
-import FoodDatabase from "@/components/FoodDatabase.js";
-import { err } from 'react-native-svg';
+import { useState }from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native';
+import {firebaseAuth, firebaseDb} from '../../firebaseConfig'
+import { collection, getDoc, doc, setDoc } from 'firebase/firestore';
 
-const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
 

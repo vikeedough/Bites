@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 import { doc, setDoc, updateDoc, getDoc } from 'firebase/firestore';
 import * as Progress from 'react-native-progress';
+import PostInfo from '../Modals/PostInfo.js';
 
 const app = firebaseApp;
 const auth = firebaseAuth;
@@ -37,6 +38,7 @@ export default function Post({navigation}) {
         id: 6,
     }];
 
+    const user = auth.currentUser;
     const [location, setLocation] = useState('');
     const [tags, setTags] = useState([]);
     const [image, setImage] = useState(null);
@@ -44,7 +46,24 @@ export default function Post({navigation}) {
     const [picture, setPicture] = useState(null);
     const [disabled, setDisabled] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const user = auth.currentUser;
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const closeInfo = () => {
+        setModalVisible(false);
+    }
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+        headerRight: () => (
+        <Ionicons
+            name="help-circle-outline"
+            color={'white'}
+            size={24}
+            onPress={() => setModalVisible(true)}
+        />
+        ),
+    });
+    }, [navigation]);
 
     const uriToBlob = async (uri) => {
         const response = await fetch(uri);
@@ -232,6 +251,7 @@ export default function Post({navigation}) {
             <TouchableOpacity style={styles.postButton} onPress={checkPost} disabled={disabled}>
                 <Text style={styles.postButtonText}>Post</Text>
             </TouchableOpacity>
+            <PostInfo isVisible={modalVisible} onClose={closeInfo}/>
         </View>
     )
 }

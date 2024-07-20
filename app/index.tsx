@@ -6,18 +6,14 @@ import { createStackNavigator } from '@react-navigation/stack'
 import FeedNavigator from '@/components/navigation/FeedNavigator.js';
 import Map from '@/components/Map.js';
 import Login from '@/components/StartupPages/Login';
-import Post from '@/components/Post.js';
 import Signup from '@/components/StartupPages/Signup.js'
 import { Ionicons } from '@expo/vector-icons';
 import FoodNavigator from "@/components/navigation/FoodNavigator.js";
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'
 import { onAuthStateChanged, User } from 'firebase/auth';
-import SettingsNavigator from '@/components/navigation/SettingsNavigator.js';
 import MainProfileNavigator from '@/components/navigation/MainProfileNavigator.js';
 import PostNavigator from '../components/navigation/PostNavigator.js';
-//import MaptoFoodNavigator from '@/components/navigation/MapToFoodNavigator.js';
 
-const app = firebaseApp
 const auth = firebaseAuth
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -41,8 +37,8 @@ function MyTabs() {
         backgroundColor: '#EC6337',
         paddingBottom: 5,
       },
-      tabBarActiveTintColor: 'black',  
-      tabBarInactiveTintColor: 'white', 
+      tabBarActiveTintColor: 'white',  
+      tabBarInactiveTintColor: '#F6B19B', 
     }}>
       <Tab.Screen 
         name = "Bites" 
@@ -63,7 +59,7 @@ function MyTabs() {
           tabBarIcon: ({focused}) => (
 
             <View style={styles.iconContainer}>
-              <Ionicons name="home" color={focused ? "black" : 'white'} size={24} />
+              <Ionicons name="home" color={focused ? "white" : '#F6B19B'} size={24} />
             </View>
             
         )
@@ -79,7 +75,7 @@ function MyTabs() {
           tabBarIcon: ({focused}) => (
             
             <View style={styles.iconContainer}>
-              <Ionicons name="map" color={focused ? "black" : 'white'} size={24} />
+              <Ionicons name="map" color={focused ? "white" : '#F6B19B'} size={24} />
             </View>
 
           )
@@ -96,7 +92,7 @@ function MyTabs() {
           tabBarIcon: ({focused}) => (
 
             <View style={styles.iconContainer}>
-              <Ionicons name="add-circle-outline" color={focused ? "black" : 'white'} size={24} />
+              <Ionicons name="add-circle-outline" color={focused ? "white" : '#F6B19B'} size={24} />
             </View>
 
           )
@@ -106,7 +102,7 @@ function MyTabs() {
           tabBarIcon: ({focused}) => (
 
             <View style={styles.iconContainer}>
-              <Ionicons name="book" color={focused ? "black" : 'white'} size={24} />
+              <Ionicons name="book" color={focused ? "white" : '#F6B19B'} size={24} />
             </View>
 
           ),
@@ -118,7 +114,7 @@ function MyTabs() {
           tabBarIcon: ({focused}) => (
 
             <View style={styles.iconContainer}>
-              <Ionicons name="person-circle-outline" color={focused ? "black" : 'white'} size={24} />
+              <Ionicons name="person-circle-outline" color={focused ? "white" : '#F6B19B'} size={24} />
             </View>
 
           ),
@@ -147,7 +143,7 @@ export default function Index() {
       {appLoading ?
       <LoadingScreen />
       : (user ? (
-         <MyTabs />
+        <MyTabs />
       ) : (
         <Stack.Navigator>
           <Stack.Screen name = "Login" component = {Login} options = {{headerShown : false}}/>

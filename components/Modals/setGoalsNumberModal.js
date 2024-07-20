@@ -1,4 +1,4 @@
-import React, { useState }from 'react';
+import { useState }from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
 
 const SetGoalsNumberModal = ({ goalsNumberModalVisible, setGoalsNumberModalVisible, updateDetail, detailType, updateGoalsFunction }) => {

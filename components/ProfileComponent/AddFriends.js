@@ -1,9 +1,8 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Button, FlatList, Image, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Image, RefreshControl } from 'react-native';
 import { useEffect, useState } from 'react';
-import { firebaseAuth, firebaseApp, firebaseDb } from '@/firebaseConfig';
-import { collection, query, where, getDocs, setDoc, doc, updateDoc, arrayUnion, getDoc, arrayRemove } from "firebase/firestore";
+import { firebaseAuth, firebaseDb } from '@/firebaseConfig';
+import { collection, getDocs, doc, updateDoc, arrayUnion, getDoc, arrayRemove } from "firebase/firestore";
 
-const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
 const userRef = collection(db, "users");

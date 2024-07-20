@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Settings from '@/components/Settings.js';
+import Settings from '../ProfileComponent/Settings.js';
 import Goals from '@/components/GoalsComponent/Goals.js';
 import Achievements from "@/components/AchievementComponent/Achievements.js";
 import ProfileNavigator from "./ProfileNavigator";

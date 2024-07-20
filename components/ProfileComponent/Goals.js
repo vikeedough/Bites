@@ -1,12 +1,9 @@
 import React, { useState, useEffect} from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, TextInput, Modal, TouchableWithoutFeedback } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import RecalculateModal from '@/components/Modals/recalculateModal.js';
-import {firebaseApp, firebaseAuth, firebaseDb} from '../firebaseConfig'
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc } from 'firebase/firestore';
-import { ref } from 'firebase/storage';
+import { firebaseAuth, firebaseDb } from '../../firebaseConfig'
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
 
-const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
 

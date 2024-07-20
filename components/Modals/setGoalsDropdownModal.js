@@ -1,7 +1,6 @@
-import React, { useState }from 'react';
+import { useState }from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModalVisible, updateDetail, detailType, updateGoalsFunction}) => {
 
@@ -16,14 +15,14 @@ const SetGoalsDropdownModal = ({ goalsDropdownModalVisible, setGoalsDropdownModa
         {label: "Sedentary: Little or no exercise", value: "Sedentary"},
         {label: "Light: Exercises 1-2 times a week", value: "Light"},
         {label: "Moderate: Exercises 3-4 times a week", value: "Moderate"},
-        {label: "Heavy: Exercieses 5-6 times a week", value: "Heavy"},
+        {label: "Heavy: Exercises 5-6 times a week", value: "Heavy"},
         {label: "Intense: Intense exercise daily / physical job", value: "Intense"}
     ];
 
     const weightGoalData = [
         {label: "Weight Gain", value: "Weight Gain"},
         {label: "Mild Weight Gain", value: "Mild Weight Gain"},
-        {label: "Maintan Weight", value: "Maintain Weight"},
+        {label: "Maintain Weight", value: "Maintain Weight"},
         {label: "Mild Weight Loss", value: "Mild Weight Loss"},
         {label: "Weight Loss", value: "Weight Loss"}
     ];

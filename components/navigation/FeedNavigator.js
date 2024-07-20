@@ -1,11 +1,9 @@
-import React from "react";
 import { Image } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from '@/components/HomeComponent/HomeScreen.js';
 import ViewProfile from "../HomeComponent/ViewProfile";
 import ViewLikes from "../HomeComponent/ViewLikes";
 import ViewTags from '../HomeComponent/ViewTags';
-import { Ionicons } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
 

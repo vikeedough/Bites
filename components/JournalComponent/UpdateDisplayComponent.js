@@ -1,11 +1,9 @@
-import React, { useState, useEffect }from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
+import { useState }from 'react';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import DeleteEntryModal from "@/components/JournalComponent/DeleteEntryModal.js";
-import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc } from 'firebase/firestore';
+import { firebaseAuth, firebaseDb} from '../../firebaseConfig'
+import { collection, getDoc, doc, updateDoc } from 'firebase/firestore';
 
-const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
 

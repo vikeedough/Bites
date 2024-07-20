@@ -1,11 +1,10 @@
-import { Text, View, StyleSheet, TextInput, Button, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRef, useState } from 'react';
-import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig'
-import { EmailAuthProvider, createUserWithEmailAndPassword, reauthenticateWithCredential, updateEmail } from 'firebase/auth';
+import { firebaseAuth, firebaseDb } from '@/firebaseConfig'
+import { EmailAuthProvider, reauthenticateWithCredential, updateEmail } from 'firebase/auth';
 import { doc, setDoc } from "firebase/firestore";
 import AnimatedTextInput from '../AnimatedTextInput';
 
-const app = firebaseApp
 const auth = firebaseAuth
 const db = firebaseDb
 

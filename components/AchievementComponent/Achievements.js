@@ -1,33 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
+import { useEffect, useState, useLayoutEffect } from 'react';
+import { Text, View, StyleSheet, ScrollView} from "react-native";
 import TrophyContainer from "@/components/AchievementComponent/TrophyContainer.js";
-import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig';
-import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc, getDocsFromCache } from 'firebase/firestore';
+import { firebaseAuth, firebaseDb} from '../../firebaseConfig';
+import { onSnapshot, doc, updateDoc } from 'firebase/firestore';
 import Icon from 'react-native-vector-icons/Entypo';
+import AchievementInfo from '../Modals/AchievementInfo.js';
+import { Ionicons } from '@expo/vector-icons';
 
-const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
 
-export default function Achievements() {
+export default function Achievements({navigation}) {
 
     const [totalMealsLogged, setTotalMealsLogged] = useState(0);
     const [totalPosts, setTotalPosts] = useState(0);
     const [achievement, setAchievement] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const closeInfo = () => {
+        setModalVisible(false);
+    }
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+        headerRight: () => (
+        <Ionicons
+            name="help-circle-outline"
+            color={'white'}
+            size={24}
+            onPress={() => setModalVisible(true)}
+        />
+        ),
+    });
+    }, [navigation]);
 
     useEffect(() => {
 
         const fetchData = async () => {
     
             try {
-              const docRef = doc(db, 'users', auth.currentUser.uid);
+                const docRef = doc(db, 'users', auth.currentUser.uid);
 
-              const unsubscribeAchievements = onSnapshot(docRef, async (doc) => {
-                const currAchievement = doc.data().selectedAchievement;
-                setAchievement(currAchievement);
-              })
+                const unsubscribeAchievements = onSnapshot(docRef, async (doc) => {
+                    const currAchievement = doc.data().selectedAchievement;
+                    setAchievement(currAchievement);
+                })
     
-              const unsubscribeMealLogs = onSnapshot(docRef, async (doc) => {
+                const unsubscribeMealLogs = onSnapshot(docRef, async (doc) => {
                 const foodTest = doc.data().numberOfFoodLogs;
                 setTotalMealsLogged(foodTest);
 
@@ -58,9 +77,9 @@ export default function Achievements() {
                     });
                 }
 
-              })
+            })
 
-              const unsubscribePosts = onSnapshot(docRef, async (doc) => {
+                const unsubscribePosts = onSnapshot(docRef, async (doc) => {
                 const postsTest = doc.data().numberOfPosts;
                 setTotalPosts(postsTest);
 
@@ -113,12 +132,11 @@ export default function Achievements() {
             <View style={styles.categoryContainer}>
                 <View style={styles.categoryTitleContainer}>
                     <Text style={styles.categoryTitle}>Meal Log Achievements</Text>
-                    <Icon name="book" size={40} color='white' />
                 </View>
                 <View style={styles.contentContainer}>
                     <TrophyContainer 
                             trophyColor={"#CD7F32"}
-                            description={"Log meals for 7 days!"}
+                            description={"Log Meals for 7 Days"}
                             progress={(totalMealsLogged / 7) > 1 ? 1 : Math.round(totalMealsLogged / 7 * 100) / 100}
                             detailedStat={`${totalMealsLogged > 7 ? 7 : totalMealsLogged} / 7`}
                             trophyTitle={"Meal Rookie"}
@@ -128,7 +146,7 @@ export default function Achievements() {
 
                     <TrophyContainer 
                         trophyColor={"#C0C0C0"}
-                        description={"Log meals for 14 days!"}
+                        description={"Log Meals for 14 Days"}
                         progress={(totalMealsLogged / 14) > 1 ? 1 : Math.round(totalMealsLogged / 14 * 100) / 100}
                         detailedStat={`${totalMealsLogged > 14 ? 14 : totalMealsLogged} / 14`}
                         trophyTitle={"Dedicated Logger"}
@@ -137,7 +155,7 @@ export default function Achievements() {
 
                     <TrophyContainer 
                         trophyColor={"#FFD700"}
-                        description={"Log meals for 30 days!"}
+                        description={"Log Meals for 30 Days"}
                         progress={(totalMealsLogged / 30) > 1 ? 1 : Math.round(totalMealsLogged / 30 * 100) / 100}
                         detailedStat={`${totalMealsLogged > 30 ? 30 : totalMealsLogged} / 30`}
                         trophyTitle={"Logging Maestro"}
@@ -154,7 +172,7 @@ export default function Achievements() {
                 <View style={styles.contentContainer}>
                     <TrophyContainer 
                     trophyColor={"#CD7F32"}
-                    description={"Post 10 meals!"}
+                    description={"Post 10 Meals"}
                     progress={(totalPosts / 10) > 1 ? 1 : Math.round(totalPosts / 10 * 100) / 100}
                     detailedStat={`${totalPosts > 10 ? 10 : totalPosts} / 10`}
                     trophyTitle={"Meal Poster"}
@@ -163,7 +181,7 @@ export default function Achievements() {
 
                     <TrophyContainer 
                         trophyColor={"#C0C0C0"}
-                        description={"Post 20 meals!"}
+                        description={"Post 20 Meals"}
                         progress={(totalPosts / 20) > 1 ? 1 : Math.round(totalPosts / 20 * 100) / 100}
                         detailedStat={`${totalPosts > 20 ? 20 : totalPosts} / 20`}
                         trophyTitle={"Meal Picasso"}
@@ -172,7 +190,7 @@ export default function Achievements() {
 
                     <TrophyContainer 
                         trophyColor={"#FFD700"}
-                        description={"Post 50 meals!"}
+                        description={"Post 50 Meals"}
                         progress={(totalPosts / 50) > 1 ? 1 : Math.round(totalPosts / 50 * 100) / 100}
                         detailedStat={`${totalPosts > 50 ? 50 : totalPosts} / 50`}
                         trophyTitle={"Influencer"}
@@ -180,6 +198,7 @@ export default function Achievements() {
                         selectedAchievement={achievement}/>
                 </View>             
             </View>
+            <AchievementInfo isVisible={modalVisible} onClose={closeInfo}/>
         </ScrollView>
     )
 }
@@ -196,11 +215,8 @@ const styles = StyleSheet.create({
     categoryContainer: {
         flex: 1,
         width: '100%',
-        maxWidth: 600,
         height: 'auto',
-        //paddingTop: 10,
         backgroundColor: 'white',
-        //borderWidth: 2, 
         borderColor: '#EC6337', 
         borderRadius: 10, 
         marginBottom: 20,
@@ -211,31 +227,27 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2, 
         shadowRadius: 2, 
         elevation: 1, 
-        //backgroundColor: 'blue'
     },
     categoryTitleContainer: {
         width: '100%',
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#EC6337',
+        justifyContent: 'left',
         borderTopLeftRadius: 8, 
         borderTopRightRadius: 8,  
         flexDirection: 'row',
-        padding: 10
+        padding: 10,
+        marginLeft: 30,
     },
     contentContainer: {
         width: '100%',
         height: 'auto',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 20
-        //backgroundColor: 'yellow'
     },
     categoryTitle: {
-        fontSize: 15,
-        color: 'white',
+        fontSize: 18,
+        color: 'black',
         fontWeight: 'bold',
-        paddingRight: 10
     }
 
 })

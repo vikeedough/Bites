@@ -1,22 +1,13 @@
 import { useState, useEffect, useLayoutEffect } from 'react';
-import { Text, View, StyleSheet, FlatList, Image, Button, RefreshControl, TouchableOpacity } from "react-native";
-import { Header } from 'react-native/Libraries/NewAppScreen';
+import { Text, View, StyleSheet, FlatList,  RefreshControl } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, getDoc, onSnapshot, doc, updateDoc, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
-import Comments from '@/components/Modals/Comments.js';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en';
+import { firebaseAuth, firebaseDb} from '../../firebaseConfig'
+import { collection, onSnapshot, doc } from 'firebase/firestore';
 import Card from '@/components/Card.js';
 import HomeScreenInfo from '@/components/Modals/HomeScreenInfo';
 
-TimeAgo.addDefaultLocale(en);
-
 const auth = firebaseAuth;
 const db = firebaseDb;
-const placeholder = require('@/assets/images/placeholder.png');
-const timeAgo = new TimeAgo('en-US');
 
 const EmptyList = () => {
   return (

@@ -1,13 +1,12 @@
 import React from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, Button, Image, Alert } from "react-native";
-import { firebaseApp, firebaseAuth, firebaseDb } from '@/firebaseConfig'
+import { Text, View, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
+import { firebaseAuth, firebaseDb } from '@/firebaseConfig'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from "firebase/firestore";
 import AnimatedTextInput from '../AnimatedTextInput';
 import * as Progress from 'react-native-progress';
 
 const logo = require('@/assets/images/Logo-Grey-Background.png');
-const app = firebaseApp
 const auth = firebaseAuth
 const db = firebaseDb
 

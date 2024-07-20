@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { firebaseAuth } from '../firebaseConfig';
+import { firebaseAuth } from '../../firebaseConfig.js';
 import Goals from '@/components/GoalsComponent/Goals.js';
 import Achievements from '@/components/AchievementComponent/Achievements.js';
 import { useIsFocused } from '@react-navigation/native';

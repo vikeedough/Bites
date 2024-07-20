@@ -1,6 +1,3 @@
-// adapted from "Creating an Animated TextField with React Native"
-// https://bilir.me/blog/creating-an-animated-textfield-with-react-native
-
 import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { StyleSheet, TextInput, View, Text, Animated, Easing, TouchableWithoutFeedback } from 'react-native';
 
@@ -13,9 +10,10 @@ const AnimatedTextInput = forwardRef<TextInput, Props>(function AnimatedTextInpu
 
     const { 
         label, 
+        onChangeText,
         style,
         errorText,
-        value, 
+        value: propValue, 
         onBlur,
         onFocus,
         returnKeyType,
@@ -23,6 +21,7 @@ const AnimatedTextInput = forwardRef<TextInput, Props>(function AnimatedTextInpu
     } = props;
 
     const [isFocused, setIsFocused] = useState(false);
+    const [value, setValue] = useState(propValue || '');
 
     let color = isFocused ? '#EC6337' : '#D4D4F6';
     if (errorText) {
@@ -58,6 +57,12 @@ const AnimatedTextInput = forwardRef<TextInput, Props>(function AnimatedTextInpu
 
                 <TextInput
                     ref={inputRef}
+                    onChangeText={(newValue) => {
+                        setValue(newValue);
+                        if (onChangeText) {
+                            onChangeText(newValue);
+                        }
+                    }}
                     style={[
                         styles.input,
                         {
@@ -65,6 +70,7 @@ const AnimatedTextInput = forwardRef<TextInput, Props>(function AnimatedTextInpu
                         }
                     ]}
                     {...restOfProps}
+                    value={value}
                     returnKeyType={returnKeyType || 'done'}
                     onBlur={(event) => {
                         setIsFocused(false);

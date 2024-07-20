@@ -1,16 +1,17 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps'
-import { Text, View, StyleSheet, TextInput } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { firebaseAuth, firebaseDb } from '@/firebaseConfig';
 import { collection, doc, getDoc, getDocs, onSnapshot } from "firebase/firestore";
 import { AutocompleteDropdown, AutocompleteDropdownContextProvider } from 'react-native-autocomplete-dropdown';
+import { Ionicons } from '@expo/vector-icons';
 import DisplayFood from '@/components/Modals/DisplayFood.js';
-
+import MapInfo from '../components/Modals/MapInfo.js';
 
 const auth = firebaseAuth;
 const db = firebaseDb;
 
-export default function Map() {
+export default function Map({navigation}) {
 
   const mapRef = useRef(null);
   const markerRef = useRef({});
@@ -28,6 +29,26 @@ export default function Map() {
   const [modalVisible, setModalVisible] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
+
+  const closeInfo = () => {
+    setInfoModalVisible(false);
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+    headerRight: () => (
+    <Ionicons
+        name="help-circle-outline"
+        color={'white'}
+        size={24}
+        onPress={() => setInfoModalVisible(true)}
+        style={{paddingEnd: 10,}}
+    />
+    ),
+  });
+  }, [navigation]);
+
 
   const openModal = (foodArray, title) => {
     if (mapLoaded) {
@@ -237,6 +258,7 @@ export default function Map() {
             />
           </View>
           <DisplayFood isVisible={modalVisible} onClose={closeModal} foodArray={selectedArray} title={selectedTitle}/>
+          <MapInfo isVisible={infoModalVisible} onClose={closeInfo}/>
         </View>
       </AutocompleteDropdownContextProvider>
       );
