@@ -62,26 +62,13 @@ export default function Food() {
   useEffect(() => {
 
     const fetchFoodDatabase = async () => {
+      //console.log("in fetching food database")
       const totalFoodDatabase = await foodDatabase();
       setFoodDataArray(totalFoodDatabase);
     }
-
-    const fetchInitialPersonalisedFoodData = async () => {
-      const docRef = doc(db, 'users', auth.currentUser.uid);
-      const personalisedFoodCollectionRef = collection(docRef, 'Personalised Food');
-      const personalisedFoodDocRef = await getDocs(personalisedFoodCollectionRef);
-
-      const initialFoodData = [... foodDataArray];
-      personalisedFoodDocRef.forEach((doc) => {
-        initialFoodData.push({
-          id: doc.id,
-          ...doc.data()})
-      });
-      setFoodDataArray(initialFoodData);
-    }
   
     fetchFoodDatabase();
-    fetchInitialPersonalisedFoodData();
+    //console.log(foodDataArray.length)
 
   }, [])
       
@@ -143,8 +130,6 @@ export default function Food() {
     fetchPersonalisedFoodData();
 
   }, [])
-
-
 
 
   useEffect(() => {

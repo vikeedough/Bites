@@ -18,6 +18,10 @@ const foodDatabase = async () => {
         const pgpFoodData = await getDocs(collection(db, 'PGP'));
         const technoFoodData = await getDocs(collection(db, 'Techno'));
         const terraceFoodData = await getDocs(collection(db, 'Terrace'));
+        
+        const docRef = doc(db, 'users', auth.currentUser.uid);
+        const personalisedFoodCollectionRef = collection(docRef, 'Personalised Food');
+        const personalisedFoodData = await getDocs(personalisedFoodCollectionRef);
 
         flavoursFoodData.forEach((doc) => totalFoodDatabaseArray.push(doc.data()));
         fineFoodsFoodData.forEach((doc) => totalFoodDatabaseArray.push(doc.data()));
@@ -26,6 +30,7 @@ const foodDatabase = async () => {
         deckFoodData.forEach((doc) => totalFoodDatabaseArray.push(doc.data()));
         frontierFoodData.forEach((doc) => totalFoodDatabaseArray.push(doc.data()));
         terraceFoodData.forEach((doc) => totalFoodDatabaseArray.push(doc.data()));
+        personalisedFoodData.forEach((doc) => totalFoodDatabaseArray.push(doc.data()));
 
     }
     catch (error) {
