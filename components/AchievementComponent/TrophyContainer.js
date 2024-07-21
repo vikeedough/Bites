@@ -103,7 +103,7 @@ const TrophyContainer = ({trophyColor, description, progress, detailedStat, trop
                         <ProgressBar
                             progress={progress} 
                             width={160}
-                            height={15}
+                            height={10}
                             borderRadius={10}
                             color={'#F6B19B'}
                             animated={true}
@@ -145,15 +145,15 @@ const styles = StyleSheet.create({
         gap: 5,
     },
     descriptionText: {
-        fontSize: 14,
+        fontSize: 13,
         color: '#828282',
     },
     descriptionTitleContainer: {
-        flex: 0.5,
+        flex: 0.6,
         marginTop: 10,
     },
     statsContainer: {
-        flex: 0.5,
+        flex: 0.4,
         flexDirection: 'row',
     },
     progressBarContainer: {
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
         color: '#828282'
     },
     trophyText: {
-        fontSize: 20,
+        fontSize: 15,
         fontWeight: 'bold'
     },
     selectionContainer: {

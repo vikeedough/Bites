@@ -12,8 +12,8 @@ import { set } from 'date-fns';
 import AlertModal from "@/components/JournalComponent/AlertModal.js"
 import {firebaseApp, firebaseAuth, firebaseDb} from '../../firebaseConfig'
 import { collection, getDoc, onSnapshot, doc, getDocs, updateDoc, setDoc,  } from 'firebase/firestore';
-import FoodDatabase from "@/components/FoodDatabase.js";
-import flavoursFoodData from '@/components/FoodDatabase.js';
+import foodDatabase from '@/components/FoodDatabase.js';
+// import flavoursFoodData from '@/components/FoodDatabase.js';
 import CreateOwnFoodModal from "@/components/JournalComponent/CreateOwnFoodModal.js";
 
 const app = firebaseApp;
@@ -61,9 +61,9 @@ export default function Food() {
 
   useEffect(() => {
 
-    const flavours = async () => {
-      const test = await flavoursFoodData();
-      setFoodDataArray(test);
+    const fetchFoodDatabase = async () => {
+      const totalFoodDatabase = await foodDatabase();
+      setFoodDataArray(totalFoodDatabase);
     }
 
     const fetchInitialPersonalisedFoodData = async () => {
@@ -80,7 +80,7 @@ export default function Food() {
       setFoodDataArray(initialFoodData);
     }
   
-    flavours();
+    fetchFoodDatabase();
     fetchInitialPersonalisedFoodData();
 
   }, [])
