@@ -29,8 +29,15 @@ export default function createOwnFood ({createOwnFoodModalVisible, setCreateOwnF
     }
 
     const handleConfirmButton = async () => {
+
+        const caloriesTest = newCalories === 0 ? true : newCalories;
+        const carbsTest = newCarbs === 0 ? true : newCarbs;
+        const proteinsTest = newProtein === 0 ? true : newProtein;
+        const fatsTest = newFat === 0 ? true : newFat
+
         try {
-            if (newFoodName && newCalories && newCarbs && newProtein && newFat) {
+            
+            if (newFoodName && caloriesTest && carbsTest && proteinsTest && fatsTest) {
 
                 const newFood = {
                     calories: Number(newCalories),

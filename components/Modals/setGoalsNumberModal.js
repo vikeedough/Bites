@@ -1,14 +1,17 @@
 import { useState }from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
 
+//Text input component for Age, Weight and Height
 const SetGoalsNumberModal = ({ goalsNumberModalVisible, setGoalsNumberModalVisible, updateDetail, detailType, updateGoalsFunction }) => {
 
     const[number, setNumber] = useState('')
     
+    //Handle text input change
     const handleNumberChange = (text) => {
         setNumber(text)
     }
 
+    //Handle confirm button press
     const handleConfirm = () => {
         const parsedNumber = parseInt(number, 10); 
         if (!isNaN(parsedNumber)) {
@@ -20,6 +23,7 @@ const SetGoalsNumberModal = ({ goalsNumberModalVisible, setGoalsNumberModalVisib
         setNumber('');
     };
 
+    //Return string based on detail type
     function getDetailLabel() {
         switch (detailType) {
             case 'age':
