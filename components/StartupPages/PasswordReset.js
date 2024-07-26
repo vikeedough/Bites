@@ -69,60 +69,59 @@ export default function PasswordReset({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  container: { 
+    container: { 
     display: 'flex',
     height: '100%',
     width: '100%',
     justifyContent: 'center', 
     alignItems: 'center',
     backgroundColor: '#F4F4F6',
-  },
-  iconContainer: {
+    },
+    iconContainer: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     height: '20%',
-  },
-  logo: {
+    },
+    logo: {
     height: '50%',
     width: '50%',
-  },
-  innerContainer: {
+    },
+    innerContainer: {
     alignItems: 'center',
     display: 'flex',
     width: '90%',
-    height: '60%',
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 20,
-  },
-  noAccountContainer: {
+    },
+    noAccountContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
-  },
-  welcomeContainer: {
+    },
+    welcomeContainer: {
     display: 'flex',
     alignItems: 'center',
     width: '90%',
     height: '40%',
 
-  },
-  totalText: {
+    },
+    totalText: {
     textAlign: 'center',
-  },
-  welcomeText: {
+    },
+    welcomeText: {
     fontWeight: 'bold',
     fontSize: 25,
-  },
-  signInText: {
+    },
+    signInText: {
     fontSize: 18,
     color: 'grey',
-  },
-  textInputContainer: {
+    },
+    textInputContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -130,16 +129,16 @@ const styles = StyleSheet.create({
     width: '100%',
     marginVertical: 5,
     gap: 10,
-  },
-  forgotContainer: {
+    },
+    forgotContainer: {
     width: '100%',
     alignItems: 'flex-end',
-  },  
-  forgotText: {
+    },  
+    forgotText: {
     color: '#EC6337',
     fontSize: 12,
-  },  
-  input: {
+    },  
+    input: {
     borderWidth: 1,
     borderColor: '#D4D4F6',
     margin: 5,
@@ -148,12 +147,12 @@ const styles = StyleSheet.create({
     width: '87%',
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
-  },
-  AnimatedInput: {
+    },
+    AnimatedInput: {
     height: 35,
     width: '90%',
-  },
-  loginContainer: {
+    },
+    loginContainer: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -163,12 +162,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     marginTop: 20,
-  },
-  loginText: {
+    },
+    loginText: {
     textAlign: 'center',
     color: '#FFFFFF',
-  },
-  signUpText: {
+    },
+    signUpText: {
     color: '#EC6337',
-  },
+    },
 });

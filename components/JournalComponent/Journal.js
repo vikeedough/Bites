@@ -324,10 +324,10 @@ export default function Journal({navigation}) {
         onDayPress={onDayPress} />
 
       <View style={styles.todayContainer}>
-        <View style={{flex: 0.75, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{flex: 0.7, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={styles.todayText}>{dateLabel}</Text>
         </View>
-        <View style={{flex: 0.25, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{flex: 0.3, alignItems: 'flex-start', justifyContent: 'center'}}>
           <TouchableOpacity style={styles.calendarIcon} onPress={() => openCalendarModal()}>
             <Ionicons name="calendar" color={'#EC6337'} size={24} style={{paddingEnd: 0,}} />
           </TouchableOpacity> 
