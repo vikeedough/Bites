@@ -77,7 +77,11 @@ export default function Signup() {
     if (username.length < 5) {
       Alert.alert('Sign up failed', 'Please enter a username that is at least 5 characters long!', [{text: 'Understood'}]);
     } else if (password === confirmation) {
-      signUp();
+        if (password.length < 6 || confirmation.length < 6) {
+          Alert.alert('Sign up failed', 'Please enter a password that is at least 6 characters long!', [{text: 'Understood'}]);
+        } else {
+          signUp();
+        }
     } else {
       Alert.alert('Sign up failed', 'Please ensure that both passwords keyed in are the same!', [{text: 'Understood'}]);
     }

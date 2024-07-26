@@ -16,14 +16,19 @@ export default function ResetPassword() {
   
   const checkSamePassword = () => {
     if(newPassword === newPassword2) {
+      if (newPassword.length < 6 || newPassword2.length < 6) {
+        Alert.alert('Password change failed', 'Please ensure that your new password is at least 6 characters long!', [{text: 'Understood'}]);
+      } else {
       updateNewPassword();
+      }
     } else {
       Alert.alert('Password change failed', 'Please ensure that both passwords keyed in are the same!', [{text: 'Understood'}]);
     }
   }
 
   const updateNewPassword = async () => {
-    const credential = EmailAuthProvider.credential(
+    try {
+      const credential = EmailAuthProvider.credential(
         auth.currentUser.email,
         oldPassword
     )
@@ -34,6 +39,13 @@ export default function ResetPassword() {
     updatePassword(auth.currentUser, newPassword)
     auth.currentUser.reload();
     Alert.alert('', 'Your password has been successfully changed!', [{text: 'Understood'}]);
+    } catch (error) {
+      if (error.code === 'auth/wrong-password') {
+        Alert.alert('Password change failed', 'The password is invalid.', [{text: 'Understood'}]);
+      } else {
+      Alert.alert('Password change failed', error.message, [{text: 'Understood'}]);
+      }
+    }
   }
 
   return (

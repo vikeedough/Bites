@@ -19,9 +19,7 @@
     "setupFiles": [
       "<rootDir>/__mocks__/@react-native-async-storage/async-storage.js"
     ],
-    "setupFilesAfterEnv": [
-      "@testing-library/jest-native/extend-expect"
-    ]
+    "setupFilesAfterEnv": ["./jest.setup.js"]
   },
   "dependencies": {
     "@babel/runtime": "^7.24.8",

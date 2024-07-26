@@ -19,7 +19,7 @@ const EmptyList = () => {
 
 export default function HomeScreen({navigation}) {
 
-  const user = auth.currentUser.uid;
+  const user = auth.currentUser ? auth.currentUser.uid : null;
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [refresh, setRefresh] = useState(true);
@@ -35,6 +35,12 @@ export default function HomeScreen({navigation}) {
   }
 
   useEffect(() => {
+
+    if (!user) {
+      console.error("No user is logged in");
+      return;
+    }
+
     const postsRef = collection(db, "posts");
     const friendsRef = doc(db, "users", user);
 
@@ -71,6 +77,7 @@ export default function HomeScreen({navigation}) {
     navigation.setOptions({
       headerRight: () => (
         <Ionicons
+          testID='helpIcon'
           name="help-circle-outline"
           color={'white'}
           size={24}

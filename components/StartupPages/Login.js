@@ -2,7 +2,8 @@ import React from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
 import { firebaseAuth } from '../../firebaseConfig'
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { Fontisto, Feather } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons'; 
 import AnimatedTextInput from '../AnimatedTextInput';
 
 const logo = require('@/assets/images/Logo-Grey-Background.png');
@@ -116,6 +117,12 @@ export default function Login({navigation}) {
                 ref={secondInput}
               />
             </View>
+
+            <View style={styles.forgotContainer}>
+                <TouchableOpacity onPress={() => navigation.navigate('PasswordReset')}>
+                  <Text style={styles.forgotText}>Forgot Password?</Text>
+                </TouchableOpacity>
+            </View>
             
 
             <TouchableOpacity style={styles.loginContainer} testID='loginButton' onPress={signIn}>
@@ -206,6 +213,15 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     gap: 10,
   },
+  forgotContainer: {
+    width: '100%',
+    alignItems: 'flex-end',
+  },  
+  forgotText: {
+    color: '#EC6337',
+    fontSize: 14,
+    marginVertical: 10,
+  },  
   input: {
     borderWidth: 1,
     borderColor: '#D4D4F6',

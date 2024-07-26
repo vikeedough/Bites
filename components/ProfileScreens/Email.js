@@ -15,20 +15,36 @@ export default function Email() {
   const secondInput = useRef();
 
   const updateNewEmail = async () => {
-    const credential = EmailAuthProvider.credential(
+    if (email === auth.currentUser.email) {
+      Alert.alert('Update email failed', 'The email address is the same as your current email address.', [{text: 'Understood'}]);
+      return;
+    }
+    try {
+      const credential = EmailAuthProvider.credential(
         auth.currentUser.email,
         password
-    )
-    const result = await reauthenticateWithCredential(
-        auth.currentUser,
-        credential
-    )
-    updateEmail(auth.currentUser, email)
-    await setDoc(doc(db, "users", auth.currentUser.uid), 
-      { email: email }, { merge: true}
-    )
-    auth.currentUser.reload();
-    Alert.alert('', 'Your email has been successfully updated!', [{text: 'Understood'}]);
+      );
+      const result = await reauthenticateWithCredential(
+          auth.currentUser,
+          credential
+      );
+      await updateEmail(auth.currentUser, email);
+      await setDoc(doc(db, "users", auth.currentUser.uid), 
+        { email: email }, { merge: true}
+      )
+      auth.currentUser.reload();
+      Alert.alert('', 'Your email has been successfully updated!', [{text: 'Understood'}]);
+    } catch (error) {
+      if (error.code === 'auth/wrong-password') {
+        Alert.alert('Update email failed', 'The password is invalid.', [{text: 'Understood'}]);
+      } else if (error.code === 'auth/email-already-in-use') {
+        Alert.alert('Update email failed', 'The email address is already in use by another account.', [{text: 'Understood'}]);
+      } else if (error.code === 'auth/invalid-email') {
+        Alert.alert('Update email failed', 'The email address is invalid. Please enter a valid email address.', [{text: 'Understood'}]);
+      } else {
+        Alert.alert('Error', error.message, [{text: 'Understood'}]);
+      }
+    }
   }
 
   return (

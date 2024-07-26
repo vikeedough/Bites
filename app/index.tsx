@@ -7,6 +7,7 @@ import FeedNavigator from '@/components/navigation/FeedNavigator.js';
 import Map from '@/components/Map.js';
 import Login from '@/components/StartupPages/Login';
 import Signup from '@/components/StartupPages/Signup.js'
+import PasswordReset from '@/components/StartupPages/PasswordReset.js';
 import { Ionicons } from '@expo/vector-icons';
 import FoodNavigator from "@/components/navigation/FoodNavigator.js";
 import {firebaseApp, firebaseAuth} from '../firebaseConfig'
@@ -147,7 +148,22 @@ export default function Index() {
       ) : (
         <Stack.Navigator>
           <Stack.Screen name = "Login" component = {Login} options = {{headerShown : false}}/>
-          <Stack.Screen name = "Signup" component = {Signup} options = {{headerTitle: ''}}/>
+          <Stack.Screen name = "Signup" component = {Signup} options = {{
+            headerTitle: '', 
+            headerStyle: {
+              backgroundColor: '#F4F4F6',
+              borderBottomWidth: 0,
+            },
+            }}
+          />
+          <Stack.Screen name = "PasswordReset" component = {PasswordReset} options = {{
+            headerTitle: '',
+            headerStyle: {
+              backgroundColor: '#F4F4F6',
+              borderBottomWidth: 0,
+            },
+            }}
+          />
         </Stack.Navigator>
       ))}
       

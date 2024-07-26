@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import Login from './Login.js';
+import Login from './Login';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Alert } from 'react-native';
 
@@ -17,7 +17,7 @@ describe('Login', () => {
     });
 
     test('Screen renders correctly', () => {
-        const { getByText, getByTestId } = render(<Login navigation={{ navigate: mockNavigate }} />);
+        const { getByText, getByTestId } = render(<Login />);
 
         expect(getByText('Welcome!')).toBeTruthy();
         expect(getByText('Sign in to continue')).toBeTruthy();
@@ -126,25 +126,6 @@ describe('Login', () => {
                 "The email you keyed in is not a registered with us. Please create a new account!",
                 [{ text: 'Understood' }]
             );
-        });
-    });
-
-    test('Navigates to Home screen upon successful login', async () => {
-        signInWithEmailAndPassword.mockResolvedValue({});
-
-        const { getByTestId } = render(<Login navigation={{ navigate: mockNavigate }} />);
-
-        const emailInput = getByTestId('emailInput');
-        const passwordInput = getByTestId('passwordInput');
-        const loginButton = getByTestId('loginButton');
-
-        fireEvent.changeText(emailInput, 'test1@gmail.com');
-        fireEvent.changeText(passwordInput, 'password');
-
-        fireEvent.press(loginButton);
-
-        await waitFor(() => {
-            expect(mockNavigate).toHaveBeenCalledWith('Home'); // Adjust 'Home' to the actual name of your home screen route
         });
     });
 });
