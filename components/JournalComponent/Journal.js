@@ -324,10 +324,14 @@ export default function Journal({navigation}) {
         onDayPress={onDayPress} />
 
       <View style={styles.todayContainer}>
+        <View style={{flex: 0.75, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={styles.todayText}>{dateLabel}</Text>
+        </View>
+        <View style={{flex: 0.25, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity style={styles.calendarIcon} onPress={() => openCalendarModal()}>
             <Ionicons name="calendar" color={'#EC6337'} size={24} style={{paddingEnd: 0,}} />
-          </TouchableOpacity>
+          </TouchableOpacity> 
+        </View>
       </View>
 
       <View style={styles.barGraphContainer}>
@@ -491,14 +495,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    width: '25%',
+    width: '30%',
     paddingHorizontal: 5,
     marginHorizontal: 15,
     marginVertical: 3,
     borderRadius: 10,
   },
   todayText: {
-    fontSize: 18, 
+    fontSize: 14, 
     paddingRight: 5
   },
   calendarIcon: {

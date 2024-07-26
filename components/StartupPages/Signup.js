@@ -35,7 +35,7 @@ export default function Signup() {
         message = 'Invalid password!';
         break;
       case 'auth/user-not-found':
-        message = 'The email you keyed in is not a registered with us. Please create a new account!';
+        message = 'The email you keyed in is not registered with us. Please create a new account!';
         break;
       default:
         message = 'An unknown error occurred. Please try again later.';

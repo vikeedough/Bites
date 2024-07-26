@@ -10,6 +10,7 @@ const app = firebaseApp;
 const auth = firebaseAuth;
 const db = firebaseDb;
 
+//Shortcut to Add Food in Map page
 export default function ShortcutToFood({selectedFood, shortcutModal, setShortcutModal}) {
 
     // console.log("In Shortcut to Food");
@@ -26,6 +27,7 @@ export default function ShortcutToFood({selectedFood, shortcutModal, setShortcut
     const [protein, setProtein] = useState(0);
     const [fat, setFat] = useState(0);
 
+    //When component first mounts, check if selected food is not null, update macro values based on food selected and number of servings
     useEffect(() => {
 
         if (selectedFood) {
@@ -34,14 +36,6 @@ export default function ShortcutToFood({selectedFood, shortcutModal, setShortcut
 
     }, [])
 
-    // useEffect(() => {
-
-    //     if (selectedFood) {
-    //         updateMarcoValues(selectedFood, numOfServings)
-    //     }
-
-    // }, [numOfServings])
-
     const mealTypeData = [
         {label: "Breakfast", value: "breakfast"},
         {label: "Lunch", value: "lunch"},
@@ -49,10 +43,12 @@ export default function ShortcutToFood({selectedFood, shortcutModal, setShortcut
         {label: "Others", value: "others"}
     ]
 
+    //Handle dropdown item change
     const onDropdownChange = (item) => {
         setMealType(item.value);
     }
     
+    //Handle dropdown item change, re-render dropdown
     const renderDropdownItem = item => {
         return (
             <View style={styles.item}>
@@ -61,6 +57,7 @@ export default function ShortcutToFood({selectedFood, shortcutModal, setShortcut
         );
     }
 
+    //Handle text input change 
     const handleNumOfServingsChange = (text) => {   
         setNumOfServings(Number(text));
 
@@ -70,6 +67,7 @@ export default function ShortcutToFood({selectedFood, shortcutModal, setShortcut
         
     }
 
+    //Update macro values to preset values from FoodData base
     const updateMarcoValues = (food, servings) => {
         // console.log("In Update macros function")
         setCalories(Math.round(food.calories * servings));
@@ -78,6 +76,7 @@ export default function ShortcutToFood({selectedFood, shortcutModal, setShortcut
         setFat(Math.round(food.fats * servings));
     }
     
+    //Log meal entry and upload it to Firebase user's FoodLog sub-collection
     const logMealEntry = async () => {
 
         const newFoodEntry = {
@@ -118,6 +117,7 @@ export default function ShortcutToFood({selectedFood, shortcutModal, setShortcut
 
     }
 
+    //Handle on Tick button press
     const onTickButtonPress = () => {
         if (selectedFood !== null && mealType !== null) {
           logMealEntry();
