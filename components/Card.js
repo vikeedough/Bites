@@ -10,8 +10,7 @@ import en from 'javascript-time-ago/locale/en';
 import * as Sharing from 'expo-sharing';
 import { captureRef } from 'react-native-view-shot';
 
-
-
+// Initialize the time ago library
 TimeAgo.addDefaultLocale(en);
 
 const auth = firebaseAuth;
@@ -19,10 +18,12 @@ const db = firebaseDb;
 const placeholder = require('@/assets/images/placeholder.png');
 const timeAgo = new TimeAgo('en-US');
 
+// Display each comment
 const Result = ({ userId, commentText, navigation, navigateProfile, userPic }) => {
 
     const [username, setUsername] = useState('');
 
+    // Find the username of the user that commented
     const findUsername = async () => {
         const findUsername = (await getDoc(doc(db, 'users', userId))).data();
         setUsername(findUsername.username);
@@ -42,6 +43,7 @@ const Result = ({ userId, commentText, navigation, navigateProfile, userPic }) =
     )
 }
 
+// Display each post
 export default function Card ({ id, user, time, image, caption, comments, likes, usersLiked, location, tags, navigation }) {
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -63,6 +65,7 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
         setOptionsModalVisible(false);
     }
 
+    // Navigate to the profile of the user
     const navigateProfile = (navigation, userId, userPic) => {
         const state = navigation.getState();
         const currentRoute = state.routes[state.index];
@@ -84,6 +87,7 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
     const [imageUri, setImageUri] = useState('');
     const imageRef = useRef();
 
+    // Toggle the like button
     const toggleLike = async () => {
 
     setLike(previousState => !previousState);
@@ -103,6 +107,7 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
     }
     };
 
+    // Fetch the username and achievement of the user
     useEffect(() => {
         const userRef = doc(db, "users", user);
         const unsubscribe = onSnapshot(userRef, (doc) => {
@@ -120,6 +125,7 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
         };
     }, []);
 
+    // Save the image to the device
     const saveImage = async () => {
         try {
             const postUri = await captureRef(imageRef, {
@@ -131,6 +137,7 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
         }
     }
 
+    // Share the image
     useEffect(() => {
         if (imageUri) {
             Sharing.shareAsync(imageUri, {
@@ -140,6 +147,7 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
         }
     }, [imageUri]);
 
+    // Share the image
     const shareImage = async () => {
         await saveImage();
     }

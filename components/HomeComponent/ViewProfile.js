@@ -8,6 +8,7 @@ const auth = firebaseAuth;
 const db = firebaseDb;
 const placeholder = require('@/assets/images/placeholder.png');
 
+// Display this component when no posts are loaded
 const EmptyList = () => {
     return (
         <View style={styles.emptyList}>
@@ -16,11 +17,13 @@ const EmptyList = () => {
     )
 }
 
+// Display the user's profile picture, username, and achievement
 const HeaderCard = ( {userId, image, username, achievement} ) => {
 
     const [following, setFollowing] = useState(false);
     const [currFriends, setCurrFriends] = useState([]);
 
+    // Find the user's friends list and check if the current user is following them
     const findUsername = async () => {
         try {
             const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
@@ -36,6 +39,7 @@ const HeaderCard = ( {userId, image, username, achievement} ) => {
         }
     };
 
+    // Follow and unfollow users
     const Follow = async () => {
         await updateDoc(doc(db, "users", auth.currentUser.uid),
         { friends: arrayUnion(userId)}
@@ -97,6 +101,7 @@ export default function ViewProfile({ route, navigation }) {
     const [userImage, setUserImage] = useState(null);
     const [achievement, setAchievement] = useState('');
 
+    // Find the user's username and achievement
     const findUsername = async () => {
         try {
             const userDoc = await getDoc(doc(db, 'users', user));
@@ -118,6 +123,7 @@ export default function ViewProfile({ route, navigation }) {
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [refresh, setRefresh] = useState(true);
 
+    // Subscribe to posts collection
     useEffect(() => {
     const postsRef = collection(db, "posts");
 
@@ -152,20 +158,21 @@ export default function ViewProfile({ route, navigation }) {
     filterPosts();
     }, [posts]);
 
+    // Filter posts by user and sort by timestamp
     const filterPosts = async () => {
 
-    DATA = posts;
-    const cleanUnfollowing = DATA.filter((item) => 
-        (item.userId === user)
-    );
-    const sortedPosts = cleanUnfollowing.sort(
-        function(p1, p2) {
-        return (p2.timestamp - p1.timestamp)
-        }
-    );
-
-    setFilteredPosts(sortedPosts);
-    setRefresh(false);
+        DATA = posts;
+        const cleanUnfollowing = DATA.filter((item) => 
+            (item.userId === user)
+        );
+        const sortedPosts = cleanUnfollowing.sort(
+            function(p1, p2) {
+            return (p2.timestamp - p1.timestamp)
+            }
+        );
+        setFilteredPosts(sortedPosts);
+        setRefresh(false);
+        
     }
 
     return (

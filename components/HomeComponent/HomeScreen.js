@@ -9,6 +9,7 @@ import HomeScreenInfo from '@/components/Modals/HomeScreenInfo';
 const auth = firebaseAuth;
 const db = firebaseDb;
 
+// Display this component when no posts are loaded
 const EmptyList = () => {
   return (
     <View style={styles.emptyList}>
@@ -34,6 +35,7 @@ export default function HomeScreen({navigation}) {
       setModalVisible(false);
   }
 
+  // Subscribe to posts and friends collections
   useEffect(() => {
 
     if (!user) {
@@ -73,6 +75,7 @@ export default function HomeScreen({navigation}) {
     };
   }, []);
 
+  // Set the header right icon to open the info modal
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -87,14 +90,15 @@ export default function HomeScreen({navigation}) {
     });
   }, [navigation]);
 
+  // Retrieve most updated posts when posts or friends change
   useEffect(() => {
     filterPosts();
   }, [posts, friends]);
 
+  // Filter posts to only show posts from friends and the user and sort them by timestamp
   const filterPosts = async () => {
 
     DATA = posts;
-    //console.log(DATA);
     const cleanUnfollowing = DATA.filter((item) => 
       ((friends.includes(item.userId)) || (item.userId === user))
     );
@@ -105,9 +109,6 @@ export default function HomeScreen({navigation}) {
     );
 
     setFilteredPosts(sortedPosts);
-    
-    //console.log("my friends: " + friends);
-    //console.log(sortedPosts);
     setRefresh(false);
   }
 

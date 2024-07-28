@@ -16,6 +16,7 @@ const placeholder = require('@/assets/images/placeholder.png');
 
 const storage = getStorage();
 
+// Display this component when no posts are loaded
 const EmptyList = () => {
     return (
         <View style={styles.emptyList}>
@@ -35,6 +36,7 @@ export default function MainProfile({navigation}) {
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [currDisplayed, setCurrDisplayed] = useState('');
 
+    // Find the user's selected achievement
     const findAchievements = async () => {
         const findUser = (await getDoc(doc(db, 'users', auth.currentUser.uid))).data();
         setCurrDisplayed(findUser.selectedAchievement);
@@ -50,6 +52,7 @@ export default function MainProfile({navigation}) {
         findAchievements();
     }, []);
 
+    // Subscribe to posts collection and user's selected achievement
     useEffect(() => {
         const postsRef = collection(db, "posts");
         const achievementRef = doc(db, "users", auth.currentUser.uid);
@@ -83,10 +86,12 @@ export default function MainProfile({navigation}) {
     };
     }, []);
 
+    // Filter the posts to only display the user's posts
     useEffect(() => {
         filterPosts();
     }, [posts]);
 
+    // Filter the posts to only display the user's posts
     const filterPosts = async () => {
 
         DATA = posts;
@@ -102,12 +107,14 @@ export default function MainProfile({navigation}) {
         setFilteredPosts(sortedPosts);
     }
 
+    // Convert the image URI to a blob
     const uriToBlob = async (uri) => {
         const response = await fetch(uri);
         const blob = await response.blob();
         return blob;
     };
 
+    // Upload the image to Firebase Storage
     const addImage = async () => {
         let profilePic = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,

@@ -10,6 +10,7 @@ const userRef = collection(db, "users");
 const placeholder = require('@/assets/images/placeholder.png');
 let DATA = [];
 
+// Display this component when no friends are loaded
 const EmptyList = () => {
     return (
         <View style={styles.emptyList}>
@@ -18,6 +19,7 @@ const EmptyList = () => {
     );
 };
 
+
 export default function Friends({navigation}){
 
     const [search, setSearch] = useState('');
@@ -25,6 +27,7 @@ export default function Friends({navigation}){
     const [refreshing, setRefreshing] = useState(true);
     const isFocused = useIsFocused();
 
+    // Fetch the list of friends
     const fetchFriends = async () => {
         const usernames = [];
 
@@ -55,6 +58,7 @@ export default function Friends({navigation}){
         fetchFriends();
     }, []);
 
+    // Filter the list of friends based on user input
     useEffect(() => {
         fetchFriends().then(async () => {
             console.log(DATA);
@@ -71,10 +75,12 @@ export default function Friends({navigation}){
         });
     }, [search]);
 
+    // Display each friend
     const Result = ({ id, image, username }) => {
         
         const [following, setFollowing] = useState(true);
 
+        // Navigate to the user's profile
         const navigateProfile = (navigation, userId, userPic) => {
             const state = navigation.getState();
             const currentRoute = state.routes[state.index];
@@ -86,6 +92,7 @@ export default function Friends({navigation}){
             navigation.push('ViewProfile', {user: userId, userPic: userPic});
         };
 
+        // Follow and unfollow users
         const Follow = async () => {
             await updateDoc(doc(db, "users", auth.currentUser.uid),
             { friends: arrayUnion(id) }

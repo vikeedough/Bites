@@ -6,6 +6,7 @@ export default function AddLocation({navigation, route}) {
 
     const { setLocation } = route.params;
 
+    // Hardcoded locations
     const MARKERS = [{
         title: 'Frontier',
         id: 0,
@@ -32,6 +33,7 @@ export default function AddLocation({navigation, route}) {
     const [input, setInput] = useState('');
     const [newMarkers, setNewMarkers] = useState(MARKERS);
 
+    // Add new location if user types in input
     useEffect(() => {
         if (input !== '') {
             const newMarker = {
@@ -45,8 +47,10 @@ export default function AddLocation({navigation, route}) {
         }
     }, [input])
 
+    // Display each location
     const Result = ({ name }) => {
 
+        // Add location to post
         const addLocation = () => {
             setLocation(name);
             navigation.goBack();

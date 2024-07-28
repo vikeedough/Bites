@@ -11,8 +11,8 @@ const auth = firebaseAuth;
 export default function PasswordReset({navigation}) {
     const [email, onChangeEmail] = React.useState('');
 
+    // Send password reset email
     const sendEmail = async () => {
-        // send password reset email
         if('' === email) {
             Alert.alert('Error', 'Please enter your email address.', [{text: 'Understood'}]);
             return;

@@ -1,3 +1,6 @@
+// Adapted from 'Creating an Animated TextField with React Native by 'Halil Bilir'
+// https://bilir.me/blog/creating-an-animated-textfield-with-react-native
+
 import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { StyleSheet, TextInput, View, Text, Animated, Easing, TouchableWithoutFeedback } from 'react-native';
 

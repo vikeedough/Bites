@@ -22,6 +22,7 @@ export default function Signup() {
   const thirdInput = React.useRef();
   const fourthInput = React.useRef();
 
+  // Alert messages for different errors
   const alertMessage = (error) => {
     let message = '';
     switch(error) {
@@ -44,6 +45,7 @@ export default function Signup() {
     Alert.alert('Log in failed', message, [{text: 'Understood'}]);
   };
 
+  // Sign up function
   const signUp = async () => {
     setDisabled(true);
     setLoading(true)
@@ -73,6 +75,7 @@ export default function Signup() {
     } 
   }
 
+  // Check if the passwords keyed in are the same
   const checkSamePassword = () => {
     if (username.length < 5) {
       Alert.alert('Sign up failed', 'Please enter a username that is at least 5 characters long!', [{text: 'Understood'}]);

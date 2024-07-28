@@ -15,6 +15,7 @@ export default function AddFriends({navigation}){
     const [filtered, setFiltered] = useState([])
     const [refreshing, setRefreshing] = useState(true);
 
+    // Fetch the list of users
     const fetchUsers = async () => {
         const querySnapshot = await getDocs(userRef);
         const currFriends = await getDoc(doc(db, 'users', auth.currentUser.uid)).then(
@@ -49,6 +50,7 @@ export default function AddFriends({navigation}){
     });
     }
 
+    // Fetch the list of users on initial render and filter the list based on user input
     useEffect(() => {
         fetchUsers().then(async () => {
             console.log(DATA);
@@ -71,10 +73,12 @@ export default function AddFriends({navigation}){
         });
     }, [search]);
 
+    // Display each user
     const Result = ({ id, image, username }) => {
         
         const [following, setFollowing] = useState(false);
 
+        // Navigate to the user's profile
         const navigateProfile = (navigation, userId, userPic) => {
             const state = navigation.getState();
             const currentRoute = state.routes[state.index];
@@ -86,6 +90,7 @@ export default function AddFriends({navigation}){
             navigation.push('ViewProfile', {user: userId, userPic: userPic});
         }
 
+        // Follow and unfollow users
         const Follow = async () => {
             await updateDoc(doc(db, "users", auth.currentUser.uid),
             { friends: arrayUnion(id)}

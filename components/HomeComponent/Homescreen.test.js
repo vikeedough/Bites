@@ -32,11 +32,10 @@ jest.mock('../../firebaseConfig', () => ({
 jest.mock('firebase/firestore', () => ({
   getFirestore: jest.fn(),
   collection: jest.fn((db, collectionName) => {
-    // Mock behavior based on collectionName if needed
     return {};
   }),
   onSnapshot: jest.fn((query, callback) => {
-    const mockData = {}; // Replace with your mock data structure
+    const mockData = {}; 
     const mockDocSnapshot = {
       docs: mockData.map(doc => ({
         data: () => doc,
@@ -45,14 +44,11 @@ jest.mock('firebase/firestore', () => ({
     };
     callback(mockDocSnapshot);
     return {
-      // Return a mock unsubscribe function
       unsubscribe: jest.fn(),
     };
   }),
   doc: jest.fn((db, documentPath) => {
-    // Mock behavior based on documentPath if needed
     return {
-      // You can add methods like get(), set(), update() here if they are used in your component
     };
   }),
 }));
@@ -60,9 +56,8 @@ jest.mock('firebase/firestore', () => ({
 describe('HomeScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    const { onSnapshot } = require('firebase/firestore'); // Import onSnapshot from the mocked module
+    const { onSnapshot } = require('firebase/firestore'); 
 
-    // Mock Firestore data fetching
     onSnapshot.mockImplementation((ref, callback) => {
       if (ref === doc(firebaseDb, "posts", "testPost")) {
         callback({
@@ -81,14 +76,13 @@ describe('HomeScreen', () => {
       } else if (ref === doc(firebaseDb, "users", "testUser")) {
         callback({
           data: () => ({
-            // Your mock data here
           }),
         });
       }
     });
   });
 
-  test('renders correctly', () => {
+  test('Screen renders correctly', () => {
     const mockNavigation = {
       setOptions: jest.fn(),
     };
@@ -102,14 +96,12 @@ describe('HomeScreen', () => {
     };
     const { findByText, findByAltText } = render(<HomeScreen navigation={{ setOptions: jest.fn() }} />);
 
-    // Wait for the post's caption to appear in the document
     const mockCardElement = screen.getByTestId('mockCard');
     expect(mockCardElement).toBeInTheDocument();
     const captionElement = await findByText('Test Caption');
     expect(captionElement).toBeInTheDocument();
 
-    // Optionally, check for other elements like the image
-    const imageElement = await findByAltText('Post Image'); // Use the actual alt text used in your component
+    const imageElement = await findByAltText('Post Image');
     expect(imageElement).toBeInTheDocument();
     expect(imageElement.src).toContain('testImage.jpg');
   });
@@ -121,7 +113,6 @@ describe('HomeScreen', () => {
     const { getByText } = render(<HomeScreen navigation={{ setOptions: jest.fn() }} />);
     const refreshControl = getByText('RefreshControl');
     fireEvent(refreshControl, 'onRefresh');
-    // Expect the filterPosts function to be called, indirectly checked by ensuring posts are displayed
     expect(queryByText('Card')).toBeTruthy();
   });
 

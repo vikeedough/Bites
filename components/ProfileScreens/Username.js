@@ -12,6 +12,7 @@ export default function App() {
 
   const [username, setUsername] = useState('')
 
+  // Update the user's username
   const updateUsername = async () => {
     if (username.length < 5) {
       Alert.alert('Update username failed', 'Please enter a username that is at least 5 characters long!', [{text: 'Understood'}]);

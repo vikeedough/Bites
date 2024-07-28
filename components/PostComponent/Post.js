@@ -15,6 +15,7 @@ const storage = getStorage();
 
 export default function Post({navigation}) {
 
+    // Hardcoded locations
     const MARKERS = [{
         title: 'Frontier',
         id: 0,
@@ -52,6 +53,7 @@ export default function Post({navigation}) {
         setModalVisible(false);
     }
 
+    // Display the help icon
     useLayoutEffect(() => {
         navigation.setOptions({
         headerRight: () => (
@@ -65,12 +67,14 @@ export default function Post({navigation}) {
     });
     }, [navigation]);
 
+    // Convert the image URI to a blob
     const uriToBlob = async (uri) => {
         const response = await fetch(uri);
         const blob = await response.blob();
         return blob;
     };
 
+    // Add an image to the post
     const addImage = async () => {
         let picture = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -88,6 +92,7 @@ export default function Post({navigation}) {
         
     }, [isLoading]);
 
+    // Check if the post is valid
     const checkPost = async () => {
 
         try {
@@ -120,6 +125,7 @@ export default function Post({navigation}) {
         }
     }
 
+    // Upload the post to the database
     const sendPost = async () => {
         setDisabled(true);
         console.log(isLoading);

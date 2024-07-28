@@ -35,6 +35,7 @@ export default function Map({navigation}) {
     setInfoModalVisible(false);
   }
 
+  // Set the header right button to display the info modal
   useLayoutEffect(() => {
     navigation.setOptions({
     headerRight: () => (
@@ -49,7 +50,7 @@ export default function Map({navigation}) {
   });
   }, [navigation]);
 
-
+  // Open the modal to display the food options
   const openModal = (foodArray, title) => {
     if (mapLoaded) {
       if (isVege) {
@@ -67,6 +68,7 @@ export default function Map({navigation}) {
     setModalVisible(false);
   }
 
+  // Fetch the user's vegetarian status
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'users', auth.currentUser.uid), (snapshot) => {
         setIsVege(snapshot.data().vegetarian);
@@ -77,6 +79,7 @@ export default function Map({navigation}) {
     };
   }, []);
 
+  // Fetch the food options for each canteen
   useEffect(() => {
 
     const fetchData = async () => {
@@ -143,6 +146,7 @@ export default function Map({navigation}) {
 
   }, [isVege]);
 
+  // Open the modal and animate to the selected canteen
   useEffect(() => {
     if(selectedItem != null) {
       openModal(selectedItem.foodArray, selectedItem.title);
@@ -156,6 +160,7 @@ export default function Map({navigation}) {
     }
   }, [selectedItem])
 
+  // Array of canteens and their respective food options
   let MARKERS = [{
     coordinates: { latitude: 1.296567027997948, longitude: 103.78041830499755 },
     name: 'Frontier',

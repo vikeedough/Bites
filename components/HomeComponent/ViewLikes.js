@@ -7,6 +7,7 @@ const auth = firebaseAuth;
 const db = firebaseDb;
 const placeholder = require('@/assets/images/placeholder.png');
 
+// Display each user that liked the post
 const Result = ({ userId, navigation }) => {
 
     const [username, setUsername] = useState('');
@@ -14,6 +15,7 @@ const Result = ({ userId, navigation }) => {
     const [currFriends, setCurrFriends] = useState([]);
     const [following, setFollowing] = useState(false);
 
+    // Find the username of the user that liked the post and check if the current user is following them
     const findUsername = async () => {
         const findUsername = (await getDoc(doc(db, 'users', userId))).data();
         const findFriends = (await getDoc(doc(db, 'users', auth.currentUser.uid))).data();
@@ -27,6 +29,7 @@ const Result = ({ userId, navigation }) => {
         }
     }
 
+    // Follow and unfollow users
     const Follow = async () => {
         await updateDoc(doc(db, "users", auth.currentUser.uid),
         { friends: arrayUnion(userId)}
@@ -43,6 +46,7 @@ const Result = ({ userId, navigation }) => {
         console.log("Unfollowed");
     }
 
+    // Navigate to the user's profile
     const navigateProfile = (navigation, userId, userPic) => {
         const state = navigation.getState();
         const currentRoute = state.routes[state.index];
@@ -58,6 +62,7 @@ const Result = ({ userId, navigation }) => {
         findUsername();
     }, [userId]);
 
+    // Update the following state when the current user's friends list changes
     useEffect(() => {
         if (currFriends.includes(userId)) {
             setFollowing(true);

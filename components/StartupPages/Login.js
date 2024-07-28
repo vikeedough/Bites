@@ -16,6 +16,7 @@ export default function Login({navigation}) {
   const firstInput = React.useRef();
   const secondInput = React.useRef();
 
+  // Alert message for different error codes
   const alertMessage = (error) => {
     let message = '';
     switch(error) {
@@ -38,6 +39,7 @@ export default function Login({navigation}) {
     Alert.alert('Log in failed', message, [{text: 'Understood'}]);
   };
 
+  // Sign in the user
   const signIn = async () => {
     setLoading(true)
     try {

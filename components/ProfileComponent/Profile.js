@@ -7,6 +7,7 @@ import { useIsFocused } from '@react-navigation/native';
 const auth = firebaseAuth
 const db = firebaseDb
 
+// Account Settings
 export default function Profile({navigation}) {
 
   const isFocused = useIsFocused();
@@ -14,6 +15,7 @@ export default function Profile({navigation}) {
   const [userSnap, setUserSnap] = useState(null);
   const [vegeEnabled, setVegeEnabled] = useState(false);
 
+  // Fetch the user's document
   useEffect(() => {
 
     const fetchUserSnap = async () => {
@@ -43,12 +45,14 @@ export default function Profile({navigation}) {
     
   }, [isFocused]);
 
+  // Update the user's vegetarian status
   useEffect(() => {
     if (userSnap !== null) {
       setVegeEnabled(userSnap.vegetarian);
     }
   }, [userSnap]);
 
+  // Toggle the user's vegetarian status
   const toggleVege = () => {
     setVegeEnabled(!vegeEnabled);
     setDoc(doc(db, "users", auth.currentUser.uid), 

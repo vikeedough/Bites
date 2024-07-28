@@ -14,6 +14,7 @@ export default function ResetPassword() {
   const secondInput = useRef();
   const thirdInput = useRef();
   
+  // Check if the new password is the same as the new password confirmation
   const checkSamePassword = () => {
     if(newPassword === newPassword2) {
       if (newPassword.length < 6 || newPassword2.length < 6) {
@@ -26,6 +27,7 @@ export default function ResetPassword() {
     }
   }
 
+  // Update the user's password
   const updateNewPassword = async () => {
     try {
       const credential = EmailAuthProvider.credential(

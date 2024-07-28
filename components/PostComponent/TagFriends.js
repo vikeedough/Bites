@@ -20,6 +20,7 @@ export default function TagFriends({navigation, route}) {
     const [finalList, setFinalList] = useState([]);
     const [filtered, setFiltered] = useState([]);
 
+    // Find the user's friends list
     const findUsername = async () => {
         try {
             const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
@@ -30,7 +31,7 @@ export default function TagFriends({navigation, route}) {
                     const friendDoc = await getDoc(doc(db, 'users', item));
                     const friendData = friendDoc.data();
                     return {
-                        id: item, // Change this to use the item as id
+                        id: item, 
                         username: friendData.username,
                         profilePic: friendData.profilePic,
                     };
@@ -47,6 +48,7 @@ export default function TagFriends({navigation, route}) {
         findUsername();
     }, []);
 
+    // Filter the list of friends based on user input
     useEffect(() => {
         if (input !== '') {
             const filteredList = finalList.filter((item) => 
@@ -54,19 +56,22 @@ export default function TagFriends({navigation, route}) {
             setFiltered(filteredList);
         } 
         if (input === '') {
-            setFiltered(finalList); // Show all friends when input is empty
+            setFiltered(finalList);
         }
     }, [input, finalList]);
 
+    // Display each friend
     const Result = ({ id, username, profilePic }) => {
 
         const [image, setImage] = useState(profilePic);
         const [tagged, setTagged] = useState(tags.includes(id));
 
+        // Check if the user is already tagged
         useEffect(() => {
             setTagged(currentTags.includes(id));
         }, [currentTags]);
 
+        // Add or remove tag
         const addTag = () => {
             const updatedTags = [...currentTags, id];
             setCurrentTags(updatedTags);
@@ -76,23 +81,6 @@ export default function TagFriends({navigation, route}) {
             const updatedTags = currentTags.filter((item) => item !== id);
             setCurrentTags(updatedTags)
         }
-
-        // useEffect(() => {
-        //     const findDetails = async () => {
-        //         try {
-        //             const userDoc = await getDoc(doc(db, 'users', id));
-        //             const userData = userDoc.data();
-        //             if (userData) {
-        //                 setUsername(userData.username);
-        //                 setImage(userData.profilePic);
-        //             }
-        //         } catch (error) {
-        //             console.error('Error fetching username:', error);
-        //         }
-        //     }
-
-        //     findDetails();
-        // }, [id])
 
         return (
             <View style={styles.cardContainer}>
@@ -120,6 +108,7 @@ export default function TagFriends({navigation, route}) {
 
     const renderItem = ({item}) => <Result id={item.id} username={item.username} profilePic={item.profilePic} />
 
+    // Update the tags when the user navigates away
     useFocusEffect(
         useCallback(() => {
             return () => {

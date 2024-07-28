@@ -14,6 +14,7 @@ export default function Email() {
   const [password, setPassword] = useState('')
   const secondInput = useRef();
 
+  // Update the user's email
   const updateNewEmail = async () => {
     if (email === auth.currentUser.email) {
       Alert.alert('Update email failed', 'The email address is the same as your current email address.', [{text: 'Understood'}]);

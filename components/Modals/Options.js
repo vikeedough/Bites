@@ -4,8 +4,10 @@ import { doc, deleteDoc } from "firebase/firestore";
 
 const db = firebaseDb;
 
+// Display the options for the user to delete their post
 export default function Options({ isVisible, onClose, postId }) {
 
+    // Delete the post
     const deletePost = async () => {
         Alert.alert(
             "Delete post",

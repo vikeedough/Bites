@@ -11,6 +11,7 @@ const Tab = createMaterialTopTabNavigator();
 const auth = firebaseAuth;
 const db = firebaseDb;
 
+// Display this component when no food items are loaded
 const EmptyList = () => {
     return (
         <View style={styles.emptyList}>
@@ -21,6 +22,7 @@ const EmptyList = () => {
     )
 }
 
+// Display the recommended food items
 const Recommended = ({ route }) => {
     const user = auth.currentUser.uid;
     const [macroGoalsArray, setMacroGoalsArray] = useState([]);
@@ -29,6 +31,7 @@ const Recommended = ({ route }) => {
     const [targetProteins, setTargetProteins] = useState(0);
     const [targetFats, setTargetFats] = useState(0);
 
+    // Find the user's macro goals
     const findMacroGoals = async () => {
         const findMacroGoals = (await getDoc(doc(db, 'users', user))).data().macroGoals;
         await Promise.all(findMacroGoals);
@@ -40,6 +43,7 @@ const Recommended = ({ route }) => {
         setTargetFats(findMacroGoals[3] / 3);
     }
 
+    // Find the user's macro goals on component mount
     useEffect(() => {
         const findGoals = async () => {
             await findMacroGoals();
@@ -64,6 +68,7 @@ const Recommended = ({ route }) => {
             vegetarian={item.vegetarian}
         />
 
+    // Filter the food items based on the user's macro goals
     const filteredFoodArray = foodArray.filter((item) => {
         return (
             ((item.calories >= 0.8 * targetCals && item.calories <= 1.2 * targetCals))
@@ -86,6 +91,7 @@ const Recommended = ({ route }) => {
 
 }
 
+// Display all food items
 const AllFood = ({ route }) => {
     const { foodArray } = route.params;
     const renderItem = ({ item }) =>
@@ -114,6 +120,7 @@ const AllFood = ({ route }) => {
     );
 }
 
+// Display each food item
 const Result = ({ stallName, foodName, calories, carbs, proteins, fats, vegetarian}) => {
     
     const [shortcutModal, setShortcutModal] = useState(false);
@@ -127,7 +134,6 @@ const Result = ({ stallName, foodName, calories, carbs, proteins, fats, vegetari
     }
 
     const onLogFoodPress = () => {
-        //console.log("In Log Food button!");
         setShortcutModal(true);
     }
 

@@ -19,6 +19,7 @@ export default function Settings({navigation}) {
     }
   }, [isFocused]);
 
+  // Sign out of the user's account
   const signOut = async () => {
     Alert.alert(
         "Log out",

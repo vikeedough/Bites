@@ -8,6 +8,7 @@ const auth = firebaseAuth;
 const db = firebaseDb;
 const placeholder = require('@/assets/images/placeholder.png');
 
+// Display this component when no comments are loaded
 const EmptyList = () => {
     return (
         <View style={styles.emptyList}>
@@ -16,11 +17,13 @@ const EmptyList = () => {
     )
 }
 
+// Display each comment
 const Result = ({ userId, commentText, navigation, commentId, deleteComment }) => {
 
     const [username, setUsername] = useState('');
     const [userPic, setUserPic] = useState(null);
 
+    // Find the username of the user that commented
     const findUsername = async () => {
         const findUsername = (await getDoc(doc(db, 'users', userId))).data();
         if (!findUsername) {
@@ -63,11 +66,13 @@ const Result = ({ userId, commentText, navigation, commentId, deleteComment }) =
     )
 }
 
+
 export default function Comments( {isVisible, commentsContent, onClose, postRef, navigation} ) {
 
     const [newComment, setNewComment] = useState('');
     const renderItem = ({item}) => <Result userId={item.userId}  commentText={item.commentText} commentId={item.id} navigation={navigation} deleteComment={deleteComment} />
 
+    // Add a new comment to the post
     const addComment = async () => {
         if (newComment !== '') {
             const timeNow = Date.now();
@@ -84,6 +89,7 @@ export default function Comments( {isVisible, commentsContent, onClose, postRef,
         }
     }  
 
+    // Delete a comment from the post
     const deleteComment = async (commentId, userId) => {
 
         if(userId !== auth.currentUser.uid) {
