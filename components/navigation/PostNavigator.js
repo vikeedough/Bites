@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 export default function PostNavigator() {
     return(
         <Stack.Navigator>
-            <Stack.Screen name="Post" component={Post} options={{
+            <Stack.Screen name="PostScreen" component={Post} options={{
                 headerShown: true,
                 headerTitle: 'Post',
                 headerStyle: {

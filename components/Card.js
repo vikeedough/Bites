@@ -279,7 +279,7 @@ export default function Card ({ id, user, time, image, caption, comments, likes,
         <View style={styles.commentsLeftIndent}>
             {comments.slice(0, 2).map( (item, id) => {
             return (
-                <Result userId={item.userId} commentText={item.commentText} navigation={navigation} navigateProfile={navigateProfile} />
+                <Result key={item.commentText} userId={item.userId} commentText={item.commentText} navigation={navigation} navigateProfile={navigateProfile} />
             )
             })}
         </View>
